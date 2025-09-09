@@ -1,10 +1,13 @@
 import puppeteer from "puppeteer";
 import { Downloader } from "nodejs-file-downloader";
 import type { ScrapedFile } from "../models/scrapedFile.js";
+import type { IScraping } from "./Iscraping.ts";
+import { NotFoundError } from "../errors/customErrors.ts";
+import { error } from "console";
 
-export class Scraping {
-    private scrapeUrl: string;
-    private downloadUrl: string;
+export class Scraping implements IScraping {
+    scrapeUrl: string;
+    downloadUrl: string;
 
     constructor(scrapeUrl: string, downloadUrl: string) {
         this.scrapeUrl = scrapeUrl;
@@ -21,8 +24,7 @@ export class Scraping {
         const elements = await page.$$(".ng-scope");
 
         if (elements.length === 0) {
-            console.log("No elements found");
-            return;
+            throw new NotFoundError("No elements found");
         }
 
         const el = elements[0];
@@ -36,8 +38,7 @@ export class Scraping {
         browser.close();
 
         if (!attr) {
-            console.log("No attr found");
-            return;
+            throw new NotFoundError("No attribute found");
         }
         if (!this.verifyDate(attr.text!)) {
             return;
@@ -61,15 +62,15 @@ export class Scraping {
         return true;
     }
 
-    public async downloadFile(file: ScrapedFile) {
-        if (!file) {
+    public async downloadFile(fileName: string, directory = "./files") {
+        if (!fileName) {
             console.log("No attr found");
             return;
         }
 
         const downloader = new Downloader({
-            url: this.downloadUrl + file.href!,
-            directory: "./files",
+            url: this.downloadUrl + fileName,
+            directory: directory,
             onProgress: (percentage, chunk, remainSize) => {
                 console.log("%", percentage);
                 console.log("chunk", chunk);
