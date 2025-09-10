@@ -10,17 +10,23 @@ export class Scraping implements IScraping {
     downloadUrl: string;
     fileDate: FileDate;
     fileManager: IFileManager;
+    scrapeElement: string;
+    zipPath: string;
 
     constructor(
         scrapeUrl: string,
         downloadUrl: string,
         fileManager: IFileManager,
-        fileDate: FileDate
+        fileDate: FileDate,
+        scrapeElement: string,
+        zipPath: string
     ) {
         this.scrapeUrl = scrapeUrl;
         this.downloadUrl = downloadUrl;
         this.fileManager = fileManager;
         this.fileDate = fileDate;
+        this.scrapeElement = scrapeElement;
+        this.zipPath = zipPath;
     }
 
     public async fetchData() {
@@ -30,7 +36,7 @@ export class Scraping implements IScraping {
 
         await page.goto(this.scrapeUrl);
 
-        const elements = await page.$$(".ng-scope");
+        const elements = await page.$$(this.scrapeElement);
 
         if (elements.length === 0) {
             throw new NotFoundError("No elements found");
@@ -62,7 +68,7 @@ export class Scraping implements IScraping {
         let lastFile = "";
 
         try {
-            fileList = this.fileManager.listFiles("files/zip");
+            fileList = this.fileManager.listFiles(this.zipPath);
             lastFile = this.fileDate.lastFileInDirectory(fileList);
         } catch (error) {
             return true;
@@ -77,7 +83,7 @@ export class Scraping implements IScraping {
         return false;
     }
 
-    public async downloadFile(fileName: string, directory = "./files/zip") {
+    public async downloadFile(fileName: string, directory: string) {
         let deduced = "";
         const downloader = new Downloader({
             url: this.downloadUrl + fileName,
