@@ -12,36 +12,29 @@ import {
     DescompressionError,
     NotFoundError,
 } from "./errors/customErrors.ts";
+import type { ConfigType } from "./types/configType.ts";
 
 export class App {
-    scrapeUrl: string;
-    downloadUrl: string;
     fileManager: IFileManager;
     fileDate: FileDate;
-    zipPath: string;
-    unzipPath: string;
     zip: Zip;
-    scrapeElement: string;
+    appconfig: ConfigType;
 
     constructor() {
-        this.scrapeUrl = appConfig.scrapeUrl;
-        this.downloadUrl = appConfig.downloadUrl;
         this.fileManager = new FileManager();
         this.fileDate = new FileDate();
-        this.zipPath = appConfig.zipPath;
-        this.unzipPath = appConfig.unzipPath;
         this.zip = new Zip(this.fileManager);
-        this.scrapeElement = appConfig.scrapeElement;
+        this.appconfig = appConfig;
     }
 
     async run() {
         const scraping = new Scraping(
-            this.scrapeUrl,
-            this.downloadUrl,
+            this.appconfig.scrapeUrl,
+            this.appconfig.downloadUrl,
             this.fileManager,
             this.fileDate,
-            this.scrapeElement,
-            this.zipPath
+            this.appconfig.scrapeElement,
+            this.appconfig.zipPath
         );
 
         try {
@@ -49,9 +42,12 @@ export class App {
 
             console.log(`File to download: `, attr);
 
-            await new DownloadCase(scraping).execute(attr.href, this.zipPath);
+            await new DownloadCase(scraping).execute(attr.href, this.appconfig.zipPath);
 
-            new UnzipCase(this.zip).execute(this.zipPath + attr.text, this.unzipPath);
+            new UnzipCase(this.zip).execute(
+                this.appconfig.zipPath + attr.text,
+                this.appconfig.unzipPath
+            );
 
             console.log("Process completed successfully!");
         } catch (error) {

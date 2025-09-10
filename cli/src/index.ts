@@ -5,8 +5,9 @@ import { appConfig } from "./app.config.ts";
 
 import { Connection } from "./db/connection.ts";
 
-const connection = new Connection();
+// const connection = new Connection();
 
-console.log(await connection.connect());
+// console.log(await connection.connect());
+// await connection.disconnect();
 
 //new App().run();
