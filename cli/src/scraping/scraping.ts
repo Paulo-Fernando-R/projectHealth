@@ -1,17 +1,26 @@
-import puppeteer from "puppeteer";
+import { FileAlreadyNewerError, NotFoundError } from "../errors/customErrors.ts";
+import type { IFileManager } from "../parsers/IFileManager.ts";
 import { Downloader } from "nodejs-file-downloader";
-import type { ScrapedFile } from "../models/scrapedFile.js";
 import type { IScraping } from "./Iscraping.ts";
-import { NotFoundError } from "../errors/customErrors.ts";
-import { error } from "console";
+import { FileDate } from "../utils/fileDate.ts";
+import puppeteer from "puppeteer";
 
 export class Scraping implements IScraping {
     scrapeUrl: string;
     downloadUrl: string;
+    fileDate: FileDate;
+    fileManager: IFileManager;
 
-    constructor(scrapeUrl: string, downloadUrl: string) {
+    constructor(
+        scrapeUrl: string,
+        downloadUrl: string,
+        fileManager: IFileManager,
+        fileDate: FileDate
+    ) {
         this.scrapeUrl = scrapeUrl;
         this.downloadUrl = downloadUrl;
+        this.fileManager = fileManager;
+        this.fileDate = fileDate;
     }
 
     public async fetchData() {
@@ -30,7 +39,7 @@ export class Scraping implements IScraping {
         const el = elements[0];
         const attr = await el?.$eval("a", (a) => {
             return {
-                href: a.getAttribute("href"),
+                href: a.getAttribute("href")!,
                 text: a.textContent,
             };
         });
@@ -41,45 +50,58 @@ export class Scraping implements IScraping {
             throw new NotFoundError("No attribute found");
         }
         if (!this.verifyDate(attr.text!)) {
-            return;
+            throw new FileAlreadyNewerError("File is not newer than the last one");
         }
 
         return attr;
     }
 
     private verifyDate(dateStr: string): boolean {
-        const date = dateStr.match(/\d+/g);
+        const currentDate = this.fileDate.getFileDate(dateStr);
+        let fileList: string[] = [];
+        let lastFile = "";
 
-        if (!date || date.length === 0) {
-            console.log("No date found");
-            return false;
+        try {
+            fileList = this.fileManager.listFiles("files/zip");
+            lastFile = this.fileDate.lastFileInDirectory(fileList);
+        } catch (error) {
+            return true;
         }
 
-        //!TODO: verify if date is newer than last date
+        const lastDate = this.fileDate.getFileDate(lastFile);
 
-        console.log("Date found:", date[0]);
+        if (currentDate > lastDate) {
+            return true;
+        }
 
-        return true;
+        return false;
     }
 
-    public async downloadFile(fileName: string, directory = "./files") {
-        if (!fileName) {
-            console.log("No attr found");
-            return;
-        }
-
+    public async downloadFile(fileName: string, directory = "./files/zip") {
+        let deduced = "";
         const downloader = new Downloader({
             url: this.downloadUrl + fileName,
             directory: directory,
-            onProgress: (percentage, chunk, remainSize) => {
-                console.log("%", percentage);
-                console.log("chunk", chunk);
-                console.log("remainSize", remainSize);
+            // onProgress: (percentage, chunk, remainSize) => {
+            //     console.warn("%", percentage);
+            //     console.warn("chunk", chunk);
+            //     console.warn("remainSize", remainSize);
+            // },
+
+            onBeforeSave: (deducedName) => {
+                deduced = deducedName;
+                return deducedName;
             },
         });
 
-        console.log("Downloading file...");
+        console.warn("Downloading file...");
         await downloader.download();
-        console.log("File downloaded!");
+        console.warn(`File ${deduced} downloaded!`);
+
+        try {
+            this.fileManager.emptyDirectoryExcept(directory, deduced);
+        } catch (error) {
+            console.warn("File not deleted, needs your attention");
+        }
     }
 }

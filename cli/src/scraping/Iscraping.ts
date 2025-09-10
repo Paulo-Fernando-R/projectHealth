@@ -1,13 +1,12 @@
-export interface IScraping {
-    fetchData(): Promise<
-        | {
-              href: string | null;
-              text: string;
-          }
-        | undefined
-    >;
+import type { ScrapedFile } from "../models/scrapedFile.ts";
+import type { IFileManager } from "../parsers/IFileManager.ts";
+import type { FileDate } from "../utils/fileDate.ts";
 
+export interface IScraping {
+    fetchData(): Promise<ScrapedFile>;
     downloadFile(fileName: string, directory?: string): Promise<void>;
     scrapeUrl: string;
     downloadUrl: string;
+    fileDate: FileDate;
+    fileManager:IFileManager;
 }

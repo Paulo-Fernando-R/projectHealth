@@ -25,3 +25,17 @@ export class FileDeleteError extends CustomError {
         this.name = "FileDeleteError";
     }
 }
+
+export class FileDateError extends CustomError {
+    constructor(message: string) {
+        super(message);
+        this.name = "FileDateError";
+    }
+}
+
+export class FileAlreadyNewerError extends CustomError {
+    constructor(message: string) {
+        super(message);
+        this.name = "FileAlreadyNewerError";
+    }
+}

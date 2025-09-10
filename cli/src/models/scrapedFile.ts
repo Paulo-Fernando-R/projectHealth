@@ -1,4 +1,4 @@
-export  interface ScrapedFile {
-    href: string | null;
-    text: string | null;
+export interface ScrapedFile {
+    href: string;
+    text: string;
 }

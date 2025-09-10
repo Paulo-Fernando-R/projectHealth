@@ -1,18 +1,12 @@
 import { App } from "./app.ts";
 import fs from "fs";
-//new App().run();
+import { FileDate } from "./utils/fileDate.ts";
+new App().run();
 
-const testFolder = "./files/";
+// const testFolder = "./files/zip";
 
-const res = fs.readdirSync(testFolder);
-console.log(res);
-try{
-fs.unlinkSync(testFolder + res[1]);
-    console.log("excluded");
-}
-catch(error){
-    console.log("not excluded");
-}
+// const res = fs.readdirSync(testFolder);
+// console.log(res);
+// const lf = new FileDate().lastFileInDirectory(res);
+// console.log(lf);
 
-
-console.log(res);
