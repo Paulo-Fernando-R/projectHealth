@@ -4,4 +4,12 @@ export const appConfig = {
     zipPath: "./files/zip/",
     unzipPath: "./files/unzip/",
     scrapeElement: ".ng-scope",
+
+    //datbase connection
+    //example credentials for mysql
+    host: 'localhost',
+    user: 'root',
+    password: 'root',
+    database: 'healthstablishments'
+
 };

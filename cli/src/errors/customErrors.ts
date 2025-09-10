@@ -39,3 +39,10 @@ export class FileAlreadyNewerError extends CustomError {
         this.name = "FileAlreadyNewerError";
     }
 }
+
+export class DatabaseConnectionError extends CustomError {
+    constructor(message: string) {
+        super(message);
+        this.name = "DatabaseConnectionError";
+    }
+}

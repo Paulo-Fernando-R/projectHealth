@@ -1,15 +1,12 @@
 import { App } from "./app.ts";
 import fs from "fs";
 import { FileDate } from "./utils/fileDate.ts";
-import { appConfig} from "./app.config.ts";
+import { appConfig } from "./app.config.ts";
 
-//console.log(appConfig.scrapeUrl); //pathConfig.scrapeUrl;
-new App().run();
+import { Connection } from "./db/connection.ts";
 
-// const testFolder = "./files/zip";
+const connection = new Connection();
 
-// const res = fs.readdirSync(testFolder);
-// console.log(res);
-// const lf = new FileDate().lastFileInDirectory(res);
-// console.log(lf);
+console.log(await connection.connect());
 
+//new App().run();
