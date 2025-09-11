@@ -43,5 +43,6 @@ export class Connection implements IConnection {
         });
 
         this.pool = pool;
+        return pool;
     }
 }

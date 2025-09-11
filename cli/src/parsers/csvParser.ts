@@ -9,6 +9,7 @@ import type { ObjectMap } from "csv-writer/src/lib/lang/object.ts";
 import { Connection } from "../db/connection.ts";
 import { appConfig } from "../app.config.ts";
 import mysql, { type Pool } from "mysql2/promise";
+import { StablishmentRepository } from "../db/stablishmentRepository.ts";
 export class CsvParser {
     csvWriter: CsvWriter<ObjectMap<any>>;
 
@@ -17,14 +18,10 @@ export class CsvParser {
     }
     public async parse() {
         const buffer: Stablishment[] = [];
-        const pool: Pool = mysql.createPool({
-            host: appConfig.host,
-            user: appConfig.user,
-            password: appConfig.password,
-            database: appConfig.database,
-            waitForConnections: true,
-            connectionLimit: 100,
-        });
+
+        const connection = new Connection(appConfig);
+        const pool = connection.createPool();
+        const repo = new StablishmentRepository(appConfig, connection);
 
         const stream = fs
             .createReadStream("./files/unzip/tbEstabelecimento202507.csv")
@@ -39,95 +36,20 @@ export class CsvParser {
 
             if (buffer.length > 9000) {
                 // await this.csvWriter.writeRecords(buffer);
-                await this.insertBatch(pool, buffer);
+                // await this.insertBatch(pool, buffer);
+                await repo.insertBatch(pool, buffer);
                 buffer.length = 0;
                 break;
             }
 
             if (buffer.length > 0) {
                 // await this.csvWriter.writeRecords(buffer);
-                await this.insertBatch(pool, buffer);
+                //await this.insertBatch(pool, buffer);
+                await repo.insertBatch(pool, buffer);
                 buffer.length = 0;
             }
         }
         console.log("File parsed!");
-    }
-
-    async insertBatch(pool: Pool, rows: Stablishment[]) {
-        //console.log(rows);
-
-        const columnNames = [
-            "susId",
-            "cnes",
-            "personType",
-            "socialReason",
-            "fantasyName",
-            "addressNumber",
-            "address",
-            "addressComplement",
-            "addressDistrict",
-            "addressCep",
-            "state",
-            "phone",
-            "email",
-            "cpf",
-            "cnpj",
-            "lastUpdate",
-            "deactivationCode",
-            "url",
-            "latitude",
-            "longitude",
-            "alwaysOpen",
-            "contractWithSus",
-            "unitTypeCode",
-            "stablishmentTypeCode",
-            "cityCode",
-            "legalNatureCode",
-        ].join(", ");
-
-        const numColumns = 26;
-        const placeholders = rows
-            .map(() => `(${Array(numColumns).fill("?").join(", ")})`)
-            .join(", ");
-
-        const values = rows.flatMap((r) => [
-            r.susId,
-            r.cnes,
-            r.personType,
-            r.socialReason,
-            r.fantasyName,
-            r.addressNumber,
-            r.address,
-            r.addressComplement,
-            r.addressDistrict,
-            r.addressCep,
-            r.state,
-            r.phone,
-            r.email,
-            r.cpf,
-            r.cnpj,
-            r.lastUpdate,
-            r.deactivationCode,
-            r.url,
-            r.latitude,
-            r.longitude,
-            r.alwaysOpen,
-            r.contractWithSus,
-            r.unitTypeCode,
-            r.stablishmentTypeCode,
-            r.cityCode,
-            r.legalNatureCode,
-        ]);
-
-        const sql = `INSERT INTO stablishment (${columnNames}) VALUES ${placeholders}`;
-
-        try {
-            await pool.query("SET FOREIGN_KEY_CHECKS = 0;");
-            await pool.query(sql, values);
-            // console.log(`✔️ ${rows.length} registros inseridos`);
-        } catch (error) {
-            console.error("❌ Erro no batch:", error);
-        }
     }
 
     async writeDb() {
