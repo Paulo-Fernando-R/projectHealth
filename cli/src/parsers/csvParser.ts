@@ -35,7 +35,7 @@ export class CsvParser {
             const parser: Stablishment = new StablismentFromCsv(row).map();
 
             buffer.push(parser);
-            console.log(parser.lastUpdate, row["TO_CHAR(DT_ATUALIZACAO,'DD/MM/YYYY')"])
+            console.log(parser.lastUpdate, row["TO_CHAR(DT_ATUALIZACAO,'DD/MM/YYYY')"]);
 
             if (buffer.length > 9000) {
                 // await this.csvWriter.writeRecords(buffer);
@@ -126,17 +126,12 @@ export class CsvParser {
             await pool.query(sql, values);
             // console.log(`✔️ ${rows.length} registros inseridos`);
         } catch (error) {
-             console.error("❌ Erro no batch:", error);
+            console.error("❌ Erro no batch:", error);
         }
     }
 
     async writeDb() {
-        const connection = new Connection(
-            appConfig.host,
-            appConfig.user,
-            appConfig.password,
-            appConfig.database
-        );
+        const connection = new Connection(appConfig);
         await connection.connect();
         await connection.connection?.query("SET FOREIGN_KEY_CHECKS = 0;");
         await connection.connection?.query({
@@ -203,4 +198,3 @@ export class CsvParser {
         return writter;
     }
 }
-

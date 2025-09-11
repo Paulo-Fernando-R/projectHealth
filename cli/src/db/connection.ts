@@ -1,26 +1,23 @@
-import mysql from "mysql2/promise";
+import mysql, { type Pool } from "mysql2/promise";
 import { DatabaseConnectionError } from "../errors/customErrors.ts";
 import type { IConnection } from "./Iconnection.ts";
+import type { ConfigType } from "../types/configType.ts";
+
 export class Connection implements IConnection {
     connection: mysql.Connection | null = null;
-    host: string;
-    user: string;
-    password: string;
-    database: string;
+    appConfig: ConfigType;
+    pool: Pool | null = null;
 
-    constructor(host: string, user: string, password: string, database: string) {
-        this.host = host;
-        this.user = user;
-        this.password = password;
-        this.database = database;
+    constructor(appConfig: ConfigType) {
+        this.appConfig = appConfig;
     }
     public async connect() {
         try {
             this.connection = await mysql.createConnection({
-                host: this.host,
-                user: this.user,
-                password: this.password,
-                database: this.database,
+                host: this.appConfig.host,
+                user: this.appConfig.user,
+                password: this.appConfig.password,
+                database: this.appConfig.database,
             });
         } catch (error) {
             throw new DatabaseConnectionError("Failed to connect to the database: " + error);
@@ -33,5 +30,18 @@ export class Connection implements IConnection {
             await this.connection.end();
             this.connection = null;
         }
+    }
+
+    public createPool() {
+        const pool: Pool = mysql.createPool({
+            host: this.appConfig.host,
+            user: this.appConfig.user,
+            password: this.appConfig.password,
+            database: this.appConfig.database,
+            waitForConnections: true,
+            connectionLimit: 100,
+        });
+
+        this.pool = pool;
     }
 }
