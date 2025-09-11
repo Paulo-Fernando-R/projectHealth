@@ -53,7 +53,8 @@ export interface StablishmentCSV {
     CO_TURNO_ATENDIMENTO: string | null;
     CO_ESTADO_GESTOR: string | null;
     CO_MUNICIPIO_GESTOR: string;
-    DT_ATUALIZACAO: Date;
+    //DT_ATUALIZACAO: string;
+   "TO_CHAR(DT_ATUALIZACAO,'DD/MM/YYYY')": string;
     CO_USUARIO: string;
     CO_CPFDIRETORCLN: string | null;
     REG_DIRETORCLN: string | null;
