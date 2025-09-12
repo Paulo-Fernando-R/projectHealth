@@ -5,6 +5,7 @@ export const appConfig: ConfigType = {
     downloadUrl: "https://cnes.datasus.gov.br/",
     zipPath: "./files/zip/",
     unzipPath: "./files/unzip/",
+    outputPath: "./files/output/",
     scrapeElement: ".ng-scope",
 
     //datbase connection

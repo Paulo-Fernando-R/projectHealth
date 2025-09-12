@@ -3,6 +3,7 @@ export type ConfigType = {
     downloadUrl: string;
     zipPath: string;
     unzipPath: string;
+    outputPath: string;
     scrapeElement: string;
     host: string;
     user: string;

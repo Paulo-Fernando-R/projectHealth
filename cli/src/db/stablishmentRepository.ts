@@ -1,23 +1,23 @@
-import type { Pool } from "mysql2/promise";
+import type { IStablishmentRepository } from "./IstablishmentRepository.ts";
 import type { Stablishment } from "../models/stablishment.ts";
+import { stablishmentHeaders } from "../utils/csvHeaders.ts";
 import type { ConfigType } from "../types/configType.ts";
-import { Connection } from "./connection.ts";
+import type { IConnection } from "./Iconnection.ts";
+import type { Pool } from "mysql2/promise";
 import fs from "fs";
 
-export class StablishmentRepository {
+export class StablishmentRepository implements IStablishmentRepository {
     appConfig: ConfigType;
-    connection: Connection;
+    connection: IConnection;
 
-    columnNames: string;
-
-    constructor(appConfig: ConfigType, connection: Connection) {
+    constructor(appConfig: ConfigType, connection: IConnection) {
         this.appConfig = appConfig;
         this.connection = connection;
-        this.columnNames = this.initializeColumnNames();
     }
 
     async insertBatch(pool: Pool, rows: Stablishment[]) {
         //console.log(rows);
+        this.connection.connect();
 
         const numColumns = 26;
         const placeholders = rows
@@ -53,7 +53,9 @@ export class StablishmentRepository {
             r.legalNatureCode,
         ]);
 
-        const sql = `INSERT INTO stablishment (${this.columnNames}) VALUES ${placeholders}`;
+        const sql = `INSERT INTO stablishment (${stablishmentHeaders.join(
+            ", "
+        )}) VALUES ${placeholders}`;
 
         try {
             await pool.query("SET FOREIGN_KEY_CHECKS = 0;");
@@ -65,61 +67,21 @@ export class StablishmentRepository {
     }
 
     async insertFile(file: string) {
-
         await this.connection.connect();
-        await this.connection.connection?.query("SET FOREIGN_KEY_CHECKS = 0;");
+        //this.connection.connection?.query("TRUNCATE TABLE stablishment;");
 
+        await this.connection.connection?.query("SET FOREIGN_KEY_CHECKS = 0;");
         await this.connection.connection?.query({
-            //!TODO change path to param
-            sql: `LOAD DATA LOCAL INFILE './files/output/stablishments.csv'
+            sql: `LOAD DATA LOCAL INFILE '${file}'
                     INTO TABLE stablishment
                     FIELDS TERMINATED BY ','
                     ENCLOSED BY '"'
                     LINES TERMINATED BY '\n'
                     IGNORE 1 LINES
-                    (${this.columnNames});
+                    (${stablishmentHeaders.join(", ")});
                     `,
-            infileStreamFactory: () => fs.createReadStream("./files/output/stablishments.csv"), //!TODO change path to param
+            infileStreamFactory: () => fs.createReadStream(file), 
         });
         await this.connection.disconnect();
     }
-
-    initializeColumnNames() {
-        const columnNames = [
-            "susId",
-            "cnes",
-            "personType",
-            "socialReason",
-            "fantasyName",
-            "addressNumber",
-            "address",
-            "addressComplement",
-            "addressDistrict",
-            "addressCep",
-            "state",
-            "phone",
-            "email",
-            "cpf",
-            "cnpj",
-            "lastUpdate",
-            "deactivationCode",
-            "url",
-            "latitude",
-            "longitude",
-            "alwaysOpen",
-            "contractWithSus",
-            "unitTypeCode",
-            "stablishmentTypeCode",
-            "cityCode",
-            "legalNatureCode",
-        ].join(", ");
-        return columnNames;
-    }
 }
-
-//  susId, cnes, personType, socialReason, fantasyName,
-//                         addressNumber, address, addressComplement, addressDistrict, addressCep,
-//                         state, phone, email, cpf, cnpj, lastUpdate,
-//                         deactivationCode, url, latitude, longitude, alwaysOpen,
-//                         contractWithSus, unitTypeCode, stablishmentTypeCode, cityCode,
-//                         legalNatureCode

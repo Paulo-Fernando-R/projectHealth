@@ -53,3 +53,17 @@ export class WriteFileError extends CustomError {
         this.name = "WriteFileError";
     }
 }
+
+export class InsertFileError extends CustomError {
+    constructor(message: string) {
+        super(message);
+        this.name = "InsertFileError";
+    }
+}
+
+export class ParsingError extends CustomError {
+    constructor(message: string) {
+        super(message);
+        this.name = "ParsingError";
+    }
+}

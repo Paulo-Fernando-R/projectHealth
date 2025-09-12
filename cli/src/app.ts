@@ -18,6 +18,12 @@ import { CsvWriter } from "./parsers/csvWriter.ts";
 import { CsvParser } from "./parsers/csvParser.ts";
 import type { ICsvWriter } from "./parsers/IcsvWriter.ts";
 import type { ICsvParser } from "./parsers/IcsvParser.ts";
+import { stablishmentHeaders } from "./utils/csvHeaders.ts";
+import { StablishmentRepository } from "./db/stablishmentRepository.ts";
+import { Connection } from "./db/connection.ts";
+import { InsertStablishmentsCase } from "./cases/insertStablishmentsCase.ts";
+import type { IStablishmentRepository } from "./db/IstablishmentRepository.ts";
+import type { IConnection } from "./db/Iconnection.ts";
 
 export class App {
     fileManager: IFileManager;
@@ -26,14 +32,23 @@ export class App {
     appconfig: ConfigType;
     csvWriter: ICsvWriter;
     csvParser: ICsvParser;
+    stablishmentRepository: IStablishmentRepository;
+    connection: IConnection;
 
     constructor() {
         this.fileManager = new FileManager();
         this.fileDate = new FileDate();
         this.zip = new Zip(this.fileManager);
         this.appconfig = appConfig;
-        this.csvWriter = new CsvWriter("./files/output/stablishments.csv");
+
+        this.csvWriter = new CsvWriter(
+            appConfig.outputPath + "stablishments.csv",
+            stablishmentHeaders
+        );
+
         this.csvParser = new CsvParser();
+        this.connection = new Connection(appConfig);
+        this.stablishmentRepository = new StablishmentRepository(appConfig, this.connection);
     }
 
     async run() {
@@ -47,6 +62,9 @@ export class App {
         );
 
         try {
+            console.log(
+                "-------------------------------Starting process...---------------------------------"
+            );
             //const attr = await new ScrapeCase(scraping).execute();
 
             // console.log(`File to download: `, attr);
@@ -61,10 +79,17 @@ export class App {
             await new WriteStablishmentsFileCase(
                 this.csvParser,
                 this.csvWriter,
-                "./files/unzip/tbEstabelecimento202507.csv"
+                appConfig.unzipPath + "tbEstabelecimento202507.csv"
             ).execute();
 
-            console.log("Process completed successfully!");
+            await new InsertStablishmentsCase(
+                this.stablishmentRepository,
+                "./files/output/stablishments.csv"
+            ).execute();
+
+            console.log(
+                "--------------------------Process completed successfully!----------------------------------"
+            );
         } catch (error) {
             if (error instanceof NotFoundError) {
                 console.error("Custom NotFoundError caught:", error.message);
@@ -75,6 +100,7 @@ export class App {
             } else {
                 console.error("Unexpected error:", error);
             }
+            //!TODO Handle all custom errors
         }
     }
 }

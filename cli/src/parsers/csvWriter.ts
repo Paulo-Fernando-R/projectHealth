@@ -1,6 +1,6 @@
-import fs from "fs";
 import { WriteFileError } from "../errors/customErrors.ts";
 import type { ICsvWriter } from "./IcsvWriter.ts";
+import fs from "fs";
 
 export class CsvWriter implements ICsvWriter {
     outputFile: string;
@@ -25,10 +25,9 @@ export class CsvWriter implements ICsvWriter {
 
     write(line: string) {
         try {
-
             this.writeStream.write(line + "\n");
         } catch (error) {
-            throw new WriteFileError("Error writing to file:" + error);
+            throw new WriteFileError("Error writing to file: " + this.outputFile + error);
         }
     }
 
@@ -38,7 +37,6 @@ export class CsvWriter implements ICsvWriter {
 
     private async verifyDirectory() {
         const dir = this.outputFile.substring(0, this.outputFile.lastIndexOf("/"));
-        console.log(dir);
         if (fs.existsSync(dir)) {
             {
                 return;
