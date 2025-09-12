@@ -46,3 +46,10 @@ export class DatabaseConnectionError extends CustomError {
         this.name = "DatabaseConnectionError";
     }
 }
+
+export class WriteFileError extends CustomError {
+    constructor(message: string) {
+        super(message);
+        this.name = "WriteFileError";
+    }
+}
