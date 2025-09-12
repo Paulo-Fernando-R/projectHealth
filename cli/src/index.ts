@@ -7,7 +7,7 @@ import { Connection } from "./db/connection.ts";
 import { CsvParser } from "./parsers/csvParser.ts";
 
 const csv = new CsvParser();
-const data = await csv.parse();
+const data = await csv.writeDb();
 
 
 // const connection = new Connection();

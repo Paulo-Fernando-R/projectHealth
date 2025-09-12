@@ -10,6 +10,7 @@ import { Connection } from "../db/connection.ts";
 import { appConfig } from "../app.config.ts";
 import mysql, { type Pool } from "mysql2/promise";
 import { StablishmentRepository } from "../db/stablishmentRepository.ts";
+import { format } from "@fast-csv/format";
 export class CsvParser {
     csvWriter: CsvWriter<ObjectMap<any>>;
 
@@ -22,33 +23,42 @@ export class CsvParser {
         const connection = new Connection(appConfig);
         const pool = connection.createPool();
         const repo = new StablishmentRepository(appConfig, connection);
+        const writer = this.csvW();
 
         const stream = fs
             .createReadStream("./files/unzip/tbEstabelecimento202507.csv")
             .pipe(csvParser({ separator: ";" }));
 
         console.log("Parsing file...");
+        const nList = [];
         for await (const row of stream as AsyncIterable<StablishmentCSV>) {
             const parser: Stablishment = new StablismentFromCsv(row).map();
 
             buffer.push(parser);
-            console.log(parser.lastUpdate, row["TO_CHAR(DT_ATUALIZACAO,'DD/MM/YYYY')"]);
+            const aux = Object.values(parser);
+           writer.write(aux.toString() + "\n");
+            // console.log(parser.lastUpdate, row["TO_CHAR(DT_ATUALIZACAO,'DD/MM/YYYY')"]);
 
             if (buffer.length > 9000) {
                 // await this.csvWriter.writeRecords(buffer);
                 // await this.insertBatch(pool, buffer);
-                await repo.insertBatch(pool, buffer);
+                // await repo.insertBatch(pool, buffer);
+                // writer.write(JSON.stringify(buffer));
+
+               
                 buffer.length = 0;
-                break;
             }
 
             if (buffer.length > 0) {
                 // await this.csvWriter.writeRecords(buffer);
                 //await this.insertBatch(pool, buffer);
-                await repo.insertBatch(pool, buffer);
+                // await repo.insertBatch(pool, buffer);
+                // writer.write(JSON.stringify(buffer));
+             
                 buffer.length = 0;
             }
         }
+        writer.end();
         console.log("File parsed!");
     }
 
@@ -118,5 +128,53 @@ export class CsvParser {
         });
 
         return writter;
+    }
+
+    csvW() {
+        const outputFile = fs.createWriteStream("./files/output/stablishments.csv");
+
+        const headers = [
+            "internalId",
+            "susId",
+            "cnes",
+            "personType",
+            "socialReason",
+            "fantasyName",
+            "addressNumber",
+            "address",
+            "addressComplement",
+            "addressDistrict",
+            "addressCep",
+            "state",
+            "phone",
+            "email",
+            "cnpj",
+            "cpf",
+            "lastUpdate",
+            "deactivationCode",
+            "url",
+            "latitude",
+            "longitude",
+            "alwaysOpen",
+            "contractWithSus",
+            "unitTypeCode",
+            "stablishmentTypeCode",
+            "cityCode",
+            "legalNatureCode",
+        ];
+
+        const csvStream = format({
+            headers: headers,
+        });
+
+        csvStream.pipe(outputFile).on("end", () => console.log("Done!"));
+
+        //  return csvStream;
+
+        const writerStream = fs.createWriteStream("./files/output/stablishments.csv");
+
+        writerStream.write(headers.join(",") + "\n");
+
+        return writerStream;
     }
 }
