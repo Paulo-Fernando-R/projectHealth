@@ -27,6 +27,8 @@ import type { IConnection } from "./db/Iconnection.ts";
 import { tableNames } from "./utils/tableNames.ts";
 import { outputFileNames } from "./utils/outputFileNames.ts";
 import { WriteUnitTypeCase } from "./cases/writeUnitTypeCase.ts";
+import { InsertUnitTypeCase } from "./cases/insertUnitTypeCase.ts";
+import { UnitTypeRepository } from "./db/unitTypeRepository.ts";
 
 export class App {
     fileManager: IFileManager;
@@ -108,14 +110,23 @@ export class App {
                 writer1,
                 appConfig.unzipPath + tbName1
             ).execute();
+
+            const outFName1 = this.outputFileNames.unitType;
+            const repo = new UnitTypeRepository(appConfig, this.connection);
+            const pool = this.connection.createPool();
+            await new InsertUnitTypeCase(
+                repo,
+                appConfig.outputPath + outFName1,
+                this.csvParser
+            ).execute();
             /////////////////////////////////////
 
-            const outFName = this.outputFileNames.stablishment;
+       /*     const outFName = this.outputFileNames.stablishment;
             await new InsertStablishmentsCase(
                 this.stablishmentRepository,
                 appConfig.outputPath + outFName
                 //"./files/output/stablishments.csv"
-            ).execute();
+            ).execute();*/
 
             console.log(
                 "--------------------------Process completed successfully!----------------------------------"

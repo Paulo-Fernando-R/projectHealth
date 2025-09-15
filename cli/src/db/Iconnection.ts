@@ -7,4 +7,5 @@ export interface IConnection {
     appConfig: ConfigType;
     connection: mysql.Connection | null;
     pool: mysql.Pool | null;
+    createPool(): mysql.Pool
 }

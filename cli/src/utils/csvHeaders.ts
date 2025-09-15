@@ -28,4 +28,4 @@ export const stablishmentHeaders = [
     "legalNatureCode",
 ];
 
-export const unitTypeHeaders = ["internalId", "typeCode", "TypeDescription"];
+export const unitTypeHeaders = ["internalId", "typeCode", "typeDescription"];

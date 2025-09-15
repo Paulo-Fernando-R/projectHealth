@@ -67,3 +67,10 @@ export class ParsingError extends CustomError {
         this.name = "ParsingError";
     }
 }
+
+export class InsertBatchError extends CustomError {
+    constructor(message: string) {
+        super(message);
+        this.name = "InsertBatchError";
+    }
+}

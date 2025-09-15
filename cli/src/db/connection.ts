@@ -39,7 +39,7 @@ export class Connection implements IConnection {
             password: this.appConfig.password,
             database: this.appConfig.database,
             waitForConnections: true,
-            connectionLimit: 100,
+            connectionLimit: 10,
         });
 
         this.pool = pool;
