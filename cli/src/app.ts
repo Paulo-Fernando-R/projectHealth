@@ -29,6 +29,7 @@ import { outputFileNames } from "./utils/outputFileNames.ts";
 import { WriteUnitTypeCase } from "./cases/writeUnitTypeCase.ts";
 import { InsertUnitTypeCase } from "./cases/insertUnitTypeCase.ts";
 import { UnitTypeRepository } from "./db/unitTypeRepository.ts";
+import { WriteAllCase } from "./cases/writeAllCase.ts";
 
 export class App {
     fileManager: IFileManager;
@@ -83,33 +84,9 @@ export class App {
             //     this.appconfig.unzipPath
             // );
 
-            const tbName = this.fileManager.findFile(
-                appConfig.unzipPath,
-                this.tableNames.stablishment
-            );
+           
 
-            await new WriteStablishmentsFileCase(
-                this.csvParser,
-                this.csvWriter,
-                appConfig.unzipPath + tbName //"tbEstabelecimento202507.csv"
-            ).execute();
-
-            ////////////////////////////////////
-
-            const writer1 = new CsvWriter(
-                appConfig.outputPath + outputFileNames.unitType,
-                unitTypeHeaders
-            );
-            const tbName1 = this.fileManager.findFile(
-                appConfig.unzipPath,
-                this.tableNames.unitType
-            );
-
-            await new WriteUnitTypeCase(
-                this.csvParser,
-                writer1,
-                appConfig.unzipPath + tbName1
-            ).execute();
+            await new WriteAllCase(this.csvParser, appConfig, this.fileManager).execute();
 
             const outFName1 = this.outputFileNames.unitType;
             const repo = new UnitTypeRepository(appConfig, this.connection);
@@ -121,7 +98,7 @@ export class App {
             ).execute();
             /////////////////////////////////////
 
-       /*     const outFName = this.outputFileNames.stablishment;
+            /*     const outFName = this.outputFileNames.stablishment;
             await new InsertStablishmentsCase(
                 this.stablishmentRepository,
                 appConfig.outputPath + outFName
