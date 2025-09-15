@@ -1,6 +1,6 @@
 export const tableNames: TableNames = {
     stablishment: "tbEstabelecimento",
-    unitTyoe: "tbTipoUnidade",
+    unitType: "tbTipoUnidade",
     stablishmentType: "tbTipoEstabelecimento",
     openingHours: "tbEstabHorarioAtend",
     city: "tbMunicipio",
@@ -11,7 +11,7 @@ export const tableNames: TableNames = {
 
 export type TableNames = {
     stablishment: string;
-    unitTyoe: string;
+    unitType: string;
     stablishmentType: string;
     openingHours: string;
     city: string;

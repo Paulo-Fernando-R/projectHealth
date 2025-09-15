@@ -18,7 +18,7 @@ import { CsvWriter } from "./parsers/csvWriter.ts";
 import { CsvParser } from "./parsers/csvParser.ts";
 import type { ICsvWriter } from "./parsers/IcsvWriter.ts";
 import type { ICsvParser } from "./parsers/IcsvParser.ts";
-import { stablishmentHeaders } from "./utils/csvHeaders.ts";
+import { stablishmentHeaders, unitTypeHeaders } from "./utils/csvHeaders.ts";
 import { StablishmentRepository } from "./db/stablishmentRepository.ts";
 import { Connection } from "./db/connection.ts";
 import { InsertStablishmentsCase } from "./cases/insertStablishmentsCase.ts";
@@ -26,6 +26,7 @@ import type { IStablishmentRepository } from "./db/IstablishmentRepository.ts";
 import type { IConnection } from "./db/Iconnection.ts";
 import { tableNames } from "./utils/tableNames.ts";
 import { outputFileNames } from "./utils/outputFileNames.ts";
+import { WriteUnitTypeCase } from "./cases/writeUnitTypeCase.ts";
 
 export class App {
     fileManager: IFileManager;
@@ -90,6 +91,24 @@ export class App {
                 this.csvWriter,
                 appConfig.unzipPath + tbName //"tbEstabelecimento202507.csv"
             ).execute();
+
+            ////////////////////////////////////
+
+            const writer1 = new CsvWriter(
+                appConfig.outputPath + outputFileNames.unitType,
+                unitTypeHeaders
+            );
+            const tbName1 = this.fileManager.findFile(
+                appConfig.unzipPath,
+                this.tableNames.unitType
+            );
+
+            await new WriteUnitTypeCase(
+                this.csvParser,
+                writer1,
+                appConfig.unzipPath + tbName1
+            ).execute();
+            /////////////////////////////////////
 
             const outFName = this.outputFileNames.stablishment;
             await new InsertStablishmentsCase(
