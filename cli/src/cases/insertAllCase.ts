@@ -12,7 +12,7 @@ export class InsertAllCase {
     unitTypeepository: IUnitTypeRepository;
     appConfig: ConfigType;
     csvParser: ICsvParser;
-    
+
     constructor(
         stablishmentRepository: IStablishmentRepository,
         unitTypeepository: IUnitTypeRepository,
@@ -26,15 +26,15 @@ export class InsertAllCase {
     }
 
     async execute() {
-        const stablishmentFile = this.appConfig.outputPath + outputFileNames.stablishment;
         const unitTypeFile = this.appConfig.outputPath + outputFileNames.unitType;
+        const stablishmentFile = this.appConfig.outputPath + outputFileNames.stablishment;
 
-        await new InsertStablishmentsCase(this.stablishmentRepository, stablishmentFile).execute();
-
+        //
         await new InsertUnitTypeCase(
             this.unitTypeepository,
             unitTypeFile,
             this.csvParser
         ).execute();
+        await new InsertStablishmentsCase(this.stablishmentRepository, stablishmentFile).execute();
     }
 }

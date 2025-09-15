@@ -20,38 +20,36 @@ export class WriteAllCase {
     }
 
     async execute() {
-
+        const unitTypeWriter = new CsvWriter(
+            this.appConfig.outputPath + outputFileNames.unitType,
+            unitTypeHeaders
+        );
         const stablishmentWriter = new CsvWriter(
             this.appConfig.outputPath + outputFileNames.stablishment,
             stablishmentHeaders
         );
 
-        const unitTypeWriter = new CsvWriter(
-            this.appConfig.outputPath + outputFileNames.unitType,
-            unitTypeHeaders
+        //
+        const unitTypeFile = this.fileManager.findFile(
+            this.appConfig.unzipPath,
+            tableNames.unitType
         );
-
-
         const stablishmentFile = this.fileManager.findFile(
             this.appConfig.unzipPath,
             tableNames.stablishment
         );
 
-        const unitTypeFile = this.fileManager.findFile(
-            this.appConfig.unzipPath,
-            tableNames.unitType
-        );
+        //
+        await new WriteUnitTypeCase(
+            this.csvParser,
+            unitTypeWriter,
+            this.appConfig.unzipPath + unitTypeFile
+        ).execute();
 
         await new WriteStablishmentsFileCase(
             this.csvParser,
             stablishmentWriter,
             this.appConfig.unzipPath + stablishmentFile
-        ).execute();
-
-        await new WriteUnitTypeCase(
-            this.csvParser,
-            unitTypeWriter,
-            this.appConfig.unzipPath + unitTypeFile
         ).execute();
     }
 }
