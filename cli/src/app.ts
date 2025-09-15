@@ -24,6 +24,8 @@ import { Connection } from "./db/connection.ts";
 import { InsertStablishmentsCase } from "./cases/insertStablishmentsCase.ts";
 import type { IStablishmentRepository } from "./db/IstablishmentRepository.ts";
 import type { IConnection } from "./db/Iconnection.ts";
+import { tableNames } from "./utils/tableNames.ts";
+import { outputFileNames } from "./utils/outputFileNames.ts";
 
 export class App {
     fileManager: IFileManager;
@@ -34,6 +36,8 @@ export class App {
     csvParser: ICsvParser;
     stablishmentRepository: IStablishmentRepository;
     connection: IConnection;
+    tableNames = tableNames;
+    outputFileNames = outputFileNames;
 
     constructor() {
         this.fileManager = new FileManager();
@@ -76,15 +80,22 @@ export class App {
             //     this.appconfig.unzipPath
             // );
 
+            const tbName = this.fileManager.findFile(
+                appConfig.unzipPath,
+                this.tableNames.stablishment
+            );
+
             await new WriteStablishmentsFileCase(
                 this.csvParser,
                 this.csvWriter,
-                appConfig.unzipPath + "tbEstabelecimento202507.csv"
+                appConfig.unzipPath + tbName //"tbEstabelecimento202507.csv"
             ).execute();
 
+            const outFName = this.outputFileNames.stablishment;
             await new InsertStablishmentsCase(
                 this.stablishmentRepository,
-                "./files/output/stablishments.csv"
+                appConfig.outputPath + outFName
+                //"./files/output/stablishments.csv"
             ).execute();
 
             console.log(

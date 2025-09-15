@@ -12,6 +12,15 @@ export class FileManager implements IFileManager {
         }
     }
 
+    findFile(directory: string, fileName: string) {
+        const files = this.listFiles(directory);
+
+        const file = files.find((e) => e.includes(fileName));
+
+        if (file) return file;
+        else throw new NotFoundError("File not found: " + fileName);
+    }
+
     deleteFile(directory: string, fileName: string) {
         try {
             fs.unlinkSync(directory + fileName);
