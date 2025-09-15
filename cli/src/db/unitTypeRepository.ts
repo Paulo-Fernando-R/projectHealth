@@ -27,11 +27,11 @@ export class UnitTypeRepository implements IUnitTypeRepository {
         const headers = unitTypeHeaders.splice(1, 2).join(", ");
         const sql = `INSERT INTO unitType (${headers}) VALUES ${placeholders};`;
 
-        console.log(sql, values, placeholders, headers, rows.length);
         try {
             await pool.query(sql, values);
 
             await pool.end();
+            this.connection.disconnect();
         } catch (error) {
             throw error;
         }
