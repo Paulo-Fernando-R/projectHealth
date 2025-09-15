@@ -30,6 +30,8 @@ import { WriteUnitTypeCase } from "./cases/writeUnitTypeCase.ts";
 import { InsertUnitTypeCase } from "./cases/insertUnitTypeCase.ts";
 import { UnitTypeRepository } from "./db/unitTypeRepository.ts";
 import { WriteAllCase } from "./cases/writeAllCase.ts";
+import { InsertAllCase } from "./cases/insertAllCase.ts";
+import type { IUnitTypeRepository } from "./db/IunitTypeRepository.ts";
 
 export class App {
     fileManager: IFileManager;
@@ -39,6 +41,7 @@ export class App {
     csvWriter: ICsvWriter;
     csvParser: ICsvParser;
     stablishmentRepository: IStablishmentRepository;
+    unitTypeRepository: IUnitTypeRepository;
     connection: IConnection;
     tableNames = tableNames;
     outputFileNames = outputFileNames;
@@ -57,6 +60,7 @@ export class App {
         this.csvParser = new CsvParser();
         this.connection = new Connection(appConfig);
         this.stablishmentRepository = new StablishmentRepository(appConfig, this.connection);
+        this.unitTypeRepository = new UnitTypeRepository(appConfig, this.connection);
     }
 
     async run() {
@@ -71,7 +75,7 @@ export class App {
 
         try {
             console.log(
-                "-------------------------------Starting process...---------------------------------"
+                "-------------------------------Starting process...---------------------------------------"
             );
             //const attr = await new ScrapeCase(scraping).execute();
 
@@ -84,26 +88,14 @@ export class App {
             //     this.appconfig.unzipPath
             // );
 
-           
-
             await new WriteAllCase(this.csvParser, appConfig, this.fileManager).execute();
-
-            const outFName1 = this.outputFileNames.unitType;
-            const repo = new UnitTypeRepository(appConfig, this.connection);
-            const pool = this.connection.createPool();
-            await new InsertUnitTypeCase(
-                repo,
-                appConfig.outputPath + outFName1,
+            await new InsertAllCase(
+                this.stablishmentRepository,
+                this.unitTypeRepository,
+                appConfig,
                 this.csvParser
             ).execute();
-            /////////////////////////////////////
 
-            /*     const outFName = this.outputFileNames.stablishment;
-            await new InsertStablishmentsCase(
-                this.stablishmentRepository,
-                appConfig.outputPath + outFName
-                //"./files/output/stablishments.csv"
-            ).execute();*/
 
             console.log(
                 "--------------------------Process completed successfully!----------------------------------"
