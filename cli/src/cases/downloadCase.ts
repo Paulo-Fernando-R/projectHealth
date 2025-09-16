@@ -8,6 +8,7 @@ export class DownloadCase {
 
     async execute(fileName: string, directory?: string) {
         try {
+            
             await this.scraper.downloadFile(fileName, directory);
         } catch (error) {
             throw error;

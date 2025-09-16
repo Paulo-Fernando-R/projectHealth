@@ -2,7 +2,7 @@ import type { ConfigType } from "./types/configType.ts";
 
 export const appConfig: ConfigType = {
     scrapeUrl: "https://cnes.datasus.gov.br/pages/downloads/arquivosBaseDados.jsp",
-    downloadUrl: "https://cnes.datasus.gov.br/",
+    downloadUrl: "https://cnes.datasus.gov.br",
     zipPath: "./files/zip/",
     unzipPath: "./files/unzip/",
     outputPath: "./files/output/",

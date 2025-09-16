@@ -9,8 +9,9 @@ export class ScrapeCase {
 
     async execute() {
         try {
+            console.log("Scraping data...");
             const attr = await this.scraper.fetchData();
-
+            console.log("Data scraped!");
             return attr;
         } catch (error) {
             throw error;

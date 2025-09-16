@@ -18,6 +18,8 @@ export class Connection implements IConnection {
                 user: this.appConfig.user,
                 password: this.appConfig.password,
                 database: this.appConfig.database,
+                multipleStatements: true,
+                flags: ["+LOCAL_FILES"]
             });
         } catch (error) {
             throw new DatabaseConnectionError("Failed to connect to the database: " + error);

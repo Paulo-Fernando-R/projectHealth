@@ -4,6 +4,7 @@ import { Downloader } from "nodejs-file-downloader";
 import type { IScraping } from "./Iscraping.ts";
 import { FileDate } from "../utils/fileDate.ts";
 import puppeteer from "puppeteer";
+import * as https from "https"
 
 export class Scraping implements IScraping {
     scrapeUrl: string;
@@ -85,14 +86,16 @@ export class Scraping implements IScraping {
 
     public async downloadFile(fileName: string, directory: string) {
         let deduced = "";
+
         const downloader = new Downloader({
+
             url: this.downloadUrl + fileName,
             directory: directory,
-            // onProgress: (percentage, chunk, remainSize) => {
-            //     console.warn("%", percentage);
-            //     console.warn("chunk", chunk);
-            //     console.warn("remainSize", remainSize);
-            // },
+            maxAttempts: 3,
+            
+            httpsAgent: new https.Agent({
+                rejectUnauthorized: false
+            }),
 
             onBeforeSave: (deducedName) => {
                 deduced = deducedName;
