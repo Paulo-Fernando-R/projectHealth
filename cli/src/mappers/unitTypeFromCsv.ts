@@ -10,8 +10,8 @@ export class UnitTypeFromCsv {
     map() {
         return {
             internalId: null,
-            code: this.csv.CO_TIPO_UNIDADE || this.csv.CO_TIPO_ESTABELECIMENTO,
-            description: this.csv.DS_TIPO_UNIDADE || this.csv.DS_TIPO_ESTABELECIMENTO,
+            typeCode: this.csv.CO_TIPO_UNIDADE || this.csv.CO_TIPO_ESTABELECIMENTO,
+            typeDescription: this.csv.DS_TIPO_UNIDADE || this.csv.DS_TIPO_ESTABELECIMENTO,
         };
     }
 }
