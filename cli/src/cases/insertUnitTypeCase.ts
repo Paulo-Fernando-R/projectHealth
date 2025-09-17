@@ -2,6 +2,8 @@ import type { IUnitTypeRepository } from "../db/IunitTypeRepository.ts";
 import type { ICsvParser } from "../parsers/IcsvParser.ts";
 import type { UnitType } from "../models/unitType.ts";
 import { InsertBatchError } from "../errors/customErrors.ts";
+import type { UnitTypeCsv } from "../models/unitTypeCsv.ts";
+import { UnitTypeFromCsv } from "../mappers/unitTypeFromCsv.ts";
 
 export class InsertUnitTypeCase {
     repository: IUnitTypeRepository;
@@ -18,12 +20,14 @@ export class InsertUnitTypeCase {
         try {
             console.log(`Inserting batch: ${this.filePath}...`);
 
-            const stream = await this.csvParser.parse(this.filePath, ",");
+            const stream = await this.csvParser.parse(this.filePath, ";");
             const list: UnitType[] = [];
 
-            for await (const row of stream as AsyncIterable<UnitType>) {
-                list.push(row);
+            for await (const row of stream as AsyncIterable<UnitTypeCsv>) {
+                const parser: UnitType = new UnitTypeFromCsv(row).map();
+                list.push(parser);
             }
+
             await this.repository.insertBatch(list);
             console.log("Batch inserted!");
         } catch (error) {

@@ -5,6 +5,7 @@ import type { ConfigType } from "../types/configType.ts";
 import type { IConnection } from "./Iconnection.ts";
 import type { Pool } from "mysql2/promise";
 import fs from "fs";
+import { InsertFileError } from "../errors/customErrors.ts";
 
 export class StablishmentRepository implements IStablishmentRepository {
     appConfig: ConfigType;
@@ -70,9 +71,10 @@ export class StablishmentRepository implements IStablishmentRepository {
         await this.connection.connect();
         //this.connection.connection?.query("TRUNCATE TABLE stablishment;");
 
-        await this.connection.connection?.query("SET FOREIGN_KEY_CHECKS = 0;");
-        await this.connection.connection?.query({
-            sql: `LOAD DATA LOCAL INFILE '${file}'
+        try {
+            await this.connection.connection?.query("SET FOREIGN_KEY_CHECKS = 0;");
+            await this.connection.connection?.query({
+                sql: `LOAD DATA LOCAL INFILE '${file}'
                     INTO TABLE stablishment
                     FIELDS TERMINATED BY ','
                     ENCLOSED BY '"'
@@ -80,8 +82,13 @@ export class StablishmentRepository implements IStablishmentRepository {
                     IGNORE 1 LINES
                     (${stablishmentHeaders.join(", ")});
                     `,
-            infileStreamFactory: () => fs.createReadStream(file), 
-        });
-        await this.connection.disconnect();
+                infileStreamFactory: () => fs.createReadStream(file),
+            });
+            await this.connection.connection?.query("SET FOREIGN_KEY_CHECKS = 1;");
+            await this.connection.disconnect();
+        } catch (error) {
+            await this.connection.disconnect();
+            throw new InsertFileError(`Error inserting file: ${file} ` + error);
+        }
     }
 }

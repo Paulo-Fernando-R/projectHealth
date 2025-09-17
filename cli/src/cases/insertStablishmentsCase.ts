@@ -1,5 +1,4 @@
 import type { IStablishmentRepository } from "../db/IstablishmentRepository.ts";
-import { InsertFileError } from "../errors/customErrors.ts";
 
 export class InsertStablishmentsCase {
     repository: IStablishmentRepository;
@@ -15,7 +14,7 @@ export class InsertStablishmentsCase {
             await this.repository.insertFile(this.filePath);
             console.log("File inserted!");
         } catch (error) {
-            throw new InsertFileError(`Error inserting file: ${this.filePath} ` + error);
+            throw error;
         }
     }
 }

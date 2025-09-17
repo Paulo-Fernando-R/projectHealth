@@ -77,7 +77,7 @@ export class App {
             console.log(
                 "-------------------------------Starting process...---------------------------------------"
             );
-           const attr = await new ScrapeCase(scraping).execute();
+            const attr = await new ScrapeCase(scraping).execute();
 
             console.log(`File to download: `, attr);
 
@@ -93,7 +93,8 @@ export class App {
                 this.stablishmentRepository,
                 this.unitTypeRepository,
                 appConfig,
-                this.csvParser
+                this.csvParser,
+                this.fileManager
             ).execute();
 
             console.log(

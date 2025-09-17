@@ -33,6 +33,8 @@ export class UnitTypeRepository implements IUnitTypeRepository {
             await pool.end();
             this.connection.disconnect();
         } catch (error) {
+            await pool.end();
+            this.connection.disconnect();
             throw error;
         }
     }
