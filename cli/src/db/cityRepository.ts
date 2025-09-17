@@ -1,32 +1,37 @@
-import type { UnitType } from "../models/unitType.ts";
+import type { City } from "../models/city.ts";
 import type { ConfigType } from "../types/configType.ts";
 import type { IConnection } from "./Iconnection.ts";
-import { unitTypeHeaders } from "../utils/csvHeaders.ts";
-import type { IUnitTypeRepository } from "./IunitTypeRepository.ts";
-import { InsertBatchError } from "../errors/customErrors.ts";
+import { cityHeaders } from "../utils/csvHeaders.ts";
+import type { ICityRepository } from "./IcityRepository.ts";
 
-export class UnitTypeRepository implements IUnitTypeRepository {
+export class CityRepository implements ICityRepository{
     appConfig: ConfigType;
     connection: IConnection;
-
     constructor(appConfig: ConfigType, connection: IConnection) {
         this.appConfig = appConfig;
         this.connection = connection;
-        this.connection.createPool();
     }
 
-    async insertBatch(rows: UnitType[], table = "unitType") {
+    async insertBatch(rows: City[]) {
         this.connection.connect();
+
         const pool = this.connection.createPool();
 
-        const numColumns = 2;
+        const numColumns = 3;
+
         const placeholders = rows
-            .map(() => `(${Array(numColumns).fill("?").join(", ")})`)
+            .map(() => {
+                return `(${Array(numColumns).fill("?").join(", ")})`;
+            })
             .join(", ");
 
-        const values = rows.flatMap((r) => [r.typeCode, r.typeDescription]);
-        const headers = unitTypeHeaders.slice(1).join(", ");
-        const sql = `INSERT INTO ${table} (${headers}) VALUES ${placeholders};`;
+        const values = rows.flatMap((r) => {
+            return [r.cityCode, r.cityName, r.state];
+        });
+
+        const headers = cityHeaders.slice(1).join(", ");
+
+        const sql = `INSERT INTO city (${headers}) VALUES ${placeholders};`;
 
         try {
             await pool.query(sql, values);

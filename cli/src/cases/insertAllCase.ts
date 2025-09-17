@@ -37,6 +37,7 @@ export class InsertAllCase {
         const stablishmentTypeFile =
             this.appConfig.unzipPath +
             this.fileManager.findFile(this.appConfig.unzipPath, tableNames.stablishmentType);
+            
         const stablishmentFile = this.appConfig.outputPath + outputFileNames.stablishment;
 
         //
