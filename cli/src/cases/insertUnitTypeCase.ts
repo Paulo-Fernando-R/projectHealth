@@ -9,11 +9,18 @@ export class InsertUnitTypeCase {
     repository: IUnitTypeRepository;
     csvParser: ICsvParser;
     filePath: string;
+    tableName: string | undefined;
 
-    constructor(repository: IUnitTypeRepository, filePath: string, csvParser: ICsvParser) {
+    constructor(
+        repository: IUnitTypeRepository,
+        filePath: string,
+        csvParser: ICsvParser,
+        tableName?: string
+    ) {
         this.repository = repository;
         this.filePath = filePath;
         this.csvParser = csvParser;
+        this.tableName = tableName;
     }
 
     async execute() {
@@ -28,7 +35,7 @@ export class InsertUnitTypeCase {
                 list.push(parser);
             }
 
-            await this.repository.insertBatch(list);
+            await this.repository.insertBatch(list, this.tableName);
             console.log("Batch inserted!");
         } catch (error) {
             throw new InsertBatchError(`Error inserting batch: ${this.filePath} ` + error);

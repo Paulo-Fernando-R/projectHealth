@@ -34,6 +34,9 @@ export class InsertAllCase {
             this.appConfig.unzipPath +
             this.fileManager.findFile(this.appConfig.unzipPath, tableNames.unitType);
 
+        const stablishmentTypeFile =
+            this.appConfig.unzipPath +
+            this.fileManager.findFile(this.appConfig.unzipPath, tableNames.stablishmentType);
         const stablishmentFile = this.appConfig.outputPath + outputFileNames.stablishment;
 
         //
@@ -42,7 +45,16 @@ export class InsertAllCase {
             unitTypeFile,
             this.csvParser
         ).execute();
-        
+
+        await new InsertUnitTypeCase(
+            this.unitTypeepository,
+            stablishmentTypeFile,
+            this.csvParser,
+            Object.keys(tableNames).find(
+                (key) => tableNames[key as keyof typeof tableNames] === tableNames.stablishmentType
+            )
+        ).execute();
+
         await new InsertStablishmentsCase(this.stablishmentRepository, stablishmentFile).execute();
     }
 }

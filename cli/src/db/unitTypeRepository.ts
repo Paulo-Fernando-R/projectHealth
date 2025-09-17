@@ -14,7 +14,7 @@ export class UnitTypeRepository implements IUnitTypeRepository {
         this.connection.createPool();
     }
 
-    async insertBatch(rows: UnitType[]) {
+    async insertBatch(rows: UnitType[], table = "unitType") {
         this.connection.connect();
         const pool = this.connection.createPool();
 
@@ -24,8 +24,8 @@ export class UnitTypeRepository implements IUnitTypeRepository {
             .join(", ");
 
         const values = rows.flatMap((r) => [r.typeCode, r.typeDescription]);
-        const headers = unitTypeHeaders.splice(1, 2).join(", ");
-        const sql = `INSERT INTO unitType (${headers}) VALUES ${placeholders};`;
+        const headers = unitTypeHeaders.slice(1).join(", ");
+        const sql = `INSERT INTO ${table} (${headers}) VALUES ${placeholders};`;
 
         try {
             await pool.query(sql, values);
