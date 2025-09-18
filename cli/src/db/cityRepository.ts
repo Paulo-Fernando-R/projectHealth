@@ -4,7 +4,7 @@ import type { IConnection } from "./Iconnection.ts";
 import { cityHeaders } from "../utils/csvHeaders.ts";
 import type { ICityRepository } from "./IcityRepository.ts";
 
-export class CityRepository implements ICityRepository{
+export class CityRepository implements ICityRepository {
     appConfig: ConfigType;
     connection: IConnection;
     constructor(appConfig: ConfigType, connection: IConnection) {

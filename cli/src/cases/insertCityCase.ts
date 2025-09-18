@@ -24,10 +24,11 @@ export class InsertCityCase {
             const list: City[] = [];
 
             for await (const row of stream as AsyncIterable<CityCsv>) {
+                
                 const parser: City = new CityFromCsv(row).map();
+                list.push(parser);
 
                 if (list.length >= 1000) {
-                    list.push(parser);
                     await this.repository.insertBatch(list);
                     list.length = 0;
                 }
@@ -36,6 +37,7 @@ export class InsertCityCase {
             if (list.length > 0) {
                 await this.repository.insertBatch(list);
             }
+
             console.log("Batch inserted!");
         } catch (error) {
             throw new InsertBatchError(`Error inserting batch: ${this.filePath} ` + error);

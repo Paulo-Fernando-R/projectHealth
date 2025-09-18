@@ -8,9 +8,12 @@ import { InsertStablishmentsCase } from "./insertStablishmentsCase.ts";
 import { InsertUnitTypeCase } from "./insertUnitTypeCase.ts";
 import { tableNames } from "../utils/tableNames.ts";
 import type { IFileManager } from "../parsers/IFileManager.ts";
+import { InsertCityCase } from "./insertCityCase.ts";
+import type { ICityRepository } from "../db/IcityRepository.ts";
 export class InsertAllCase {
     stablishmentRepository: IStablishmentRepository;
     unitTypeepository: IUnitTypeRepository;
+    cityRepository: ICityRepository;
     appConfig: ConfigType;
     csvParser: ICsvParser;
     fileManager: IFileManager;
@@ -18,12 +21,14 @@ export class InsertAllCase {
     constructor(
         stablishmentRepository: IStablishmentRepository,
         unitTypeepository: IUnitTypeRepository,
+        cityRepository: ICityRepository,
         appConfig: ConfigType,
         csvParser: ICsvParser,
         fileManager: IFileManager
     ) {
         this.stablishmentRepository = stablishmentRepository;
         this.unitTypeepository = unitTypeepository;
+        this.cityRepository = cityRepository;
         this.appConfig = appConfig;
         this.csvParser = csvParser;
         this.fileManager = fileManager;
@@ -34,10 +39,14 @@ export class InsertAllCase {
             this.appConfig.unzipPath +
             this.fileManager.findFile(this.appConfig.unzipPath, tableNames.unitType);
 
+        const cityFile =
+            this.appConfig.unzipPath +
+            this.fileManager.findFile(this.appConfig.unzipPath, tableNames.city);
+
         const stablishmentTypeFile =
             this.appConfig.unzipPath +
             this.fileManager.findFile(this.appConfig.unzipPath, tableNames.stablishmentType);
-            
+
         const stablishmentFile = this.appConfig.outputPath + outputFileNames.stablishment;
 
         //
@@ -46,6 +55,8 @@ export class InsertAllCase {
             unitTypeFile,
             this.csvParser
         ).execute();
+
+        await new InsertCityCase(this.cityRepository, cityFile, this.csvParser).execute();
 
         await new InsertUnitTypeCase(
             this.unitTypeepository,
