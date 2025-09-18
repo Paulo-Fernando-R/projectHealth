@@ -1,9 +1,9 @@
-import type { IStablishmentRepository } from "../db/IstablishmentRepository.ts";
+import type { IStablishmentServiceRepository } from "../db/IstablishmentServiceRepository.ts";
 
-export class InsertStablishmentsCase {
-    repository: IStablishmentRepository;
+export class InsertStablishmentServicesCase {
+    repository: IStablishmentServiceRepository;
     filePath: string;
-    constructor(repository: IStablishmentRepository, filePath: string) {
+    constructor(repository: IStablishmentServiceRepository, filePath: string) {
         this.repository = repository;
         this.filePath = filePath;
     }

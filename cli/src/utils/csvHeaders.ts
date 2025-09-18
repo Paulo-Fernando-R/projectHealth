@@ -35,3 +35,5 @@ export const cityHeaders = ["internalId", "cityCode", "cityName", "state"];
 export const legalNatureHeaders = ["internalId", "natureCode", "natureDescription"];
 
 export const serviceHeaders = ["internalId", "serviceCode", "serviceDescription"];
+
+export const stablishmentServiceHeaders = ["stablishmentSusId", "serviceCode"];

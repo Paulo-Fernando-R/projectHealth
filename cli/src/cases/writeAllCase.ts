@@ -3,9 +3,10 @@ import type { ConfigType } from "../types/configType.ts";
 import { CsvWriter } from "../parsers/csvWriter.ts";
 import { WriteStablishmentsFileCase } from "./writeStablishmentsFileCase.ts";
 import { outputFileNames } from "../utils/outputFileNames.ts";
-import { stablishmentHeaders } from "../utils/csvHeaders.ts";
+import { stablishmentHeaders, stablishmentServiceHeaders } from "../utils/csvHeaders.ts";
 import type { IFileManager } from "../parsers/IFileManager.ts";
 import { tableNames } from "../utils/tableNames.ts";
+import { WriteStablishmentServicesFileCase } from "./writeStablishmentServicesFileCase.ts";
 
 export class WriteAllCase {
     csvParser: ICsvParser;
@@ -29,10 +30,26 @@ export class WriteAllCase {
             tableNames.stablishment
         );
 
+        const stablishmentServiceWriter = new CsvWriter(
+            this.appConfig.outputPath + outputFileNames.stablishmentService,
+            stablishmentServiceHeaders
+        );
+
+        const stablishmentServiceFile = this.fileManager.findFile(
+            this.appConfig.unzipPath,
+            tableNames.stablishmentService
+        );
+
         await new WriteStablishmentsFileCase(
             this.csvParser,
             stablishmentWriter,
             this.appConfig.unzipPath + stablishmentFile
+        ).execute();
+
+        await new WriteStablishmentServicesFileCase(
+            this.csvParser,
+            stablishmentServiceWriter,
+            this.appConfig.unzipPath + stablishmentServiceFile
         ).execute();
     }
 }

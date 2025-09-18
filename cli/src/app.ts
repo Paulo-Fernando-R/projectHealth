@@ -38,6 +38,8 @@ import type { ILegalNatureRepository } from "./db/IlegalNatureRepository.ts";
 import { LegalNatureRepository } from "./db/legalNatureRepository.ts";
 import type { IServiceRepository } from "./db/IserviceRepository.ts";
 import { ServiceRepository } from "./db/serviceRepository.ts";
+import type { IStablishmentServiceRepository } from "./db/IstablishmentServiceRepository.ts";
+import { StablishmentServiceRepository } from "./db/stablishmentServiceRepository.ts";
 
 export class App {
     fileManager: IFileManager;
@@ -51,6 +53,7 @@ export class App {
     cityRepository: ICityRepository;
     legalNatureRepository: ILegalNatureRepository;
     serviceRepository: IServiceRepository;
+    stablishmentServiceRepository: IStablishmentServiceRepository;
     connection: IConnection;
     tableNames = tableNames;
     outputFileNames = outputFileNames;
@@ -73,6 +76,10 @@ export class App {
         this.cityRepository = new CityRepository(appConfig, this.connection);
         this.legalNatureRepository = new LegalNatureRepository(appConfig, this.connection);
         this.serviceRepository = new ServiceRepository(appConfig, this.connection);
+        this.stablishmentServiceRepository = new StablishmentServiceRepository(
+            appConfig,
+            this.connection
+        );
     }
 
     async run() {
@@ -89,16 +96,18 @@ export class App {
             console.log(
                 "\n\n\n-------------------------------Starting process...---------------------------------------\n"
             );
-            // const attr = await new ScrapeCase(scraping).execute();
 
-            // console.log(`File to download: `, attr);
+            const startTime = performance.now();
+            const attr = await new ScrapeCase(scraping).execute();
 
-            // await new DownloadCase(scraping).execute(attr.href, this.appconfig.zipPath);
+            console.log(`File to download: `, attr);
 
-            // new UnzipCase(this.zip).execute(
-            //     this.appconfig.zipPath + attr.text,
-            //     this.appconfig.unzipPath
-            // );
+            await new DownloadCase(scraping).execute(attr.href, this.appconfig.zipPath);
+
+            new UnzipCase(this.zip).execute(
+                this.appconfig.zipPath + attr.text,
+                this.appconfig.unzipPath
+            );
 
             await new WriteAllCase(this.csvParser, appConfig, this.fileManager).execute();
             await new InsertAllCase(
@@ -107,11 +116,17 @@ export class App {
                 this.cityRepository,
                 this.legalNatureRepository,
                 this.serviceRepository,
+                this.stablishmentServiceRepository,
                 appConfig,
                 this.csvParser,
                 this.fileManager
             ).execute();
 
+            const endTime = performance.now();
+
+            let duration = endTime - startTime;
+            duration = duration / 1000;
+            console.log(`Execution time: ${duration} seconds`);
             console.log(
                 "--------------------------Process completed successfully!----------------------------------"
             );
