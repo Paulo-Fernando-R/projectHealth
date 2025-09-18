@@ -36,7 +36,7 @@ export class InsertUnitTypeCase {
             }
 
             await this.repository.insertBatch(list, this.tableName);
-            console.log("Batch inserted!");
+            console.log("Batch inserted!\n");
         } catch (error) {
             throw new InsertBatchError(`Error inserting batch: ${this.filePath} ` + error);
         }

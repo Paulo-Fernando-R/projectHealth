@@ -83,7 +83,7 @@ export class App {
 
         try {
             console.log(
-                "-------------------------------Starting process...---------------------------------------"
+                "\n\n\n-------------------------------Starting process...---------------------------------------\n"
             );
             // const attr = await new ScrapeCase(scraping).execute();
 

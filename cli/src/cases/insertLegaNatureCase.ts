@@ -27,7 +27,7 @@ export class InsertLegalNatureCase {
             }
 
             await this.repository.insertBatch(list);
-            console.log("Batch inserted!");
+            console.log("Batch inserted!\n");
         } catch (error) {
             throw new InsertBatchError(`Error inserting batch: ${this.filePath} ` + error);
         }
