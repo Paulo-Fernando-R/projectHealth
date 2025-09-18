@@ -16,6 +16,9 @@ import type { IServiceRepository } from "../db/IserviceRepository.ts";
 import { InsertServiceCase } from "./insertServiceCase.ts";
 import type { IStablishmentServiceRepository } from "../db/IstablishmentServiceRepository.ts";
 import { InsertStablishmentServicesCase } from "./insertStablishmentServicesCase.ts";
+import type { IOpeningHoursRepository } from "../db/IopeningHoursRepository.ts";
+import { InsertOpeningHoursCase } from "./insertOpeningHoursCase.ts";
+
 export class InsertAllCase {
     stablishmentRepository: IStablishmentRepository;
     unitTypeepository: IUnitTypeRepository;
@@ -23,6 +26,7 @@ export class InsertAllCase {
     legalNatureRepository: ILegalNatureRepository;
     serviceRepository: IServiceRepository;
     stablishmentServiceRepository: IStablishmentServiceRepository;
+    openingHoursRepository: IOpeningHoursRepository;
     appConfig: ConfigType;
     csvParser: ICsvParser;
     fileManager: IFileManager;
@@ -34,6 +38,7 @@ export class InsertAllCase {
         legalNatureRepository: ILegalNatureRepository,
         serviceRepository: IServiceRepository,
         stablishmentServiceRepository: IStablishmentServiceRepository,
+        openingHoursRepository: IOpeningHoursRepository,
         appConfig: ConfigType,
         csvParser: ICsvParser,
         fileManager: IFileManager
@@ -44,6 +49,7 @@ export class InsertAllCase {
         this.legalNatureRepository = legalNatureRepository;
         this.serviceRepository = serviceRepository;
         this.stablishmentServiceRepository = stablishmentServiceRepository;
+        this.openingHoursRepository = openingHoursRepository;
         this.appConfig = appConfig;
         this.csvParser = csvParser;
         this.fileManager = fileManager;
@@ -74,6 +80,8 @@ export class InsertAllCase {
 
         const stablishmentServiceFile =
             this.appConfig.outputPath + outputFileNames.stablishmentService;
+
+        const openingHoursFile = this.appConfig.outputPath + outputFileNames.openingHours;
         //
         await new InsertUnitTypeCase(
             this.unitTypeepository,
@@ -106,5 +114,7 @@ export class InsertAllCase {
             this.stablishmentServiceRepository,
             stablishmentServiceFile
         ).execute();
+
+        await new InsertOpeningHoursCase(this.openingHoursRepository, openingHoursFile).execute();
     }
 }

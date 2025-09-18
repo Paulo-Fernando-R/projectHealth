@@ -40,6 +40,8 @@ import type { IServiceRepository } from "./db/IserviceRepository.ts";
 import { ServiceRepository } from "./db/serviceRepository.ts";
 import type { IStablishmentServiceRepository } from "./db/IstablishmentServiceRepository.ts";
 import { StablishmentServiceRepository } from "./db/stablishmentServiceRepository.ts";
+import type { IOpeningHoursRepository } from "./db/IopeningHoursRepository.ts";
+import { OpeningHoursRepository } from "./db/openingHoursRepository.ts";
 
 export class App {
     fileManager: IFileManager;
@@ -54,6 +56,7 @@ export class App {
     legalNatureRepository: ILegalNatureRepository;
     serviceRepository: IServiceRepository;
     stablishmentServiceRepository: IStablishmentServiceRepository;
+    openingHoursRepository: IOpeningHoursRepository;
     connection: IConnection;
     tableNames = tableNames;
     outputFileNames = outputFileNames;
@@ -80,6 +83,8 @@ export class App {
             appConfig,
             this.connection
         );
+
+        this.openingHoursRepository = new OpeningHoursRepository(appConfig, this.connection);
     }
 
     async run() {
@@ -97,17 +102,17 @@ export class App {
                 "\n\n\n-------------------------------Starting process...---------------------------------------\n"
             );
 
-            const startTime = performance.now();
-            const attr = await new ScrapeCase(scraping).execute();
+             const startTime = performance.now();
+            // const attr = await new ScrapeCase(scraping).execute();
 
-            console.log(`File to download: `, attr);
+            // console.log(`File to download: `, attr);
 
-            await new DownloadCase(scraping).execute(attr.href, this.appconfig.zipPath);
+            // await new DownloadCase(scraping).execute(attr.href, this.appconfig.zipPath);
 
-            new UnzipCase(this.zip).execute(
-                this.appconfig.zipPath + attr.text,
-                this.appconfig.unzipPath
-            );
+            // new UnzipCase(this.zip).execute(
+            //     this.appconfig.zipPath + attr.text,
+            //     this.appconfig.unzipPath
+            // );
 
             await new WriteAllCase(this.csvParser, appConfig, this.fileManager).execute();
             await new InsertAllCase(
@@ -117,6 +122,7 @@ export class App {
                 this.legalNatureRepository,
                 this.serviceRepository,
                 this.stablishmentServiceRepository,
+                this.openingHoursRepository,
                 appConfig,
                 this.csvParser,
                 this.fileManager

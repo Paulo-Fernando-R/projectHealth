@@ -3,10 +3,15 @@ import type { ConfigType } from "../types/configType.ts";
 import { CsvWriter } from "../parsers/csvWriter.ts";
 import { WriteStablishmentsFileCase } from "./writeStablishmentsFileCase.ts";
 import { outputFileNames } from "../utils/outputFileNames.ts";
-import { stablishmentHeaders, stablishmentServiceHeaders } from "../utils/csvHeaders.ts";
+import {
+    openingHoursHeaders,
+    stablishmentHeaders,
+    stablishmentServiceHeaders,
+} from "../utils/csvHeaders.ts";
 import type { IFileManager } from "../parsers/IFileManager.ts";
 import { tableNames } from "../utils/tableNames.ts";
 import { WriteStablishmentServicesFileCase } from "./writeStablishmentServicesFileCase.ts";
+import { WriteOpeningHoursFileCase } from "./writeOpeningHoursFileCase.ts";
 
 export class WriteAllCase {
     csvParser: ICsvParser;
@@ -40,6 +45,16 @@ export class WriteAllCase {
             tableNames.stablishmentService
         );
 
+        const openingHoursWriter = new CsvWriter(
+            this.appConfig.outputPath + outputFileNames.openingHours,
+            openingHoursHeaders
+        );
+
+        const openingHoursFile = this.fileManager.findFile(
+            this.appConfig.unzipPath,
+            tableNames.openingHours
+        );
+
         await new WriteStablishmentsFileCase(
             this.csvParser,
             stablishmentWriter,
@@ -50,6 +65,12 @@ export class WriteAllCase {
             this.csvParser,
             stablishmentServiceWriter,
             this.appConfig.unzipPath + stablishmentServiceFile
+        ).execute();
+
+        await new WriteOpeningHoursFileCase(
+            this.csvParser,
+            openingHoursWriter,
+            this.appConfig.unzipPath + openingHoursFile
         ).execute();
     }
 }

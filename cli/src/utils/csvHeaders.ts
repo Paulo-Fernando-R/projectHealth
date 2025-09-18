@@ -37,3 +37,5 @@ export const legalNatureHeaders = ["internalId", "natureCode", "natureDescriptio
 export const serviceHeaders = ["internalId", "serviceCode", "serviceDescription"];
 
 export const stablishmentServiceHeaders = ["stablishmentSusId", "serviceCode"];
+
+export const openingHoursHeaders = ["internalId", "dayCode", "startHour", "endHour", "lastUpdate", "stablishmentSusId"];
