@@ -36,6 +36,8 @@ import type { ICityRepository } from "./db/IcityRepository.ts";
 import { CityRepository } from "./db/cityRepository.ts";
 import type { ILegalNatureRepository } from "./db/IlegalNatureRepository.ts";
 import { LegalNatureRepository } from "./db/legalNatureRepository.ts";
+import type { IServiceRepository } from "./db/IserviceRepository.ts";
+import { ServiceRepository } from "./db/serviceRepository.ts";
 
 export class App {
     fileManager: IFileManager;
@@ -48,6 +50,7 @@ export class App {
     unitTypeRepository: IUnitTypeRepository;
     cityRepository: ICityRepository;
     legalNatureRepository: ILegalNatureRepository;
+    serviceRepository: IServiceRepository;
     connection: IConnection;
     tableNames = tableNames;
     outputFileNames = outputFileNames;
@@ -69,6 +72,7 @@ export class App {
         this.unitTypeRepository = new UnitTypeRepository(appConfig, this.connection);
         this.cityRepository = new CityRepository(appConfig, this.connection);
         this.legalNatureRepository = new LegalNatureRepository(appConfig, this.connection);
+        this.serviceRepository = new ServiceRepository(appConfig, this.connection);
     }
 
     async run() {
@@ -102,6 +106,7 @@ export class App {
                 this.unitTypeRepository,
                 this.cityRepository,
                 this.legalNatureRepository,
+                this.serviceRepository,
                 appConfig,
                 this.csvParser,
                 this.fileManager

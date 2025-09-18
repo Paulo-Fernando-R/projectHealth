@@ -12,11 +12,14 @@ import { InsertCityCase } from "./insertCityCase.ts";
 import type { ICityRepository } from "../db/IcityRepository.ts";
 import { InsertLegalNatureCase } from "./insertLegaNatureCase.ts";
 import type { ILegalNatureRepository } from "../db/IlegalNatureRepository.ts";
+import type { IServiceRepository } from "../db/IserviceRepository.ts";
+import { InsertServiceCase } from "./insertServiceCase.ts";
 export class InsertAllCase {
     stablishmentRepository: IStablishmentRepository;
     unitTypeepository: IUnitTypeRepository;
     cityRepository: ICityRepository;
     legalNatureRepository: ILegalNatureRepository;
+    serviceRepository: IServiceRepository;
     appConfig: ConfigType;
     csvParser: ICsvParser;
     fileManager: IFileManager;
@@ -26,6 +29,7 @@ export class InsertAllCase {
         unitTypeepository: IUnitTypeRepository,
         cityRepository: ICityRepository,
         legalNatureRepository: ILegalNatureRepository,
+        serviceRepository: IServiceRepository,
         appConfig: ConfigType,
         csvParser: ICsvParser,
         fileManager: IFileManager
@@ -34,6 +38,7 @@ export class InsertAllCase {
         this.unitTypeepository = unitTypeepository;
         this.cityRepository = cityRepository;
         this.legalNatureRepository = legalNatureRepository;
+        this.serviceRepository = serviceRepository;
         this.appConfig = appConfig;
         this.csvParser = csvParser;
         this.fileManager = fileManager;
@@ -55,6 +60,10 @@ export class InsertAllCase {
         const legalNatureFile =
             this.appConfig.unzipPath +
             this.fileManager.findFile(this.appConfig.unzipPath, tableNames.legalNature);
+
+        const serviceFile =
+            this.appConfig.unzipPath +
+            this.fileManager.findFile(this.appConfig.unzipPath, tableNames.service);
 
         const stablishmentFile = this.appConfig.outputPath + outputFileNames.stablishment;
 
@@ -81,6 +90,8 @@ export class InsertAllCase {
             legalNatureFile,
             this.csvParser
         ).execute();
+
+        await new InsertServiceCase(this.serviceRepository, serviceFile, this.csvParser).execute();
 
         await new InsertStablishmentsCase(this.stablishmentRepository, stablishmentFile).execute();
     }
