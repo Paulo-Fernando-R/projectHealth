@@ -26,6 +26,7 @@
     "csv-parser": "^3.2.0",
     "csv-writer": "^1.6.0",
     "mysql2": "^3.14.5",
+    "node-cron": "^4.2.1",
     "nodejs-file-downloader": "^4.13.0",
     "puppeteer": "^24.19.0"
   }

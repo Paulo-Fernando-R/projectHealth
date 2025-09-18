@@ -143,6 +143,9 @@ export class App {
             console.log(`Execution time: ${duration} seconds`);
 
         } catch (error) {
+             console.log(
+                "--------------------------Process completed with errors!----------------------------------"
+            );
             if (error instanceof NotFoundError) {
                 console.error("Custom NotFoundError caught:", error.message);
             } else if (error instanceof DescompressionError) {
