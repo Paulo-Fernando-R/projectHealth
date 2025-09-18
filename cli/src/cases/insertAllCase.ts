@@ -10,10 +10,13 @@ import { tableNames } from "../utils/tableNames.ts";
 import type { IFileManager } from "../parsers/IFileManager.ts";
 import { InsertCityCase } from "./insertCityCase.ts";
 import type { ICityRepository } from "../db/IcityRepository.ts";
+import { InsertLegalNatureCase } from "./insertLegaNatureCase.ts";
+import type { ILegalNatureRepository } from "../db/IlegalNatureRepository.ts";
 export class InsertAllCase {
     stablishmentRepository: IStablishmentRepository;
     unitTypeepository: IUnitTypeRepository;
     cityRepository: ICityRepository;
+    legalNatureRepository: ILegalNatureRepository;
     appConfig: ConfigType;
     csvParser: ICsvParser;
     fileManager: IFileManager;
@@ -22,6 +25,7 @@ export class InsertAllCase {
         stablishmentRepository: IStablishmentRepository,
         unitTypeepository: IUnitTypeRepository,
         cityRepository: ICityRepository,
+        legalNatureRepository: ILegalNatureRepository,
         appConfig: ConfigType,
         csvParser: ICsvParser,
         fileManager: IFileManager
@@ -29,6 +33,7 @@ export class InsertAllCase {
         this.stablishmentRepository = stablishmentRepository;
         this.unitTypeepository = unitTypeepository;
         this.cityRepository = cityRepository;
+        this.legalNatureRepository = legalNatureRepository;
         this.appConfig = appConfig;
         this.csvParser = csvParser;
         this.fileManager = fileManager;
@@ -39,13 +44,17 @@ export class InsertAllCase {
             this.appConfig.unzipPath +
             this.fileManager.findFile(this.appConfig.unzipPath, tableNames.unitType);
 
+        const stablishmentTypeFile =
+            this.appConfig.unzipPath +
+            this.fileManager.findFile(this.appConfig.unzipPath, tableNames.stablishmentType);
+
         const cityFile =
             this.appConfig.unzipPath +
             this.fileManager.findFile(this.appConfig.unzipPath, tableNames.city);
 
-        const stablishmentTypeFile =
+        const legalNatureFile =
             this.appConfig.unzipPath +
-            this.fileManager.findFile(this.appConfig.unzipPath, tableNames.stablishmentType);
+            this.fileManager.findFile(this.appConfig.unzipPath, tableNames.legalNature);
 
         const stablishmentFile = this.appConfig.outputPath + outputFileNames.stablishment;
 
@@ -56,8 +65,6 @@ export class InsertAllCase {
             this.csvParser
         ).execute();
 
-        await new InsertCityCase(this.cityRepository, cityFile, this.csvParser).execute();
-
         await new InsertUnitTypeCase(
             this.unitTypeepository,
             stablishmentTypeFile,
@@ -65,6 +72,14 @@ export class InsertAllCase {
             Object.keys(tableNames).find(
                 (key) => tableNames[key as keyof typeof tableNames] === tableNames.stablishmentType
             )
+        ).execute();
+
+        await new InsertCityCase(this.cityRepository, cityFile, this.csvParser).execute();
+
+        await new InsertLegalNatureCase(
+            this.legalNatureRepository,
+            legalNatureFile,
+            this.csvParser
         ).execute();
 
         await new InsertStablishmentsCase(this.stablishmentRepository, stablishmentFile).execute();

@@ -34,6 +34,8 @@ import { InsertAllCase } from "./cases/insertAllCase.ts";
 import type { IUnitTypeRepository } from "./db/IunitTypeRepository.ts";
 import type { ICityRepository } from "./db/IcityRepository.ts";
 import { CityRepository } from "./db/cityRepository.ts";
+import type { ILegalNatureRepository } from "./db/IlegalNatureRepository.ts";
+import { LegalNatureRepository } from "./db/legalNatureRepository.ts";
 
 export class App {
     fileManager: IFileManager;
@@ -45,6 +47,7 @@ export class App {
     stablishmentRepository: IStablishmentRepository;
     unitTypeRepository: IUnitTypeRepository;
     cityRepository: ICityRepository;
+    legalNatureRepository: ILegalNatureRepository;
     connection: IConnection;
     tableNames = tableNames;
     outputFileNames = outputFileNames;
@@ -65,6 +68,7 @@ export class App {
         this.stablishmentRepository = new StablishmentRepository(appConfig, this.connection);
         this.unitTypeRepository = new UnitTypeRepository(appConfig, this.connection);
         this.cityRepository = new CityRepository(appConfig, this.connection);
+        this.legalNatureRepository = new LegalNatureRepository(appConfig, this.connection);
     }
 
     async run() {
@@ -97,6 +101,7 @@ export class App {
                 this.stablishmentRepository,
                 this.unitTypeRepository,
                 this.cityRepository,
+                this.legalNatureRepository,
                 appConfig,
                 this.csvParser,
                 this.fileManager

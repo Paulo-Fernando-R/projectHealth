@@ -31,3 +31,5 @@ export const stablishmentHeaders = [
 export const unitTypeHeaders = ["internalId", "typeCode", "typeDescription"];
 
 export const cityHeaders = ["internalId", "cityCode", "cityName", "state"];
+
+export const legalNatureHeaders = ["internalId", "natureCode", "natureDescription"];
