@@ -11,6 +11,13 @@ import {
     FileAlreadyNewerError,
     DescompressionError,
     NotFoundError,
+    FileDeleteError,
+    FileDateError,
+    DatabaseConnectionError,
+    WriteFileError,
+    InsertFileError,
+    ParsingError,
+    InsertBatchError,
 } from "./errors/customErrors.ts";
 import type { ConfigType } from "./types/configType.ts";
 import { WriteStablishmentsFileCase } from "./cases/writeStablishmentsFileCase.ts";
@@ -102,19 +109,20 @@ export class App {
                 "\n\n\n-------------------------------Starting process...---------------------------------------\n"
             );
 
-             const startTime = performance.now();
-            // const attr = await new ScrapeCase(scraping).execute();
+            const startTime = performance.now();
+            const attr = await new ScrapeCase(scraping).execute();
 
-            // console.log(`File to download: `, attr);
+            console.log(`File to download: `, attr);
 
-            // await new DownloadCase(scraping).execute(attr.href, this.appconfig.zipPath);
+            await new DownloadCase(scraping).execute(attr.href, this.appconfig.zipPath);
 
-            // new UnzipCase(this.zip).execute(
-            //     this.appconfig.zipPath + attr.text,
-            //     this.appconfig.unzipPath
-            // );
+            new UnzipCase(this.zip).execute(
+                this.appconfig.zipPath + attr.text,
+                this.appconfig.unzipPath
+            );
 
             await new WriteAllCase(this.csvParser, appConfig, this.fileManager).execute();
+
             await new InsertAllCase(
                 this.stablishmentRepository,
                 this.unitTypeRepository,
@@ -132,10 +140,12 @@ export class App {
 
             let duration = endTime - startTime;
             duration = duration / 1000;
-            console.log(`Execution time: ${duration} seconds`);
+
             console.log(
                 "--------------------------Process completed successfully!----------------------------------"
             );
+            console.log(`Execution time: ${duration} seconds`);
+            
         } catch (error) {
             if (error instanceof NotFoundError) {
                 console.error("Custom NotFoundError caught:", error.message);
@@ -143,10 +153,23 @@ export class App {
                 console.error("Custom DescompressionError caught:", error.message);
             } else if (error instanceof FileAlreadyNewerError) {
                 console.warn("Custom FileAlreadyNewerError caught:", error.message);
+            } else if (error instanceof FileDeleteError) {
+                console.error("Custom FileDeleteError caught:", error.message);
+            } else if (error instanceof FileDateError) {
+                console.error("Custom FileDateError caught:", error.message);
+            } else if (error instanceof DatabaseConnectionError) {
+                console.error("Custom DatabaseConnectionError caught:", error.message);
+            } else if (error instanceof WriteFileError) {
+                console.error("Custom WriteFileError caught:", error.message);
+            } else if (error instanceof InsertFileError) {
+                console.error("Custom InsertFileError caught:", error.message);
+            } else if (error instanceof ParsingError) {
+                console.error("Custom ParsingError caught:", error.message);
+            } else if (error instanceof InsertBatchError) {
+                console.error("Custom InsertBatchError caught:", error.message);
             } else {
                 console.error("Unexpected error:", error);
             }
-            //!TODO Handle all custom errors
         }
     }
 }
