@@ -20,21 +20,17 @@ import {
     InsertBatchError,
 } from "./errors/customErrors.ts";
 import type { ConfigType } from "./types/configType.ts";
-import { WriteStablishmentsFileCase } from "./cases/writeStablishmentsFileCase.ts";
 import { CsvWriter } from "./parsers/csvWriter.ts";
 import { CsvParser } from "./parsers/csvParser.ts";
 import type { ICsvWriter } from "./parsers/IcsvWriter.ts";
 import type { ICsvParser } from "./parsers/IcsvParser.ts";
-import { stablishmentHeaders, unitTypeHeaders } from "./utils/csvHeaders.ts";
+import { stablishmentHeaders } from "./utils/csvHeaders.ts";
 import { StablishmentRepository } from "./db/stablishmentRepository.ts";
 import { Connection } from "./db/connection.ts";
-import { InsertStablishmentsCase } from "./cases/insertStablishmentsCase.ts";
 import type { IStablishmentRepository } from "./db/IstablishmentRepository.ts";
 import type { IConnection } from "./db/Iconnection.ts";
 import { tableNames } from "./utils/tableNames.ts";
 import { outputFileNames } from "./utils/outputFileNames.ts";
-import { WriteUnitTypeCase } from "./cases/writeUnitTypeCase.ts";
-import { InsertUnitTypeCase } from "./cases/insertUnitTypeCase.ts";
 import { UnitTypeRepository } from "./db/unitTypeRepository.ts";
 import { WriteAllCase } from "./cases/writeAllCase.ts";
 import { InsertAllCase } from "./cases/insertAllCase.ts";
@@ -145,7 +141,7 @@ export class App {
                 "--------------------------Process completed successfully!----------------------------------"
             );
             console.log(`Execution time: ${duration} seconds`);
-            
+
         } catch (error) {
             if (error instanceof NotFoundError) {
                 console.error("Custom NotFoundError caught:", error.message);
