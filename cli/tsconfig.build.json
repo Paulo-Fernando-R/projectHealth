@@ -1,0 +1,10 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "verbatimModuleSyntax": false,
+        "emitDeclarationOnly": false,
+        "noEmit": false,
+        "allowImportingTsExtensions": false
+    },
+    "include": ["src"]
+}
