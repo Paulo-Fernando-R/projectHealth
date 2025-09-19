@@ -3,6 +3,6 @@ export interface OpeningHours {
     dayCode: number;
     startHour: string;
     endHour: string;
-    lastUpdate: Date;
+    lastUpdate: string;
     stablishmentSusId: string;
 }

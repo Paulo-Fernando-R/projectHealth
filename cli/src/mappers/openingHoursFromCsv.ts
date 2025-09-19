@@ -1,5 +1,6 @@
 import type { OpeningHours } from "../models/openingHours.ts";
 import type { OpeningHoursCsv } from "../models/openingHoursCsv.ts";
+import { dateFormat } from "../utils/dateFormat.ts";
 
 export class OpeningHoursFromCsv {
     csv: OpeningHoursCsv;
@@ -13,7 +14,7 @@ export class OpeningHoursFromCsv {
             dayCode: this.csv.CO_DIA_SEMANA,
             startHour: this.csv.HR_INICIO_ATENDIMENTO,
             endHour: this.csv.HR_FIM_ATENDIMENTO,
-            lastUpdate: this.normalizeDate(this.csv["TO_CHAR(DT_ATUALIZACAO, 'DD/MM/YYYY')"]),
+            lastUpdate: dateFormat.normalizeDate(this.csv["TO_CHAR(DT_ATUALIZACAO, 'DD/MM/YYYY')"]),
             stablishmentSusId: this.csv.CO_UNIDADE,
         };
 
