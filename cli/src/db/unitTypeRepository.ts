@@ -16,7 +16,7 @@ export class UnitTypeRepository implements IUnitTypeRepository {
     }
 
     async insertBatch(rows: UnitType[], table = "unitType") {
-        this.connection.connect();
+        await this.connection.connect();
         const pool = this.connection.createPool();
 
         const numColumns = 2;
@@ -32,11 +32,13 @@ export class UnitTypeRepository implements IUnitTypeRepository {
             await pool.query(sql, values);
 
             await pool.end();
-            this.connection.disconnect();
         } catch (error) {
             await pool.end();
-            this.connection.disconnect();
+
             throw error;
+        } finally {
+            await pool.end();
+            await this.connection.disconnect();
         }
     }
 }

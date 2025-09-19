@@ -27,10 +27,10 @@ export class StablishmentServiceRepository {
                 (${stablishmentServiceHeaders.join(", ")});`,
                 infileStreamFactory: () => fs.createReadStream(file),
             });
-            await this.connection.disconnect();
         } catch (error) {
-            await this.connection.disconnect();
             throw new InsertFileError(`Error inserting file: ${file} ` + error);
+        } finally {
+            await this.connection.disconnect();
         }
     }
 }

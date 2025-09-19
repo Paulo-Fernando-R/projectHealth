@@ -69,22 +69,19 @@ export class StablishmentRepository implements IStablishmentRepository {
     }
 
     async verifyTableEmpty() {
-        await this.connection.connect();
-
         try {
             await this.connection.connect();
             const sql = "SELECT COUNT(internalId) AS total FROM stablishment;";
             const [rows] = await this.connection.connection!.execute<CountRowType[]>(sql);
-
-            await this.connection.disconnect();
 
             const total = rows[0]?.total;
 
             if (total && total > 0) return false;
             return true;
         } catch (error) {
-            await this.connection.disconnect();
             throw new QueryError(`Error verifying table: ${error}`);
+        } finally {
+            await this.connection.disconnect();
         }
     }
 
@@ -191,10 +188,10 @@ export class StablishmentRepository implements IStablishmentRepository {
                 infileStreamFactory: () => fs.createReadStream(file),
             });
             await this.connection.connection?.query("SET FOREIGN_KEY_CHECKS = 1;");
-            await this.connection.disconnect();
         } catch (error) {
-            await this.connection.disconnect();
             throw new InsertFileError(`Error inserting file: ${file} ` + error);
+        } finally {
+            await this.connection.disconnect();
         }
     }
 }

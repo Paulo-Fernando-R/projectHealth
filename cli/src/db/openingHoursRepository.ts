@@ -28,10 +28,10 @@ export class OpeningHoursRepository implements IOpeningHoursRepository {
                 (${openingHoursHeaders.join(", ")});`,
                 infileStreamFactory: () => fs.createReadStream(file),
             });
-            await this.connection.disconnect();
         } catch (error) {
-            await this.connection.disconnect();
             throw new Error(`Error inserting file: ${file} ` + error);
+        } finally {
+            await this.connection.disconnect();
         }
     }
 }

@@ -35,13 +35,11 @@ export class CityRepository implements ICityRepository {
 
         try {
             await pool.query(sql, values);
-
-            await pool.end();
-            this.connection.disconnect();
         } catch (error) {
-            await pool.end();
-            this.connection.disconnect();
             throw error;
+        } finally {
+            await pool.end();
+            await this.connection.disconnect();
         }
     }
 }
