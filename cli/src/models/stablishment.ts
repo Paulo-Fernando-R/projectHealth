@@ -19,7 +19,7 @@ export interface Stablishment {
     email: string | null;
     cpf: string | null;
     cnpj: string | null;
-    lastUpdate: Date;
+    lastUpdate: string;
     deactivationCode: string | null;
     url: string | null;
     latitude: string | null;

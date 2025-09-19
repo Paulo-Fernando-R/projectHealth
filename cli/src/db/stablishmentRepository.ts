@@ -106,7 +106,10 @@ export class StablishmentRepository implements IStablishmentRepository {
                 state, phone, email, cpf, cnpj, lastUpdate, deactivationCode, url, 
                 latitude, longitude, alwaysOpen, contractWithSus, 
                 unitTypeCode, stablishmentTypeCode, cityCode, legalNatureCode
-            FROM stablishment_stage
+            FROM ${newTable} AS t
+            LEFT JOIN stablishment AS d
+            ON d.susId = t.susId AND d.cnes = t.cnes
+            WHERE d.lastUpdate IS NULL OR t.lastUpdate > d.lastUpdate
             ON DUPLICATE KEY UPDATE
                 personType           = VALUES(personType),
                 socialReason         = VALUES(socialReason),
@@ -135,11 +138,14 @@ export class StablishmentRepository implements IStablishmentRepository {
             `;
         try {
             await this.connection.connection?.query("SET SQL_SAFE_UPDATES = 0;");
+            await this.connection.connection?.query("SET FOREIGN_KEY_CHECKS = 0;");
             await this.connection.connection?.query(`drop table if exists ${newTable};`);
 
             await this.connection.connection?.query(createTable);
             await this.insertFile(file, newTable);
         } catch (error) {
+            await this.connection.connection?.query("SET SQL_SAFE_UPDATES = 1;");
+            await this.connection.connection?.query("SET FOREIGN_KEY_CHECKS = 1;");
             await this.connection.disconnect();
             throw new InsertFileError(`Error inserting file: ${file} ` + error);
         }
@@ -149,8 +155,12 @@ export class StablishmentRepository implements IStablishmentRepository {
 
             await this.connection.connection?.query(`DROP TABLE ${newTable};`);
             await this.connection.connection?.query("SET SQL_SAFE_UPDATES = 1;");
+            await this.connection.connection?.query("SET FOREIGN_KEY_CHECKS = 1;");
+
             await this.connection.disconnect();
         } catch (error) {
+            await this.connection.connection?.query("SET SQL_SAFE_UPDATES = 1;");
+            await this.connection.connection?.query("SET FOREIGN_KEY_CHECKS = 1;");
             await this.connection.disconnect();
             throw new MergeError(`Error merging file: ${file} ` + error);
         }

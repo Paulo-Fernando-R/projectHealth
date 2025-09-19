@@ -1,5 +1,6 @@
 import type { StablishmentCSV } from "../models/stablishmentCsv.ts";
 import type { Stablishment } from "../models/stablishment.ts";
+import { dateFormat } from "../utils/dateFormat.ts";
 
 export class StablismentFromCsv {
     csv: StablishmentCSV;
@@ -25,7 +26,7 @@ export class StablismentFromCsv {
             email: this.csv.NO_EMAIL,
             cnpj: this.csv.NU_CNPJ,
             cpf: this.csv.NU_CPF,
-            lastUpdate: this.normalizeDate(this.csv["TO_CHAR(DT_ATUALIZACAO,'DD/MM/YYYY')"]),
+            lastUpdate: dateFormat.normalizeDate(this.csv["TO_CHAR(DT_ATUALIZACAO,'DD/MM/YYYY')"]),
             deactivationCode: this.csv.CO_MOTIVO_DESAB,
             url: this.csv.NO_URL,
             latitude: this.csv.NU_LATITUDE,
@@ -42,13 +43,17 @@ export class StablismentFromCsv {
     }
 
     normalizeDate(date: string) {
+       
         if (!date) {
-            return new Date(Date.now());
+            const now = new Date(Date.now());
+            return now.getFullYear() + "-" + now.getMonth() + "-" + now.getDate();
         }
         const [day, month, year] = date.split("/").map(Number);
         if (!day || !month || !year) {
-            return new Date(Date.now());
+            const now = new Date(Date.now());
+            return now.getFullYear() + "-" + now.getMonth() + "-" + now.getDate();
         }
-        return new Date(year, month - 1, day);
+
+        return `${year}-${month}-${day};`;
     }
 }
