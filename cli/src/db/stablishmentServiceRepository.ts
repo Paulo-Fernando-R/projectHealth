@@ -17,6 +17,8 @@ export class StablishmentServiceRepository {
         await this.connection.connect();
 
         try {
+            await this.switchConstraints(false);
+            await this.connection.connection?.query("TRUNCATE TABLE stablishmentService;");
             await this.connection.connection?.query({
                 sql: `LOAD DATA LOCAL INFILE '${file}'
                 INTO TABLE stablishmentService
@@ -30,7 +32,18 @@ export class StablishmentServiceRepository {
         } catch (error) {
             throw new InsertFileError(`Error inserting file: ${file} ` + error);
         } finally {
+            await this.switchConstraints(true);
             await this.connection.disconnect();
+        }
+    }
+
+    private async switchConstraints(control: boolean) {
+        if (control) {
+            await this.connection.connection?.query("SET SQL_SAFE_UPDATES = 1;");
+            await this.connection.connection?.query("SET FOREIGN_KEY_CHECKS = 1;");
+        } else {
+            await this.connection.connection?.query("SET SQL_SAFE_UPDATES = 0;");
+            await this.connection.connection?.query("SET FOREIGN_KEY_CHECKS = 0;");
         }
     }
 }

@@ -42,6 +42,7 @@ export class CsvWriter implements ICsvWriter {
                 return;
             }
         }
+        console.log("Directory does not exist, creating...");
         fs.mkdirSync(dir);
     }
 }

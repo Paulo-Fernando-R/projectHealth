@@ -31,17 +31,8 @@ CREATE TABLE `city` (
   `state` varchar(2) DEFAULT NULL,
   PRIMARY KEY (`internalId`,`cityCode`),
   KEY `cityCode` (`cityCode`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=33643 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `city`
---
-
-LOCK TABLES `city` WRITE;
-/*!40000 ALTER TABLE `city` DISABLE KEYS */;
-/*!40000 ALTER TABLE `city` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `legalnature`
@@ -53,20 +44,11 @@ DROP TABLE IF EXISTS `legalnature`;
 CREATE TABLE `legalnature` (
   `internalId` int NOT NULL AUTO_INCREMENT,
   `natureCode` varchar(4) NOT NULL,
-  `natureDescription` varchar(45) NOT NULL,
+  `natureDescription` varchar(100) NOT NULL,
   PRIMARY KEY (`internalId`,`natureCode`),
   KEY `natureCode` (`natureCode`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=601 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `legalnature`
---
-
-LOCK TABLES `legalnature` WRITE;
-/*!40000 ALTER TABLE `legalnature` DISABLE KEYS */;
-/*!40000 ALTER TABLE `legalnature` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `openinghours`
@@ -85,17 +67,8 @@ CREATE TABLE `openinghours` (
   PRIMARY KEY (`internalId`),
   KEY `fk_openingHours_stablishment1_idx` (`stablishmentSusId`),
   CONSTRAINT `fk_openingHours_stablishment1` FOREIGN KEY (`stablishmentSusId`) REFERENCES `stablishment` (`susId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=8454016 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `openinghours`
---
-
-LOCK TABLES `openinghours` WRITE;
-/*!40000 ALTER TABLE `openinghours` DISABLE KEYS */;
-/*!40000 ALTER TABLE `openinghours` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `service`
@@ -110,17 +83,8 @@ CREATE TABLE `service` (
   `serviceDescription` varchar(60) NOT NULL,
   PRIMARY KEY (`internalId`,`serviceCode`),
   KEY `serviceCode` (`serviceCode`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=433 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `service`
---
-
-LOCK TABLES `service` WRITE;
-/*!40000 ALTER TABLE `service` DISABLE KEYS */;
-/*!40000 ALTER TABLE `service` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `stablishment`
@@ -157,7 +121,8 @@ CREATE TABLE `stablishment` (
   `stablishmentTypeCode` smallint NOT NULL,
   `cityCode` varchar(6) NOT NULL,
   `legalNatureCode` varchar(4) NOT NULL,
-  PRIMARY KEY (`internalId`,`susId`,`cnes`),
+  PRIMARY KEY (`susId`,`cnes`),
+  UNIQUE KEY `internalId_UNIQUE` (`internalId`),
   KEY `fk_stablishment_unitType1_idx` (`unitTypeCode`),
   KEY `fk_stablishment_stablishmentType1_idx` (`stablishmentTypeCode`),
   KEY `fk_stablishment_city1_idx` (`cityCode`),
@@ -167,17 +132,8 @@ CREATE TABLE `stablishment` (
   CONSTRAINT `fk_stablishment_legalNature1` FOREIGN KEY (`legalNatureCode`) REFERENCES `legalnature` (`natureCode`),
   CONSTRAINT `fk_stablishment_stablishmentType1` FOREIGN KEY (`stablishmentTypeCode`) REFERENCES `stablishmenttype` (`typeCode`),
   CONSTRAINT `fk_stablishment_unitType1` FOREIGN KEY (`unitTypeCode`) REFERENCES `unittype` (`typeCode`)
-) ENGINE=InnoDB AUTO_INCREMENT=6111017 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=589816 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `stablishment`
---
-
-LOCK TABLES `stablishment` WRITE;
-/*!40000 ALTER TABLE `stablishment` DISABLE KEYS */;
-/*!40000 ALTER TABLE `stablishment` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `stablishmentservice`
@@ -198,15 +154,6 @@ CREATE TABLE `stablishmentservice` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `stablishmentservice`
---
-
-LOCK TABLES `stablishmentservice` WRITE;
-/*!40000 ALTER TABLE `stablishmentservice` DISABLE KEYS */;
-/*!40000 ALTER TABLE `stablishmentservice` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `stablishmenttype`
 --
 
@@ -219,17 +166,53 @@ CREATE TABLE `stablishmenttype` (
   `typeDescription` varchar(100) NOT NULL,
   PRIMARY KEY (`internalId`,`typeCode`),
   KEY `typeCode` (`typeCode`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=157 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `stablishmenttype`
+-- Table structure for table `tempstablishment`
 --
 
-LOCK TABLES `stablishmenttype` WRITE;
-/*!40000 ALTER TABLE `stablishmenttype` DISABLE KEYS */;
-/*!40000 ALTER TABLE `stablishmenttype` ENABLE KEYS */;
-UNLOCK TABLES;
+DROP TABLE IF EXISTS `tempstablishment`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tempstablishment` (
+  `internalId` int NOT NULL AUTO_INCREMENT,
+  `susId` varchar(31) NOT NULL,
+  `cnes` varchar(7) NOT NULL,
+  `personType` tinyint(1) NOT NULL,
+  `socialReason` varchar(60) NOT NULL,
+  `fantasyName` varchar(60) NOT NULL,
+  `addressNumber` varchar(10) DEFAULT NULL,
+  `address` varchar(60) NOT NULL,
+  `addressComplement` varchar(20) DEFAULT NULL,
+  `addressDistrict` varchar(40) NOT NULL,
+  `addressCep` varchar(8) NOT NULL,
+  `state` varchar(2) DEFAULT NULL,
+  `phone` varchar(30) DEFAULT NULL,
+  `email` varchar(100) DEFAULT NULL,
+  `cpf` varchar(11) DEFAULT NULL,
+  `cnpj` varchar(15) DEFAULT NULL,
+  `lastUpdate` date NOT NULL,
+  `deactivationCode` varchar(2) DEFAULT NULL,
+  `url` varchar(100) DEFAULT NULL,
+  `latitude` varchar(30) DEFAULT NULL,
+  `longitude` varchar(30) DEFAULT NULL,
+  `alwaysOpen` varchar(1) DEFAULT NULL,
+  `contractWithSus` varchar(1) DEFAULT NULL,
+  `unitTypeCode` smallint NOT NULL,
+  `stablishmentTypeCode` smallint NOT NULL,
+  `cityCode` varchar(6) NOT NULL,
+  `legalNatureCode` varchar(4) NOT NULL,
+  PRIMARY KEY (`susId`,`cnes`),
+  UNIQUE KEY `internalId_UNIQUE` (`internalId`),
+  KEY `fk_stablishment_unitType1_idx` (`unitTypeCode`),
+  KEY `fk_stablishment_stablishmentType1_idx` (`stablishmentTypeCode`),
+  KEY `fk_stablishment_city1_idx` (`cityCode`),
+  KEY `fk_stablishment_legalNature1_idx` (`legalNatureCode`),
+  KEY `susId` (`susId`)
+) ENGINE=InnoDB AUTO_INCREMENT=589816 DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `unittype`
@@ -244,17 +227,8 @@ CREATE TABLE `unittype` (
   `typeDescription` varchar(100) NOT NULL,
   PRIMARY KEY (`internalId`,`typeCode`),
   KEY `typeCode` (`typeCode`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=235 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `unittype`
---
-
-LOCK TABLES `unittype` WRITE;
-/*!40000 ALTER TABLE `unittype` DISABLE KEYS */;
-/*!40000 ALTER TABLE `unittype` ENABLE KEYS */;
-UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -265,12 +239,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-09-12 14:50:22
-
-ALTER TABLE `healthstablishments`.`legalnature` 
-CHANGE COLUMN `natureDescription` `natureDescription` VARCHAR(100) NOT NULL ;
-
-ALTER TABLE `healthstablishments`.`stablishment` 
-DROP PRIMARY KEY,
-ADD PRIMARY KEY (`susId`, `cnes`),
-ADD UNIQUE INDEX `internalId_UNIQUE` (`internalId` ASC) VISIBLE;
+-- Dump completed on 2025-09-19 14:19:40

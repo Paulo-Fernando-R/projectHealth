@@ -175,7 +175,7 @@ export class StablishmentRepository implements IStablishmentRepository {
         //this.connection.connection?.query("TRUNCATE TABLE stablishment;");
 
         try {
-            await this.connection.connection?.query("SET FOREIGN_KEY_CHECKS = 0;");
+          await this.switchConstraints(false);
             await this.connection.connection?.query({
                 sql: `LOAD DATA LOCAL INFILE '${file}'
                     INTO TABLE ${table}
@@ -187,11 +187,13 @@ export class StablishmentRepository implements IStablishmentRepository {
                     `,
                 infileStreamFactory: () => fs.createReadStream(file),
             });
-            await this.connection.connection?.query("SET FOREIGN_KEY_CHECKS = 1;");
+           
         } catch (error) {
             throw new InsertFileError(`Error inserting file: ${file} ` + error);
         } finally {
+            await this.switchConstraints(true);
             await this.connection.disconnect();
         }
     }
+    
 }

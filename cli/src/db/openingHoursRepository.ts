@@ -17,7 +17,8 @@ export class OpeningHoursRepository implements IOpeningHoursRepository {
         await this.connection.connect();
 
         try {
-            await this.connection.connection?.query("SET FOREIGN_KEY_CHECKS = 0;");
+            await this.switchConstraints(false);
+            await this.connection.connection?.query("TRUNCATE TABLE openingHours;");
             await this.connection.connection?.query({
                 sql: `LOAD DATA LOCAL INFILE '${file}'
                 INTO TABLE openingHours
@@ -31,7 +32,17 @@ export class OpeningHoursRepository implements IOpeningHoursRepository {
         } catch (error) {
             throw new Error(`Error inserting file: ${file} ` + error);
         } finally {
+            await this.switchConstraints(true);
             await this.connection.disconnect();
+        }
+    }
+    private async switchConstraints(control: boolean) {
+        if (control) {
+            await this.connection.connection?.query("SET SQL_SAFE_UPDATES = 1;");
+            await this.connection.connection?.query("SET FOREIGN_KEY_CHECKS = 1;");
+        } else {
+            await this.connection.connection?.query("SET SQL_SAFE_UPDATES = 0;");
+            await this.connection.connection?.query("SET FOREIGN_KEY_CHECKS = 0;");
         }
     }
 }

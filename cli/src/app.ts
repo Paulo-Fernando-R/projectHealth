@@ -53,7 +53,6 @@ export class App {
     fileDate: FileDate;
     zip: Zip;
     appconfig: ConfigType;
-    csvWriter: ICsvWriter;
     csvParser: ICsvParser;
     stablishmentRepository: IStablishmentRepository;
     unitTypeRepository: IUnitTypeRepository;
@@ -71,12 +70,6 @@ export class App {
         this.fileDate = new FileDate();
         this.zip = new Zip(this.fileManager);
         this.appconfig = appConfig;
-
-        this.csvWriter = new CsvWriter(
-            appConfig.outputPath + "stablishments.csv",
-            stablishmentHeaders
-        );
-
         this.csvParser = new CsvParser();
         this.connection = new Connection(appConfig);
         this.stablishmentRepository = new StablishmentRepository(appConfig, this.connection);
@@ -102,30 +95,22 @@ export class App {
             this.appconfig.zipPath
         );
 
-        
-        // await this.connection.connect();
-        //   const sql =  "SELECT COUNT(internalId) AS total FROM stablishment;";
-        // const [rows] = await this.connection.connection!.execute<CountRowType[]>(sql);
-        // console.log(rows[0]?.total);
-
-        // return
-
         try {
             console.log(
                 "\n\n\n-------------------------------Starting process...---------------------------------------\n"
             );
 
             const startTime = performance.now();
-            // const attr = await new ScrapeCase(scraping).execute();
+            const attr = await new ScrapeCase(scraping).execute();
 
-            // console.log(`File to download: `, attr);
+            console.log(`File to download: `, attr);
 
-            // await new DownloadCase(scraping).execute(attr.href, this.appconfig.zipPath);
+            await new DownloadCase(scraping).execute(attr.href, this.appconfig.zipPath);
 
-            // new UnzipCase(this.zip).execute(
-            //     this.appconfig.zipPath + attr.text,
-            //     this.appconfig.unzipPath
-            // );
+            new UnzipCase(this.zip).execute(
+                this.appconfig.zipPath + attr.text,
+                this.appconfig.unzipPath
+            );
 
             await new WriteAllCase(this.csvParser, appConfig, this.fileManager).execute();
 
@@ -151,9 +136,8 @@ export class App {
                 "--------------------------Process completed successfully!----------------------------------"
             );
             console.log(`Execution time: ${duration} seconds`);
-
         } catch (error) {
-             console.log(
+            console.log(
                 "--------------------------Process completed with errors!----------------------------------"
             );
             if (error instanceof NotFoundError) {
