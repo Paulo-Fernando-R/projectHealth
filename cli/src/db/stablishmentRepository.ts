@@ -3,7 +3,7 @@ import type { Stablishment } from "../models/stablishment.ts";
 import { stablishmentHeaders } from "../utils/csvHeaders.ts";
 import type { ConfigType } from "../types/configType.ts";
 import type { IConnection } from "./Iconnection.ts";
-import type { Pool } from "mysql2/promise";
+import type { Connection, Pool } from "mysql2/promise";
 import fs from "fs";
 import { InsertFileError, MergeError, QueryError } from "../errors/customErrors.ts";
 import type { CountRowType } from "../types/countRowType.ts";
@@ -88,12 +88,18 @@ export class StablishmentRepository implements IStablishmentRepository {
         }
     }
 
-    async updateTable(file: string) {
-        await this.connection.connect();
-        const newTable = "tempStablishment";
-        const createTable = `CREATE TABLE ${newTable} LIKE stablishment;`;
+    private async switchConstraints(control: boolean) {
+        if (control) {
+            await this.connection.connection?.query("SET SQL_SAFE_UPDATES = 1;");
+            await this.connection.connection?.query("SET FOREIGN_KEY_CHECKS = 1;");
+        } else {
+            await this.connection.connection?.query("SET SQL_SAFE_UPDATES = 0;");
+            await this.connection.connection?.query("SET FOREIGN_KEY_CHECKS = 0;");
+        }
+    }
 
-        const merge = `INSERT INTO stablishment (
+    private async merge(newTable: string, file: string) {
+        const mergeStr = `INSERT INTO stablishment (
                 susId, cnes, personType, socialReason, fantasyName, 
                 addressNumber, address, addressComplement, addressDistrict, addressCep, 
                 state, phone, email, cpf, cnpj, lastUpdate, deactivationCode, url, 
@@ -136,33 +142,34 @@ export class StablishmentRepository implements IStablishmentRepository {
                 cityCode             = VALUES(cityCode),
                 legalNatureCode      = VALUES(legalNatureCode);
             `;
+
         try {
-            await this.connection.connection?.query("SET SQL_SAFE_UPDATES = 0;");
-            await this.connection.connection?.query("SET FOREIGN_KEY_CHECKS = 0;");
+            await this.connection.connection?.query(mergeStr);
+            await this.connection.connection?.query(`DROP TABLE ${newTable};`);
+        } catch (error) {
+            throw new MergeError(`Error merging file: ${file} ` + error);
+        }
+    }
+
+    async updateTable(file: string) {
+        await this.connection.connect();
+        const newTable = "tempStablishment";
+        const createTable = `CREATE TABLE ${newTable} LIKE stablishment;`;
+
+        try {
+            await this.switchConstraints(false);
             await this.connection.connection?.query(`drop table if exists ${newTable};`);
 
             await this.connection.connection?.query(createTable);
             await this.insertFile(file, newTable);
+
+            await this.merge(newTable, file);
         } catch (error) {
-            await this.connection.connection?.query("SET SQL_SAFE_UPDATES = 1;");
-            await this.connection.connection?.query("SET FOREIGN_KEY_CHECKS = 1;");
-            await this.connection.disconnect();
+            if (error instanceof MergeError) throw error;
             throw new InsertFileError(`Error inserting file: ${file} ` + error);
-        }
-
-        try {
-            await this.connection.connection?.query(merge);
-
-            await this.connection.connection?.query(`DROP TABLE ${newTable};`);
-            await this.connection.connection?.query("SET SQL_SAFE_UPDATES = 1;");
-            await this.connection.connection?.query("SET FOREIGN_KEY_CHECKS = 1;");
-
+        } finally {
+            await this.switchConstraints(true);
             await this.connection.disconnect();
-        } catch (error) {
-            await this.connection.connection?.query("SET SQL_SAFE_UPDATES = 1;");
-            await this.connection.connection?.query("SET FOREIGN_KEY_CHECKS = 1;");
-            await this.connection.disconnect();
-            throw new MergeError(`Error merging file: ${file} ` + error);
         }
     }
 
