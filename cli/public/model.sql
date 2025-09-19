@@ -269,3 +269,8 @@ UNLOCK TABLES;
 
 ALTER TABLE `healthstablishments`.`legalnature` 
 CHANGE COLUMN `natureDescription` `natureDescription` VARCHAR(100) NOT NULL ;
+
+ALTER TABLE `healthstablishments`.`stablishment` 
+DROP PRIMARY KEY,
+ADD PRIMARY KEY (`susId`, `cnes`),
+ADD UNIQUE INDEX `internalId_UNIQUE` (`internalId` ASC) VISIBLE;

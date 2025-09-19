@@ -8,5 +8,7 @@ export interface IStablishmentRepository {
     connection: IConnection;
 
     insertBatch(pool: Pool, rows: Stablishment[]): Promise<void>;
-    insertFile(file: string): Promise<void>;
+    insertFile(file: string, table?: string): Promise<void>;
+    verifyTableEmpty(): Promise<boolean>
+    updateTable(file: string): Promise<void>;
 }

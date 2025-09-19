@@ -74,3 +74,17 @@ export class InsertBatchError extends CustomError {
         this.name = "InsertBatchError";
     }
 }
+
+export class QueryError extends CustomError {
+    constructor(message: string) {
+        super(message);
+        this.name = "QueryError";
+    }
+}
+
+export class MergeError extends CustomError {
+    constructor(message: string) {
+        super(message);
+        this.name = "MergeError";
+    }
+}

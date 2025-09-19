@@ -5,7 +5,8 @@ import type { ConfigType } from "../types/configType.ts";
 import type { IConnection } from "./Iconnection.ts";
 import type { Pool } from "mysql2/promise";
 import fs from "fs";
-import { InsertFileError } from "../errors/customErrors.ts";
+import { InsertFileError, MergeError, QueryError } from "../errors/customErrors.ts";
+import type { CountRowType } from "../types/countRowType.ts";
 
 export class StablishmentRepository implements IStablishmentRepository {
     appConfig: ConfigType;
@@ -67,7 +68,95 @@ export class StablishmentRepository implements IStablishmentRepository {
         }
     }
 
-    async insertFile(file: string) {
+    async verifyTableEmpty() {
+        await this.connection.connect();
+
+        try {
+            await this.connection.connect();
+            const sql = "SELECT COUNT(internalId) AS total FROM stablishment;";
+            const [rows] = await this.connection.connection!.execute<CountRowType[]>(sql);
+
+            await this.connection.disconnect();
+
+            const total = rows[0]?.total;
+
+            if (total && total > 0) return false;
+            return true;
+        } catch (error) {
+            await this.connection.disconnect();
+            throw new QueryError(`Error verifying table: ${error}`);
+        }
+    }
+
+    async updateTable(file: string) {
+        await this.connection.connect();
+        const newTable = "tempStablishment";
+        const createTable = `CREATE TABLE ${newTable} LIKE stablishment;`;
+
+        const merge = `INSERT INTO stablishment (
+                susId, cnes, personType, socialReason, fantasyName, 
+                addressNumber, address, addressComplement, addressDistrict, addressCep, 
+                state, phone, email, cpf, cnpj, lastUpdate, deactivationCode, url, 
+                latitude, longitude, alwaysOpen, contractWithSus, 
+                unitTypeCode, stablishmentTypeCode, cityCode, legalNatureCode
+            )
+            SELECT
+                susId, cnes, personType, socialReason, fantasyName, 
+                addressNumber, address, addressComplement, addressDistrict, addressCep, 
+                state, phone, email, cpf, cnpj, lastUpdate, deactivationCode, url, 
+                latitude, longitude, alwaysOpen, contractWithSus, 
+                unitTypeCode, stablishmentTypeCode, cityCode, legalNatureCode
+            FROM stablishment_stage
+            ON DUPLICATE KEY UPDATE
+                personType           = VALUES(personType),
+                socialReason         = VALUES(socialReason),
+                fantasyName          = VALUES(fantasyName),
+                addressNumber        = VALUES(addressNumber),
+                address              = VALUES(address),
+                addressComplement    = VALUES(addressComplement),
+                addressDistrict      = VALUES(addressDistrict),
+                addressCep           = VALUES(addressCep),
+                state                = VALUES(state),
+                phone                = VALUES(phone),
+                email                = VALUES(email),
+                cpf                  = VALUES(cpf),
+                cnpj                 = VALUES(cnpj),
+                lastUpdate           = VALUES(lastUpdate),
+                deactivationCode     = VALUES(deactivationCode),
+                url                  = VALUES(url),
+                latitude             = VALUES(latitude),
+                longitude            = VALUES(longitude),
+                alwaysOpen           = VALUES(alwaysOpen),
+                contractWithSus      = VALUES(contractWithSus),
+                unitTypeCode         = VALUES(unitTypeCode),
+                stablishmentTypeCode = VALUES(stablishmentTypeCode),
+                cityCode             = VALUES(cityCode),
+                legalNatureCode      = VALUES(legalNatureCode);
+            `;
+        try {
+            await this.connection.connection?.query("SET SQL_SAFE_UPDATES = 0;");
+            await this.connection.connection?.query(`drop table if exists ${newTable};`);
+
+            await this.connection.connection?.query(createTable);
+            await this.insertFile(file, newTable);
+        } catch (error) {
+            await this.connection.disconnect();
+            throw new InsertFileError(`Error inserting file: ${file} ` + error);
+        }
+
+        try {
+            await this.connection.connection?.query(merge);
+
+            await this.connection.connection?.query(`DROP TABLE ${newTable};`);
+            await this.connection.connection?.query("SET SQL_SAFE_UPDATES = 1;");
+            await this.connection.disconnect();
+        } catch (error) {
+            await this.connection.disconnect();
+            throw new MergeError(`Error merging file: ${file} ` + error);
+        }
+    }
+
+    async insertFile(file: string, table = "stablishment") {
         await this.connection.connect();
         //this.connection.connection?.query("TRUNCATE TABLE stablishment;");
 
@@ -75,7 +164,7 @@ export class StablishmentRepository implements IStablishmentRepository {
             await this.connection.connection?.query("SET FOREIGN_KEY_CHECKS = 0;");
             await this.connection.connection?.query({
                 sql: `LOAD DATA LOCAL INFILE '${file}'
-                    INTO TABLE stablishment
+                    INTO TABLE ${table}
                     FIELDS TERMINATED BY ','
                     ENCLOSED BY '"'
                     LINES TERMINATED BY '\n'

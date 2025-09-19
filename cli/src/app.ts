@@ -45,6 +45,8 @@ import type { IStablishmentServiceRepository } from "./db/IstablishmentServiceRe
 import { StablishmentServiceRepository } from "./db/stablishmentServiceRepository.ts";
 import type { IOpeningHoursRepository } from "./db/IopeningHoursRepository.ts";
 import { OpeningHoursRepository } from "./db/openingHoursRepository.ts";
+import type { RowDataPacket } from "mysql2/promise";
+import type { CountRowType } from "./types/countRowType.ts";
 
 export class App {
     fileManager: IFileManager;
@@ -100,22 +102,30 @@ export class App {
             this.appconfig.zipPath
         );
 
+        
+        // await this.connection.connect();
+        //   const sql =  "SELECT COUNT(internalId) AS total FROM stablishment;";
+        // const [rows] = await this.connection.connection!.execute<CountRowType[]>(sql);
+        // console.log(rows[0]?.total);
+
+        // return
+
         try {
             console.log(
                 "\n\n\n-------------------------------Starting process...---------------------------------------\n"
             );
 
             const startTime = performance.now();
-            const attr = await new ScrapeCase(scraping).execute();
+            // const attr = await new ScrapeCase(scraping).execute();
 
-            console.log(`File to download: `, attr);
+            // console.log(`File to download: `, attr);
 
-            await new DownloadCase(scraping).execute(attr.href, this.appconfig.zipPath);
+            // await new DownloadCase(scraping).execute(attr.href, this.appconfig.zipPath);
 
-            new UnzipCase(this.zip).execute(
-                this.appconfig.zipPath + attr.text,
-                this.appconfig.unzipPath
-            );
+            // new UnzipCase(this.zip).execute(
+            //     this.appconfig.zipPath + attr.text,
+            //     this.appconfig.unzipPath
+            // );
 
             await new WriteAllCase(this.csvParser, appConfig, this.fileManager).execute();
 
