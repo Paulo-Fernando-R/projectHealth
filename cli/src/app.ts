@@ -102,16 +102,16 @@ export class App {
             );
 
             const startTime = performance.now();
-            // const attr = await new ScrapeCase(scraping).execute();
+            const attr = await new ScrapeCase(scraping).execute();
 
-            // console.log(`File to download: `, attr);
+            console.log(`File to download: `, attr);
 
-            // await new DownloadCase(scraping).execute(attr.href, this.appconfig.zipPath);
+            await new DownloadCase(scraping).execute(attr.href, this.appconfig.zipPath);
 
-            // new UnzipCase(this.zip).execute(
-            //     this.appconfig.zipPath + attr.text,
-            //     this.appconfig.unzipPath
-            // );
+            new UnzipCase(this.zip).execute(
+                this.appconfig.zipPath + attr.text,
+                this.appconfig.unzipPath
+            );
 
             await new WriteAllCase(this.csvParser, appConfig, this.fileManager).execute();
 
