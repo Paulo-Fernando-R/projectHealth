@@ -18,6 +18,7 @@ import {
     InsertFileError,
     ParsingError,
     InsertBatchError,
+    DownloadError,
 } from "./errors/customErrors.ts";
 import type { ConfigType } from "./types/configType.ts";
 import { CsvWriter } from "./parsers/csvWriter.ts";
@@ -101,16 +102,16 @@ export class App {
             );
 
             const startTime = performance.now();
-            const attr = await new ScrapeCase(scraping).execute();
+            // const attr = await new ScrapeCase(scraping).execute();
 
-            console.log(`File to download: `, attr);
+            // console.log(`File to download: `, attr);
 
-            await new DownloadCase(scraping).execute(attr.href, this.appconfig.zipPath);
+            // await new DownloadCase(scraping).execute(attr.href, this.appconfig.zipPath);
 
-            new UnzipCase(this.zip).execute(
-                this.appconfig.zipPath + attr.text,
-                this.appconfig.unzipPath
-            );
+            // new UnzipCase(this.zip).execute(
+            //     this.appconfig.zipPath + attr.text,
+            //     this.appconfig.unzipPath
+            // );
 
             await new WriteAllCase(this.csvParser, appConfig, this.fileManager).execute();
 
@@ -142,6 +143,9 @@ export class App {
             );
             if (error instanceof NotFoundError) {
                 console.error("Custom NotFoundError caught:", error.message);
+            } else if (error instanceof DownloadError) {
+                console.error("Custom DownloadError caught:", error.message);
+                await this.run();
             } else if (error instanceof DescompressionError) {
                 console.error("Custom DescompressionError caught:", error.message);
             } else if (error instanceof FileAlreadyNewerError) {
@@ -163,6 +167,8 @@ export class App {
             } else {
                 console.error("Unexpected error:", error);
             }
+        } finally {
+            await this.connection.disconnect();
         }
     }
 }

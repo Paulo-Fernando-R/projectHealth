@@ -32,6 +32,7 @@ export class InsertUnitTypeCase {
 
             for await (const row of stream as AsyncIterable<UnitTypeCsv>) {
                 const parser: UnitType = new UnitTypeFromCsv(row).map();
+              
                 list.push(parser);
             }
 

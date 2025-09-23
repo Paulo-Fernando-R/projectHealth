@@ -88,3 +88,10 @@ export class MergeError extends CustomError {
         this.name = "MergeError";
     }
 }
+
+export class DownloadError extends CustomError {
+    constructor(message: string) {
+        super(message);
+        this.name = "DownloadError";
+    }
+}

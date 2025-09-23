@@ -1,10 +1,10 @@
-import { FileAlreadyNewerError, NotFoundError } from "../errors/customErrors.ts";
+import { DownloadError, FileAlreadyNewerError, NotFoundError } from "../errors/customErrors.ts";
 import type { IFileManager } from "../parsers/IFileManager.ts";
 import { Downloader } from "nodejs-file-downloader";
 import type { IScraping } from "./Iscraping.ts";
 import { FileDate } from "../utils/fileDate.ts";
 import puppeteer from "puppeteer";
-import * as https from "https"
+import * as https from "https";
 
 export class Scraping implements IScraping {
     scrapeUrl: string;
@@ -88,13 +88,12 @@ export class Scraping implements IScraping {
         let deduced = "";
 
         const downloader = new Downloader({
-
             url: this.downloadUrl + fileName,
             directory: directory,
             maxAttempts: 3,
-            
+
             httpsAgent: new https.Agent({
-                rejectUnauthorized: false
+                rejectUnauthorized: false,
             }),
 
             onBeforeSave: (deducedName) => {
@@ -104,7 +103,12 @@ export class Scraping implements IScraping {
         });
 
         console.warn("Downloading file...");
-        await downloader.download();
+        try {
+            await downloader.download();
+        } catch (error) {
+            throw new DownloadError("Error downloading file");
+        }
+
         console.warn(`File ${deduced} downloaded!`);
 
         try {

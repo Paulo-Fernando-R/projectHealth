@@ -86,7 +86,10 @@ export class InsertAllCase {
         await new InsertUnitTypeCase(
             this.unitTypeepository,
             unitTypeFile,
-            this.csvParser
+            this.csvParser,
+            Object.keys(tableNames).find(
+                (key) => tableNames[key as keyof typeof tableNames] === tableNames.unitType
+            )
         ).execute();
 
         await new InsertUnitTypeCase(

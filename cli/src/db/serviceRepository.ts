@@ -1,3 +1,4 @@
+import type { PoolConnection } from "mysql2/promise";
 import type { Service } from "../models/service.ts";
 import type { ConfigType } from "../types/configType.ts";
 import { serviceHeaders } from "../utils/csvHeaders.ts";
@@ -16,6 +17,7 @@ export class ServiceRepository implements IServiceRepository {
         this.connection.connect();
 
         const pool = this.connection.createPool();
+        const conn = await pool.getConnection();
 
         const numColumns = 2;
 
@@ -30,25 +32,26 @@ export class ServiceRepository implements IServiceRepository {
         const sql = `INSERT INTO service (${headers}) VALUES ${placeholders};`;
 
         try {
-            await this.switchConstraints(false);
-            await pool.query("TRUNCATE TABLE service;");
+            await this.switchConstraints(false, conn);
+            await conn.query("TRUNCATE TABLE service;");
             await pool.query(sql, values);
         } catch (error) {
             throw error;
         } finally {
-            await this.switchConstraints(true);
+            await this.switchConstraints(true, conn);
+            conn.release();
             await pool.end();
             await this.connection.disconnect();
         }
     }
 
-    private async switchConstraints(control: boolean) {
+    private async switchConstraints(control: boolean, conn: PoolConnection) {
         if (control) {
-            await this.connection.connection?.query("SET SQL_SAFE_UPDATES = 1;");
-            await this.connection.connection?.query("SET FOREIGN_KEY_CHECKS = 1;");
+            await conn.query("SET SQL_SAFE_UPDATES = 1;");
+            await conn.query("SET FOREIGN_KEY_CHECKS = 1;");
         } else {
-            await this.connection.connection?.query("SET SQL_SAFE_UPDATES = 0;");
-            await this.connection.connection?.query("SET FOREIGN_KEY_CHECKS = 0;");
+            await conn.query("SET SQL_SAFE_UPDATES = 0;");
+            await conn.query("SET FOREIGN_KEY_CHECKS = 0;");
         }
     }
 }
