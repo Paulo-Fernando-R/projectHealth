@@ -1,33 +1,32 @@
-import { DownloadError, FileAlreadyNewerError, NotFoundError } from "../errors/customErrors.ts";
+import { DownloadError, FileAlreadyNewerError, NotFoundError, ScrapeError } from "../errors/customErrors.ts";
 import type { IFileManager } from "../parsers/IFileManager.ts";
 import { Downloader } from "nodejs-file-downloader";
 import type { IScraping } from "./Iscraping.ts";
 import { FileDate } from "../utils/fileDate.ts";
 import puppeteer from "puppeteer";
 import * as https from "https";
+import type { ConfigType } from "../types/configType.ts";
+
 
 export class Scraping implements IScraping {
-    scrapeUrl: string;
-    downloadUrl: string;
+
+    appConfig: ConfigType
     fileDate: FileDate;
     fileManager: IFileManager;
-    scrapeElement: string;
-    zipPath: string;
+
+
 
     constructor(
-        scrapeUrl: string,
-        downloadUrl: string,
+        appConfig: ConfigType,
         fileManager: IFileManager,
         fileDate: FileDate,
-        scrapeElement: string,
-        zipPath: string
+
     ) {
-        this.scrapeUrl = scrapeUrl;
-        this.downloadUrl = downloadUrl;
+        this.appConfig = appConfig;
         this.fileManager = fileManager;
         this.fileDate = fileDate;
-        this.scrapeElement = scrapeElement;
-        this.zipPath = zipPath;
+
+
     }
 
     public async fetchData() {
@@ -35,32 +34,39 @@ export class Scraping implements IScraping {
 
         const page = await browser.newPage();
 
-        await page.goto(this.scrapeUrl);
+        const finalUrl = this.appConfig.proxyUrl + this.appConfig.scrapeUrl + this.appConfig.proxyToken + this.appConfig.proxyOptions
 
-        const elements = await page.$$(this.scrapeElement);
+        try {
+            await page.goto(finalUrl, { waitUntil: "networkidle2", timeout: 30000 });
 
-        if (elements.length === 0) {
-            throw new NotFoundError("No elements found");
+            const elements = await page.$$(this.appConfig.scrapeElement);
+
+            if (elements.length === 0) {
+                throw new NotFoundError("No elements found");
+            }
+
+            const el = elements[0];
+            const attr = await el?.$eval("a", (a) => {
+                return {
+                    href: a.getAttribute("href")!,
+                    text: a.textContent,
+                };
+            });
+
+            browser.close();
+
+            if (!attr) {
+                throw new NotFoundError("No attribute found");
+            }
+            if (!this.verifyDate(attr.text!)) {
+                throw new FileAlreadyNewerError("File is not newer than the last one");
+            }
+
+            return attr;
+        } catch (error) {
+            throw new ScrapeError("Error while scraping data" + error);
         }
 
-        const el = elements[0];
-        const attr = await el?.$eval("a", (a) => {
-            return {
-                href: a.getAttribute("href")!,
-                text: a.textContent,
-            };
-        });
-
-        browser.close();
-
-        if (!attr) {
-            throw new NotFoundError("No attribute found");
-        }
-        if (!this.verifyDate(attr.text!)) {
-            throw new FileAlreadyNewerError("File is not newer than the last one");
-        }
-
-        return attr;
     }
 
     private verifyDate(dateStr: string): boolean {
@@ -69,7 +75,7 @@ export class Scraping implements IScraping {
         let lastFile = "";
 
         try {
-            fileList = this.fileManager.listFiles(this.zipPath);
+            fileList = this.fileManager.listFiles(this.appConfig.zipPath);
             lastFile = this.fileDate.lastFileInDirectory(fileList);
         } catch (error) {
             return true;
@@ -87,10 +93,11 @@ export class Scraping implements IScraping {
     public async downloadFile(fileName: string, directory: string) {
         let deduced = "";
 
+        const finalUrl = this.appConfig.proxyUrl + this.appConfig.downloadUrl + fileName + this.appConfig.proxyToken + this.appConfig.proxyOptions
         const downloader = new Downloader({
-            url: this.downloadUrl + fileName,
+            url: this.appConfig.downloadUrl + fileName,
             directory: directory,
-            maxAttempts: 3,
+            maxAttempts: 2,
 
             httpsAgent: new https.Agent({
                 rejectUnauthorized: false,

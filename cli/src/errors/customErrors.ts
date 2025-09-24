@@ -95,3 +95,10 @@ export class DownloadError extends CustomError {
         this.name = "DownloadError";
     }
 }
+
+export class ScrapeError extends CustomError {
+    constructor(message: string) {
+        super(message);
+        this.name = "ScrapeError";
+    }
+}

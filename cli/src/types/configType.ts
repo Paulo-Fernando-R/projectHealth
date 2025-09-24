@@ -9,4 +9,7 @@ export type ConfigType = {
     user: string;
     password: string;
     database: string;
+    proxyUrl: string;
+    proxyToken: string,
+    proxyOptions: string
 };

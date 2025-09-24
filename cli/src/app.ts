@@ -5,7 +5,7 @@ import { ScrapeCase } from "./cases/scrapeCase.ts";
 import { Scraping } from "./scraping/scraping.ts";
 import { UnzipCase } from "./cases/unzipCase.ts";
 import { FileDate } from "./utils/fileDate.ts";
-import { appConfig } from "./app.config.ts";
+import { appConfig } from "./app.config.prod.ts";
 import { Zip } from "./parsers/zip.ts";
 import {
     FileAlreadyNewerError,
@@ -88,12 +88,9 @@ export class App {
 
     async run() {
         const scraping = new Scraping(
-            this.appconfig.scrapeUrl,
-            this.appconfig.downloadUrl,
+            this.appconfig,
             this.fileManager,
             this.fileDate,
-            this.appconfig.scrapeElement,
-            this.appconfig.zipPath
         );
 
         try {
