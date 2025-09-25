@@ -35,7 +35,10 @@ export class Scraping implements IScraping {
             this.appConfig.proxyOptions;
 
         try {
-            await page.goto(finalUrl, { waitUntil: "networkidle2", timeout: 30000 });
+            await page.goto(this.appConfig.scrapeUrl, {
+                waitUntil: "networkidle2",
+                timeout: 30000,
+            });
 
             const elements = await page.$$(this.appConfig.scrapeElement);
 
@@ -44,6 +47,7 @@ export class Scraping implements IScraping {
             }
 
             const el = elements[0];
+            await el?.click();
             const attr = await el?.$eval("a", (a) => {
                 return {
                     href: a.getAttribute("href")!,
@@ -91,8 +95,11 @@ export class Scraping implements IScraping {
         let deduced = "";
 
         const finalUrl = this.appConfig.proxyDownload + this.appConfig.downloadUrl + fileName;
+        const testUrl =
+            "https://corsproxy.io/?url=https://cnes.datasus.gov.br/EstatisticasServlet?path=BASE_DE_DADOS_CNES_202508.ZIP";
+        console.log("Downloading file: ", finalUrl);
         const downloader = new Downloader({
-            url: this.appConfig.downloadUrl + fileName,
+            url: testUrl, //this.appConfig.downloadUrl + fileName,
             directory: directory,
             maxAttempts: 2,
 
@@ -110,7 +117,7 @@ export class Scraping implements IScraping {
         try {
             await downloader.download();
         } catch (error) {
-            throw new DownloadError("Error downloading file");
+            throw new DownloadError("Error downloading file" + error);
         }
 
         console.warn(`File ${deduced} downloaded!`);

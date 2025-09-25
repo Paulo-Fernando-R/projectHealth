@@ -87,11 +87,7 @@ export class App {
     }
 
     async run() {
-        const scraping = new Scraping(
-            this.appconfig,
-            this.fileManager,
-            this.fileDate,
-        );
+        const scraping = new Scraping(this.appconfig, this.fileManager, this.fileDate);
 
         try {
             console.log(
@@ -100,13 +96,17 @@ export class App {
 
             const startTime = performance.now();
             const attr = await new ScrapeCase(scraping).execute();
+            const mock = {
+                href: "/EstatisticasServlet?path=BASE_DE_DADOS_CNES_202508.ZIP",
+                text: "BASE_DE_DADOS_CNES_202508.ZIP",
+            };
 
-            console.log(`File to download: `, attr);
+            console.log(`File to download: `, mock);
 
-            await new DownloadCase(scraping).execute(attr.href, this.appconfig.zipPath);
+            await new DownloadCase(scraping).execute(mock.href, this.appconfig.zipPath);
 
             new UnzipCase(this.zip).execute(
-                this.appconfig.zipPath + attr.text,
+                this.appconfig.zipPath + mock.text,
                 this.appconfig.unzipPath
             );
 
