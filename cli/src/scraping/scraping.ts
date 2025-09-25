@@ -1,4 +1,9 @@
-import { DownloadError, FileAlreadyNewerError, NotFoundError, ScrapeError } from "../errors/customErrors.ts";
+import {
+    DownloadError,
+    FileAlreadyNewerError,
+    NotFoundError,
+    ScrapeError,
+} from "../errors/customErrors.ts";
 import type { IFileManager } from "../parsers/IFileManager.ts";
 import { Downloader } from "nodejs-file-downloader";
 import type { IScraping } from "./Iscraping.ts";
@@ -7,26 +12,15 @@ import puppeteer from "puppeteer";
 import * as https from "https";
 import type { ConfigType } from "../types/configType.ts";
 
-
 export class Scraping implements IScraping {
-
-    appConfig: ConfigType
+    appConfig: ConfigType;
     fileDate: FileDate;
     fileManager: IFileManager;
 
-
-
-    constructor(
-        appConfig: ConfigType,
-        fileManager: IFileManager,
-        fileDate: FileDate,
-
-    ) {
+    constructor(appConfig: ConfigType, fileManager: IFileManager, fileDate: FileDate) {
         this.appConfig = appConfig;
         this.fileManager = fileManager;
         this.fileDate = fileDate;
-
-
     }
 
     public async fetchData() {
@@ -34,7 +28,11 @@ export class Scraping implements IScraping {
 
         const page = await browser.newPage();
 
-        const finalUrl = this.appConfig.proxyUrl + this.appConfig.scrapeUrl + this.appConfig.proxyToken + this.appConfig.proxyOptions
+        const finalUrl =
+            this.appConfig.proxyUrl +
+            this.appConfig.scrapeUrl +
+            this.appConfig.proxyToken +
+            this.appConfig.proxyOptions;
 
         try {
             await page.goto(finalUrl, { waitUntil: "networkidle2", timeout: 30000 });
@@ -66,7 +64,6 @@ export class Scraping implements IScraping {
         } catch (error) {
             throw new ScrapeError("Error while scraping data" + error);
         }
-
     }
 
     private verifyDate(dateStr: string): boolean {
@@ -93,7 +90,7 @@ export class Scraping implements IScraping {
     public async downloadFile(fileName: string, directory: string) {
         let deduced = "";
 
-        const finalUrl = this.appConfig.proxyUrl + this.appConfig.downloadUrl + fileName + this.appConfig.proxyToken + this.appConfig.proxyOptions
+        const finalUrl = this.appConfig.proxyDownload + this.appConfig.downloadUrl + fileName;
         const downloader = new Downloader({
             url: this.appConfig.downloadUrl + fileName,
             directory: directory,

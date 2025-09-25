@@ -12,4 +12,5 @@ export type ConfigType = {
     proxyUrl: string;
     proxyToken: string,
     proxyOptions: string
+    proxyDownload: string
 };
