@@ -138,11 +138,15 @@ export class App {
             );
             if (error instanceof NotFoundError) {
                 console.error("Custom NotFoundError caught:", error.message);
+            } else if (error instanceof ScrapeError) {
+                console.error("Custom ScrapeError caught:", error.message);
+                await this.run();
             } else if (error instanceof DownloadError) {
                 console.error("Custom DownloadError caught:", error.message);
                 await this.run();
             } else if (error instanceof DescompressionError) {
                 console.error("Custom DescompressionError caught:", error.message);
+                await this.run();
             } else if (error instanceof FileAlreadyNewerError) {
                 console.warn("Custom FileAlreadyNewerError caught:", error.message);
             } else if (error instanceof FileDeleteError) {
@@ -151,20 +155,25 @@ export class App {
                 console.error("Custom FileDateError caught:", error.message);
             } else if (error instanceof DatabaseConnectionError) {
                 console.error("Custom DatabaseConnectionError caught:", error.message);
+                this.fileManager.emptyDirectory(this.appconfig.zipPath);
             } else if (error instanceof WriteFileError) {
                 console.error("Custom WriteFileError caught:", error.message);
+                this.fileManager.emptyDirectory(this.appconfig.zipPath);
             } else if (error instanceof InsertFileError) {
                 console.error("Custom InsertFileError caught:", error.message);
+                this.fileManager.emptyDirectory(this.appconfig.zipPath);
             } else if (error instanceof ParsingError) {
                 console.error("Custom ParsingError caught:", error.message);
+                this.fileManager.emptyDirectory(this.appconfig.zipPath);
             } else if (error instanceof InsertBatchError) {
                 console.error("Custom InsertBatchError caught:", error.message);
+                this.fileManager.emptyDirectory(this.appconfig.zipPath);
             } else if (error instanceof QueryError) {
                 console.error("Custom QueryError caught:", error.message);
+                this.fileManager.emptyDirectory(this.appconfig.zipPath);
             } else if (error instanceof MergeError) {
                 console.error("Custom MergeError caught:", error.message);
-            } else if (error instanceof ScrapeError) {
-                console.error("Custom ScrapeError caught:", error.message);
+                this.fileManager.emptyDirectory(this.appconfig.zipPath);
             } else {
                 console.error("Unexpected error:", error);
             }

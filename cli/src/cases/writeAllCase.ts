@@ -24,53 +24,67 @@ export class WriteAllCase {
         this.fileManager = fileManager;
     }
 
+    private async run(control: number) {
+        try {
+            const stablishmentWriter = new CsvWriter(
+                this.appConfig.outputPath + outputFileNames.stablishment,
+                stablishmentHeaders
+            );
+
+            const stablishmentFile = this.fileManager.findFile(
+                this.appConfig.unzipPath,
+                tableNames.stablishment
+            );
+
+            const stablishmentServiceWriter = new CsvWriter(
+                this.appConfig.outputPath + outputFileNames.stablishmentService,
+                stablishmentServiceHeaders
+            );
+
+            const stablishmentServiceFile = this.fileManager.findFile(
+                this.appConfig.unzipPath,
+                tableNames.stablishmentService
+            );
+
+            const openingHoursWriter = new CsvWriter(
+                this.appConfig.outputPath + outputFileNames.openingHours,
+                openingHoursHeaders
+            );
+
+            const openingHoursFile = this.fileManager.findFile(
+                this.appConfig.unzipPath,
+                tableNames.openingHours
+            );
+
+            await new WriteStablishmentsFileCase(
+                this.csvParser,
+                stablishmentWriter,
+                this.appConfig.unzipPath + stablishmentFile
+            ).execute();
+
+            await new WriteStablishmentServicesFileCase(
+                this.csvParser,
+                stablishmentServiceWriter,
+                this.appConfig.unzipPath + stablishmentServiceFile
+            ).execute();
+
+            await new WriteOpeningHoursFileCase(
+                this.csvParser,
+                openingHoursWriter,
+                this.appConfig.unzipPath + openingHoursFile
+            ).execute();
+        } catch (error) {
+            if (control < 10) await this.run(control + 1);
+            else throw error;
+        }
+    }
+
     async execute() {
-        const stablishmentWriter = new CsvWriter(
-            this.appConfig.outputPath + outputFileNames.stablishment,
-            stablishmentHeaders
-        );
-
-        const stablishmentFile = this.fileManager.findFile(
-            this.appConfig.unzipPath,
-            tableNames.stablishment
-        );
-
-        const stablishmentServiceWriter = new CsvWriter(
-            this.appConfig.outputPath + outputFileNames.stablishmentService,
-            stablishmentServiceHeaders
-        );
-
-        const stablishmentServiceFile = this.fileManager.findFile(
-            this.appConfig.unzipPath,
-            tableNames.stablishmentService
-        );
-
-        const openingHoursWriter = new CsvWriter(
-            this.appConfig.outputPath + outputFileNames.openingHours,
-            openingHoursHeaders
-        );
-
-        const openingHoursFile = this.fileManager.findFile(
-            this.appConfig.unzipPath,
-            tableNames.openingHours
-        );
-
-        await new WriteStablishmentsFileCase(
-            this.csvParser,
-            stablishmentWriter,
-            this.appConfig.unzipPath + stablishmentFile
-        ).execute();
-
-        await new WriteStablishmentServicesFileCase(
-            this.csvParser,
-            stablishmentServiceWriter,
-            this.appConfig.unzipPath + stablishmentServiceFile
-        ).execute();
-
-        await new WriteOpeningHoursFileCase(
-            this.csvParser,
-            openingHoursWriter,
-            this.appConfig.unzipPath + openingHoursFile
-        ).execute();
+        let control = 0;
+        try {
+            await this.run(control);
+        } catch (error) {
+            throw error;
+        }
     }
 }
