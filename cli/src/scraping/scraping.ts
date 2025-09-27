@@ -95,11 +95,9 @@ export class Scraping implements IScraping {
         let deduced = "";
 
         const finalUrl = this.appConfig.proxyDownload + this.appConfig.downloadUrl + fileName;
-        const testUrl =
-            "https://corsproxy.io/?url=https://cnes.datasus.gov.br/EstatisticasServlet?path=BASE_DE_DADOS_CNES_202508.ZIP";
-        console.log("Downloading file: ", finalUrl);
+
         const downloader = new Downloader({
-            url: testUrl, //this.appConfig.downloadUrl + fileName,
+            url: this.appConfig.downloadUrl + fileName,
             directory: directory,
             maxAttempts: 2,
 
