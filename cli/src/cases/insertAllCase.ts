@@ -55,69 +55,94 @@ export class InsertAllCase {
         this.fileManager = fileManager;
     }
 
+    private async run(control: number) {
+        try {
+            const unitTypeFile =
+                this.appConfig.unzipPath +
+                this.fileManager.findFile(this.appConfig.unzipPath, tableNames.unitType);
+
+            const stablishmentTypeFile =
+                this.appConfig.unzipPath +
+                this.fileManager.findFile(this.appConfig.unzipPath, tableNames.stablishmentType);
+
+            const cityFile =
+                this.appConfig.unzipPath +
+                this.fileManager.findFile(this.appConfig.unzipPath, tableNames.city);
+
+            const legalNatureFile =
+                this.appConfig.unzipPath +
+                this.fileManager.findFile(this.appConfig.unzipPath, tableNames.legalNature);
+
+            const serviceFile =
+                this.appConfig.unzipPath +
+                this.fileManager.findFile(this.appConfig.unzipPath, tableNames.service);
+
+            const stablishmentFile = this.appConfig.outputPath + outputFileNames.stablishment;
+
+            const stablishmentServiceFile =
+                this.appConfig.outputPath + outputFileNames.stablishmentService;
+
+            const openingHoursFile = this.appConfig.outputPath + outputFileNames.openingHours;
+            //
+            await new InsertUnitTypeCase(
+                this.unitTypeepository,
+                unitTypeFile,
+                this.csvParser,
+                Object.keys(tableNames).find(
+                    (key) => tableNames[key as keyof typeof tableNames] === tableNames.unitType
+                )
+            ).execute();
+
+            await new InsertUnitTypeCase(
+                this.unitTypeepository,
+                stablishmentTypeFile,
+                this.csvParser,
+                Object.keys(tableNames).find(
+                    (key) =>
+                        tableNames[key as keyof typeof tableNames] === tableNames.stablishmentType
+                )
+            ).execute();
+
+            await new InsertCityCase(this.cityRepository, cityFile, this.csvParser).execute();
+
+            await new InsertLegalNatureCase(
+                this.legalNatureRepository,
+                legalNatureFile,
+                this.csvParser
+            ).execute();
+
+            await new InsertServiceCase(
+                this.serviceRepository,
+                serviceFile,
+                this.csvParser
+            ).execute();
+
+            await new InsertStablishmentsCase(
+                this.stablishmentRepository,
+                stablishmentFile
+            ).execute();
+
+            await new InsertStablishmentServicesCase(
+                this.stablishmentServiceRepository,
+                stablishmentServiceFile
+            ).execute();
+
+            await new InsertOpeningHoursCase(
+                this.openingHoursRepository,
+                openingHoursFile
+            ).execute();
+        } catch (error) {
+            if (control < 10) await this.run(control + 1);
+            else throw error;
+        }
+    }
+
     async execute() {
-        const unitTypeFile =
-            this.appConfig.unzipPath +
-            this.fileManager.findFile(this.appConfig.unzipPath, tableNames.unitType);
-
-        const stablishmentTypeFile =
-            this.appConfig.unzipPath +
-            this.fileManager.findFile(this.appConfig.unzipPath, tableNames.stablishmentType);
-
-        const cityFile =
-            this.appConfig.unzipPath +
-            this.fileManager.findFile(this.appConfig.unzipPath, tableNames.city);
-
-        const legalNatureFile =
-            this.appConfig.unzipPath +
-            this.fileManager.findFile(this.appConfig.unzipPath, tableNames.legalNature);
-
-        const serviceFile =
-            this.appConfig.unzipPath +
-            this.fileManager.findFile(this.appConfig.unzipPath, tableNames.service);
-
-        const stablishmentFile = this.appConfig.outputPath + outputFileNames.stablishment;
-
-        const stablishmentServiceFile =
-            this.appConfig.outputPath + outputFileNames.stablishmentService;
-
-        const openingHoursFile = this.appConfig.outputPath + outputFileNames.openingHours;
-        //
-        await new InsertUnitTypeCase(
-            this.unitTypeepository,
-            unitTypeFile,
-            this.csvParser,
-            Object.keys(tableNames).find(
-                (key) => tableNames[key as keyof typeof tableNames] === tableNames.unitType
-            )
-        ).execute();
-
-        await new InsertUnitTypeCase(
-            this.unitTypeepository,
-            stablishmentTypeFile,
-            this.csvParser,
-            Object.keys(tableNames).find(
-                (key) => tableNames[key as keyof typeof tableNames] === tableNames.stablishmentType
-            )
-        ).execute();
-
-        await new InsertCityCase(this.cityRepository, cityFile, this.csvParser).execute();
-
-        await new InsertLegalNatureCase(
-            this.legalNatureRepository,
-            legalNatureFile,
-            this.csvParser
-        ).execute();
-
-        await new InsertServiceCase(this.serviceRepository, serviceFile, this.csvParser).execute();
-
-        await new InsertStablishmentsCase(this.stablishmentRepository, stablishmentFile).execute();
-
-        await new InsertStablishmentServicesCase(
-            this.stablishmentServiceRepository,
-            stablishmentServiceFile
-        ).execute();
-
-        await new InsertOpeningHoursCase(this.openingHoursRepository, openingHoursFile).execute();
+        let control = 0;
+        try {
+            await this.run(control);
+        } catch (error) {
+            throw error;
+        }
     }
 }

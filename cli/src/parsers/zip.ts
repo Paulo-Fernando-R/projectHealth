@@ -22,6 +22,11 @@ export class Zip implements IZip {
 
             console.log("Unzipping file...");
             zip.extractAllTo(extractTo, true);
+            //!TODO remove
+            this.fileManager.deleteFile(
+                filePath.substring(0, filePath.lastIndexOf("/")),
+                filePath.substring(filePath.lastIndexOf("/"))
+            );
             console.log("File unzipped!");
         } catch (error) {
             throw new DescompressionError("Error during file decompression");

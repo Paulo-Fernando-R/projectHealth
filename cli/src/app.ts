@@ -19,13 +19,13 @@ import {
     ParsingError,
     InsertBatchError,
     DownloadError,
+    QueryError,
+    MergeError,
+    ScrapeError,
 } from "./errors/customErrors.ts";
 import type { ConfigType } from "./types/configType.ts";
-import { CsvWriter } from "./parsers/csvWriter.ts";
 import { CsvParser } from "./parsers/csvParser.ts";
-import type { ICsvWriter } from "./parsers/IcsvWriter.ts";
 import type { ICsvParser } from "./parsers/IcsvParser.ts";
-import { stablishmentHeaders } from "./utils/csvHeaders.ts";
 import { StablishmentRepository } from "./db/stablishmentRepository.ts";
 import { Connection } from "./db/connection.ts";
 import type { IStablishmentRepository } from "./db/IstablishmentRepository.ts";
@@ -46,8 +46,6 @@ import type { IStablishmentServiceRepository } from "./db/IstablishmentServiceRe
 import { StablishmentServiceRepository } from "./db/stablishmentServiceRepository.ts";
 import type { IOpeningHoursRepository } from "./db/IopeningHoursRepository.ts";
 import { OpeningHoursRepository } from "./db/openingHoursRepository.ts";
-import type { RowDataPacket } from "mysql2/promise";
-import type { CountRowType } from "./types/countRowType.ts";
 
 export class App {
     fileManager: IFileManager;
@@ -101,12 +99,12 @@ export class App {
                 text: "BASE_DE_DADOS_CNES_202508.ZIP",
             };
 
-            console.log(`File to download: `, mock);
+            console.log(`File to download: `, attr);
 
-            await new DownloadCase(scraping).execute(mock.href, this.appconfig.zipPath);
+            await new DownloadCase(scraping).execute(attr.href, this.appconfig.zipPath);
 
             new UnzipCase(this.zip).execute(
-                this.appconfig.zipPath + mock.text,
+                this.appconfig.zipPath + attr.text,
                 this.appconfig.unzipPath
             );
 
@@ -140,11 +138,15 @@ export class App {
             );
             if (error instanceof NotFoundError) {
                 console.error("Custom NotFoundError caught:", error.message);
+            } else if (error instanceof ScrapeError) {
+                console.error("Custom ScrapeError caught:", error.message);
+                await this.run();
             } else if (error instanceof DownloadError) {
                 console.error("Custom DownloadError caught:", error.message);
                 await this.run();
             } else if (error instanceof DescompressionError) {
                 console.error("Custom DescompressionError caught:", error.message);
+                await this.run();
             } else if (error instanceof FileAlreadyNewerError) {
                 console.warn("Custom FileAlreadyNewerError caught:", error.message);
             } else if (error instanceof FileDeleteError) {
@@ -153,14 +155,25 @@ export class App {
                 console.error("Custom FileDateError caught:", error.message);
             } else if (error instanceof DatabaseConnectionError) {
                 console.error("Custom DatabaseConnectionError caught:", error.message);
+                this.fileManager.emptyDirectory(this.appconfig.zipPath);
             } else if (error instanceof WriteFileError) {
                 console.error("Custom WriteFileError caught:", error.message);
+                this.fileManager.emptyDirectory(this.appconfig.zipPath);
             } else if (error instanceof InsertFileError) {
                 console.error("Custom InsertFileError caught:", error.message);
+                this.fileManager.emptyDirectory(this.appconfig.zipPath);
             } else if (error instanceof ParsingError) {
                 console.error("Custom ParsingError caught:", error.message);
+                this.fileManager.emptyDirectory(this.appconfig.zipPath);
             } else if (error instanceof InsertBatchError) {
                 console.error("Custom InsertBatchError caught:", error.message);
+                this.fileManager.emptyDirectory(this.appconfig.zipPath);
+            } else if (error instanceof QueryError) {
+                console.error("Custom QueryError caught:", error.message);
+                this.fileManager.emptyDirectory(this.appconfig.zipPath);
+            } else if (error instanceof MergeError) {
+                console.error("Custom MergeError caught:", error.message);
+                this.fileManager.emptyDirectory(this.appconfig.zipPath);
             } else {
                 console.error("Unexpected error:", error);
             }
