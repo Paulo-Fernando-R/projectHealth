@@ -1,11 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using API.Cases;
+using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class HomeController : ControllerBase
+    public class HomeController(GetAllCitiesCase getAllCitiesCase) : ControllerBase
     {
+        private readonly GetAllCitiesCase getAllCitiesCase = getAllCitiesCase;
+
         [HttpPut]
         [Route("Search")]
         public IActionResult Search()
@@ -18,6 +21,15 @@ namespace API.Controllers
         public IActionResult GetTypes()
         {
             return Ok();
+        }
+
+        [HttpGet]
+        [Route("Cities")]
+        public IActionResult GetCities()
+        {
+            var cities = getAllCitiesCase.Execute();
+
+            return Ok(cities);
         }
     }
 }
