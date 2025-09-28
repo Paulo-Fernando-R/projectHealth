@@ -140,7 +140,7 @@ export class App {
                 console.error("Custom NotFoundError caught:", error.message);
             } else if (error instanceof ScrapeError) {
                 console.error("Custom ScrapeError caught:", error.message);
-                await this.run();
+              
             } else if (error instanceof DownloadError) {
                 console.error("Custom DownloadError caught:", error.message);
                 await this.run();
