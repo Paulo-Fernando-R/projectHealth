@@ -1,0 +1,73 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
+:root {
+    font-family: "Poppins", sans-serif;
+    line-height: auto;
+    font-style: normal;
+
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    --primary100: #55a0e8;
+    --primary200: #1e90fb;
+    --bg100: #f5f5f5;
+    --text100: #f5f5f5;
+    --text600: #7c7c7c;
+    --text700: #474747;
+    --text800: #1b1b1b;
+
+    --mobileHorizontalPading: 20px;
+    --desktopHorizontalPading: 40px;
+
+    --mobileTopPading: 48px;
+
+    --defaultShadow: drop-shadow(0 0 0.8rem rgba(0, 0, 0, 0.15));
+    --smallShadow: drop-shadow(0 0 0.07rem rgba(0, 0, 0, 0.3));
+
+    --longTransition: 300ms ease-in-out;
+    --shortTransition: 100ms ease-in-out;
+
+    --scaleUp: scale(1.05);
+    --scaleDown: scale(0.95);
+
+    .titleh1{
+        font-weight: 400;
+        font-size: 2.25rem;
+        line-height: 3.125rem;
+        letter-spacing: -2px;
+        color: var(--text700);
+    }
+
+    .titleh2{
+        font-weight: 600;
+        font-size: 1.5rem;
+        line-height: auto;
+        letter-spacing: -2px;
+        color: var(--text700);
+    }
+
+     .titleh3{
+        font-weight: 500;
+        font-size: 1.125rem;
+        line-height: auto;
+        letter-spacing: -2px;
+        color: var(--text700);
+    }
+    .p1{
+        font-weight: 400;
+        font-size: 1rem;
+        line-height: auto;
+        letter-spacing: -1px;
+        color: var(--text700);
+    }
+
+     .p2{
+        font-weight: 400;
+        font-size: .875rem;
+        line-height: auto;
+        letter-spacing: -1px;
+        color: var(--text700);
+    }
+}
