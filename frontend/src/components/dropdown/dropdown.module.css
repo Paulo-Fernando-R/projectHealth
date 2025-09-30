@@ -1,0 +1,48 @@
+.dropBox {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  border: 1px solid var(--text600);
+  border-radius: 1.25rem;
+  padding: 0 1.25rem;
+  width: 100%;
+  height: -moz-fit-content;
+  height: fit-content;
+}
+
+.inputBox {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  height: 3.125rem;
+}
+.inputBox .field {
+  border: none;
+  width: 100%;
+  outline: none;
+  color: var(--primary100);
+}
+.inputBox .field::-moz-placeholder {
+  color: var(--text600);
+}
+.inputBox .field::placeholder {
+  color: var(--text600);
+}
+
+.list {
+  display: none;
+  flex-direction: column;
+  max-height: 160px;
+  overflow-y: scroll;
+  list-style: none;
+  padding-bottom: 0.5rem;
+}
+.list .listItem {
+  cursor: pointer;
+  color: var(--text600);
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+  height: 2rem;
+}

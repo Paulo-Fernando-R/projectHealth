@@ -1,5 +1,7 @@
 import styles from "./home.module.css";
 import img from "../../assets/images/doctor.png";
+import Filter from "../../components/filter/Filter";
+
 export default function Home() {
     return (
         <div className={styles.container}>
@@ -15,6 +17,8 @@ export default function Home() {
             <div className={styles.imgBox}>
                 <img src={img} alt="" className={styles.img} />
             </div>
+
+            <Filter />
         </div>
     );
 }
