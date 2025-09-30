@@ -1,0 +1,38 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+
+    padding: 0 var(--mobileHorizontalPading);
+
+    .imgBox {
+        width: 100%;
+        height: 25.9rem;
+        overflow: hidden;
+        border-radius: 1.25rem;
+
+        img {
+            width: 100%;
+            margin-top: -2.3rem;
+        }
+    }
+}
+
+.head {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+
+    h1 {
+        span {
+            color: var(--primary200);
+        }
+    }
+    .subtitle {
+        color: var(--text600);
+    }
+}

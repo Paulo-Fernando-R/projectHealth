@@ -1,0 +1,33 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding-top: var(--mobileTopPading);
+    padding: var(--mobileTopPading) var(--mobileHorizontalPading) 1.75rem var(--mobileHorizontalPading);
+}
+.left {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    .title {
+        color: var(--primary200);
+    }
+}
+
+.right {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.right :hover {
+    cursor: pointer;
+}
+
+@media (width > 1024px) {
+    .header {
+        padding: var(--mobileTopPading) var(--desktopHorizontalPading) 0
+            var(--desktopHorizontalPading);
+    }
+}
