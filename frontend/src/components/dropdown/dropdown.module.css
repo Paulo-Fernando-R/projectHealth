@@ -1,4 +1,5 @@
 .dropBox {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -8,6 +9,8 @@
   width: 100%;
   height: -moz-fit-content;
   height: fit-content;
+  background-color: var(--bg100);
+  z-index: 10;
 }
 
 .inputBox {
@@ -22,6 +25,7 @@
   width: 100%;
   outline: none;
   color: var(--primary100);
+  background-color: var(--bg100);
 }
 .inputBox .field::-moz-placeholder {
   color: var(--text600);
@@ -45,4 +49,9 @@
      -moz-user-select: none;
           user-select: none;
   height: 2rem;
+}
+
+.dropBox:hover {
+  transition: var(--longTransition);
+  filter: var(--smallShadow);
 }

@@ -45,7 +45,6 @@ export default function Dropdown({ itens, setSelected, placeholder }: DropdownPr
     };
 
     const onBlur = () => {
-        alert("blur");
         if (search.length === 0) handleOpen(false);
     };
 

@@ -7,15 +7,18 @@
 .filters {
   display: flex;
   gap: 0.75rem;
+  height: 52px;
 }
 
 .inputBox {
+  transition: var(--shortTransition);
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
   height: 3.125rem;
   border: 1px solid var(--text600);
+  background-color: var(--bg100);
   border-radius: 1.25rem;
   padding: 0 1.25rem;
 }
@@ -24,10 +27,21 @@
   width: 100%;
   outline: none;
   color: var(--text600);
+  background-color: var(--bg100);
 }
 .inputBox .field::-moz-placeholder {
   color: var(--text600);
 }
 .inputBox .field::placeholder {
   color: var(--text600);
+}
+
+.inputBox:hover {
+  transition: var(--longTransition);
+  filter: var(--smallShadow);
+}
+
+.inputBox:focus-within {
+  transition: var(--shortTransition);
+  border-color: var(--primary100);
 }

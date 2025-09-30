@@ -1,0 +1,43 @@
+.feedItem {
+  transition: var(--shortTransition);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.25rem;
+  background-color: var(--accent100);
+  border-radius: 1.25rem;
+}
+
+.titleBox {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.625rem;
+}
+.titleBox .title {
+  color: var(--text800);
+}
+.titleBox img {
+  width: 3.75rem;
+  -o-object-fit: contain;
+     object-fit: contain;
+}
+
+.contentBox {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+.contentBox .content {
+  color: var(--text600);
+}
+
+.feedItem:hover {
+  transition: var(--longTransition);
+  filter: var(--smallShadow);
+}
+
+.feedItem:active {
+  transition: var(--shortTransition);
+  transform: var(--scaleDown);
+}

@@ -4,8 +4,10 @@
     align-items: center;
     justify-content: center;
     gap: 1.5rem;
+    background-color: var(--bg100);
 
     padding: 0 var(--mobileHorizontalPading);
+    padding-bottom: var(--mobileTopPading);
 
     .imgBox {
         width: 100%;
@@ -35,4 +37,11 @@
     .subtitle {
         color: var(--text600);
     }
+}
+
+.feed {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+   width: 100%;
 }

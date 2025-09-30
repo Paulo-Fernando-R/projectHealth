@@ -1,8 +1,10 @@
 import styles from "./home.module.css";
 import img from "../../assets/images/doctor.png";
 import Filter from "../../components/filter/Filter";
+import FeedItem from "../../components/feedItem/FeedItem";
 
 export default function Home() {
+    const list = ["#C8E2FB", "#F7E4DF", "#DCD9F7"];
     return (
         <div className={styles.container}>
             <div className={styles.head}>
@@ -14,11 +16,19 @@ export default function Home() {
                 </p>
             </div>
 
-            <div className={styles.imgBox}>
-                <img src={img} alt="" className={styles.img} />
-            </div>
+            {list.length === 0 && (
+                <div className={styles.imgBox}>
+                    <img src={img} alt="" className={styles.img} />
+                </div>
+            )}
 
             <Filter />
+
+            <div className={styles.feed}>
+                {list.map((item) => {
+                    return <FeedItem color={item} />;
+                })}
+            </div>
         </div>
     );
 }

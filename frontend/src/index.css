@@ -18,6 +18,10 @@
     --text700: #474747;
     --text800: #1b1b1b;
 
+    --accent100: #c8e2fb;
+    --accent200: #f7e4df;
+    --accent300: #dcd9f7;
+
     --mobileHorizontalPading: 20px;
     --desktopHorizontalPading: 40px;
 
@@ -30,9 +34,9 @@
     --shortTransition: 100ms ease-in-out;
 
     --scaleUp: scale(1.05);
-    --scaleDown: scale(0.95);
+    --scaleDown: scale(0.99);
 
-    .titleh1{
+    .titleh1 {
         font-weight: 400;
         font-size: 2.25rem;
         line-height: 3.125rem;
@@ -40,7 +44,7 @@
         color: var(--text700);
     }
 
-    .titleh2{
+    .titleh2 {
         font-weight: 600;
         font-size: 1.5rem;
         line-height: auto;
@@ -48,14 +52,14 @@
         color: var(--text700);
     }
 
-     .titleh3{
+    .titleh3 {
         font-weight: 500;
         font-size: 1.125rem;
         line-height: auto;
         letter-spacing: -2px;
         color: var(--text700);
     }
-    .p1{
+    .p1 {
         font-weight: 400;
         font-size: 1rem;
         line-height: auto;
@@ -63,9 +67,9 @@
         color: var(--text700);
     }
 
-     .p2{
+    .p2 {
         font-weight: 400;
-        font-size: .875rem;
+        font-size: 0.875rem;
         line-height: auto;
         letter-spacing: -1px;
         color: var(--text700);

@@ -6,6 +6,10 @@ const cssColors = {
     text600: getCssColor("--text600"),
     text700: getCssColor("--text700"),
     text800: getCssColor("--text800"),
+
+    accent100: getCssColor("--accent100"),
+    accent200: getCssColor("--accent200"),
+    accent300: getCssColor("--accent300"),
 };
 
 function getCssColor(colorName: string): string {

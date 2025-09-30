@@ -2,6 +2,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background-color: var(--bg100);
   padding-top: var(--mobileTopPading);
   padding: var(--mobileTopPading) var(--mobileHorizontalPading) 1.75rem var(--mobileHorizontalPading);
 }
