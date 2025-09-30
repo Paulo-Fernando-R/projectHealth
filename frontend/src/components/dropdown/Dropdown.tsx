@@ -45,7 +45,8 @@ export default function Dropdown({ itens, setSelected, placeholder }: DropdownPr
     };
 
     const onBlur = () => {
-        if (search === "") handleOpen(false);
+        alert("blur");
+        if (search.length === 0) handleOpen(false);
     };
 
     const clear = () => {
@@ -55,7 +56,7 @@ export default function Dropdown({ itens, setSelected, placeholder }: DropdownPr
     };
 
     return (
-        <div className={styles.dropBox} ref={listRef} onBlur={onBlur}>
+        <div className={styles.dropBox} ref={listRef} >
             <div className={styles.inputBox}>
                 <input
                     onChange={onChange}
@@ -63,6 +64,7 @@ export default function Dropdown({ itens, setSelected, placeholder }: DropdownPr
                     className={"p1 " + styles.field}
                     type="text"
                     placeholder={placeholder}
+                    onBlur={onBlur}
                 />
 
                 {search && <LuX onClick={clear} size={24} color={cssColors.text600} />}
@@ -95,6 +97,7 @@ export default function Dropdown({ itens, setSelected, placeholder }: DropdownPr
                             </li>
                         );
                 })}
+
             </ul>
         </div>
     );

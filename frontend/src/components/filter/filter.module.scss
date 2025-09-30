@@ -1,0 +1,30 @@
+.filterBox {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+.filters {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.inputBox {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    height: 3.125rem;
+    border: 1px solid var(--text600);
+    border-radius: 1.25rem;
+    padding: 0 1.25rem;
+
+    .field {
+        border: none;
+        width: 100%;
+        outline: none;
+        color: var(--text600);
+    }
+    .field::placeholder {
+        color: var(--text600);
+    }
+}
