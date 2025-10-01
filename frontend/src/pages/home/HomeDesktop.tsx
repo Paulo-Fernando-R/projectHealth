@@ -1,19 +1,14 @@
-import styles from "./home.module.css";
+import styles from "./homeDesktop.module.css";
 import img from "../../assets/images/doctor.png";
 import Filter from "../../components/filter/Filter";
 import FeedItem from "../../components/feedItem/FeedItem";
-import useDeviceType from "../../hooks/useDeviceType";
-import HomeDesktop from "./HomeDesktop";
 
-export default function Home() {
+export default function HomeDesktop() {
     const list = ["#C8E2FB", "#F7E4DF", "#DCD9F7"];
-    const device = useDeviceType();
 
-    if (device === "desktop") {
-        return <HomeDesktop />;
-    } else
-        return (
-            <div className={styles.container}>
+    return (
+        <div className={styles.container}>
+            <div className={styles.left}>
                 <div className={styles.head}>
                     <h1 className="titleh1">
                         Encontre os melhores lugares para <span>Cuidar</span> da Sua{" "}
@@ -24,12 +19,12 @@ export default function Home() {
                     </p>
                 </div>
 
-                {list.length === 0 && (
-                    <div className={styles.imgBox}>
-                        <img src={img} alt="" className={styles.img} />
-                    </div>
-                )}
+                <div className={styles.imgBox}>
+                    <img src={img} alt="" className={styles.img} />
+                </div>
+            </div>
 
+            <div className={styles.right}>
                 <Filter />
 
                 <div className={styles.feed}>
@@ -38,5 +33,6 @@ export default function Home() {
                     })}
                 </div>
             </div>
-        );
+        </div>
+    );
 }

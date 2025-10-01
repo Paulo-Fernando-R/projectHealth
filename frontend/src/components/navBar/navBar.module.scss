@@ -28,7 +28,8 @@
 
 @media (width > 1024px) {
     .header {
-        padding: var(--mobileTopPading) var(--desktopHorizontalPading) 0
+        padding: 1.5rem var(--desktopHorizontalPading) 0
             var(--desktopHorizontalPading);
     }
 }
+
