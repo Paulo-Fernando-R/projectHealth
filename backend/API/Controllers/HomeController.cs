@@ -5,13 +5,14 @@ namespace API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class HomeController(GetAllCitiesCase getAllCitiesCase) : ControllerBase
+    public class HomeController(GetAllCitiesCase getAllCitiesCase, GetAllTypesCase getAllTypesCase) : ControllerBase
     {
         private readonly GetAllCitiesCase getAllCitiesCase = getAllCitiesCase;
+        private readonly GetAllTypesCase getAllTypesCase = getAllTypesCase;
 
         [HttpPut]
         [Route("Search")]
-        public IActionResult Search()
+        public IActionResult Search(HomeSearchRequest request)
         {
             return Ok();
         }
@@ -20,7 +21,8 @@ namespace API.Controllers
         [Route("Types")]
         public IActionResult GetTypes()
         {
-            return Ok();
+            var response = getAllTypesCase.Execute();
+            return Ok(response);
         }
 
         [HttpGet]
@@ -31,5 +33,12 @@ namespace API.Controllers
 
             return Ok(cities);
         }
+    }
+
+    public class HomeSearchRequest
+    {
+        public string Name { get; set; } = string.Empty;
+        public IEnumerable<int>? Types { get; set; }
+        public IEnumerable<int>? Cities { get; set; }
     }
 }
