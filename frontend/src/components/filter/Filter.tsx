@@ -14,6 +14,24 @@ export default function Filter() {
         { id: 5, name: "Laranja" },
     ]);
 
+    const [list, setList] = React.useState<DropdowItem[]>([]);
+
+    async function fetchData() {
+        const response = await fetch("../../../public/lista6000.json");
+        const data = await response.json();
+        setList(data);
+    }
+
+    React.useEffect(() => {
+        fetchData();
+    }, []);
+
+    if (list.length === 0) {
+        return <div>Loading...</div>;
+    }
+
+
+
     return (
         <div className={styles.filterBox}>
             <div className={styles.inputBox}>
@@ -21,8 +39,8 @@ export default function Filter() {
                 <LuSearch size={24} color={cssColors.text600} />
             </div>
             <div className={styles.filters}>
-                <Dropdown itens={itens} setSelected={setSelected} placeholder={"Cidade"} />
-                <Dropdown itens={itens} setSelected={setSelected} placeholder={"Tipo"} />
+                <Dropdown itens={list} setSelected={setSelected} placeholder={"Cidade"} />
+                {/* <Dropdown itens={itens} setSelected={setSelected} placeholder={"Tipo"} /> */}
             </div>
         </div>
     );

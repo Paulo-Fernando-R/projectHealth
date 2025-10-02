@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from "./dropdown.module.css";
 import { LuChevronDown, LuChevronUp, LuX } from "react-icons/lu";
 import cssColors from "../../utils/cssColors";
@@ -18,13 +18,35 @@ export default function Dropdown({ itens, setSelected, placeholder }: DropdownPr
     const [open, setOpen] = useState(false);
     const [search, setSearch] = useState("");
 
+    const itensCount = 100;
+    const [display, setDisplay] = useState<DropdowItem[]>([]);
+
     const listRef = useRef<HTMLDivElement>(null);
     const isOpen = (control: boolean) => setOpen(control);
+
+    function filterItens(end: number, str: string = search) {
+        if (str.length > 0) {
+            const filtered = itens.filter((item) =>
+                item.name.toLowerCase().includes(str.toLowerCase())
+            );
+            setDisplay(filtered.slice(0, end));
+            return;
+        }
+        setDisplay(itens.slice(0, end));
+    }
+
+    const onScroll = (e: React.UIEvent<HTMLUListElement, UIEvent>) => {
+        if (e.currentTarget.scrollHeight - e.currentTarget.scrollTop < 200) {
+            filterItens(display.length + itensCount);
+            console.log(display.length);
+        }
+    };
 
     const handleOpen = (control: boolean) => {
         isOpen(control);
 
         listRef.current!.style.paddingTop = control ? "0.625rem" : "0";
+        listRef.current!.style.paddingBottom = control ? "0.625rem" : "0";
         listRef.current!.style.borderColor = control ? cssColors.primary200 : cssColors.text600;
 
         const el = listRef.current?.querySelector<HTMLUListElement>("#list");
@@ -33,7 +55,13 @@ export default function Dropdown({ itens, setSelected, placeholder }: DropdownPr
 
     const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         event.preventDefault();
+
+        const el = listRef.current?.querySelector<HTMLUListElement>("#list");
+        el!.scrollTop = 0;
+
         setSearch(event.target.value);
+        filterItens(itensCount, event.target.value);
+
         if (event.target.value === "") handleOpen(false);
         else handleOpen(true);
     };
@@ -52,10 +80,16 @@ export default function Dropdown({ itens, setSelected, placeholder }: DropdownPr
         setSearch("");
         setSelected(null);
         handleOpen(false);
+        const el = listRef.current?.querySelector<HTMLUListElement>("#list");
+        el!.scrollTop = 0;
     };
 
+    useEffect(() => {
+        filterItens(itensCount);
+    }, [itens]);
+
     return (
-        <div className={styles.dropBox} ref={listRef} >
+        <div className={styles.dropBox} ref={listRef}>
             <div className={styles.inputBox}>
                 <input
                     onChange={onChange}
@@ -83,20 +117,18 @@ export default function Dropdown({ itens, setSelected, placeholder }: DropdownPr
                 )}
             </div>
 
-            <ul className={styles.list} id="list">
-                {itens.map((item, index) => {
-                    if (item.name.toLowerCase().includes(search.toLowerCase()))
-                        return (
-                            <li
-                                key={index}
-                                className={"p1 " + styles.listItem}
-                                onClick={() => onSelect(item)}
-                            >
-                                {item.name}
-                            </li>
-                        );
+            <ul className={styles.list} id="list" onScroll={onScroll}>
+                {display.map((item, index) => {
+                    return (
+                        <li
+                            key={index}
+                            className={"p1 " + styles.listItem}
+                            onClick={() => onSelect(item)}
+                        >
+                            {item.name}
+                        </li>
+                    );
                 })}
-
             </ul>
         </div>
     );
