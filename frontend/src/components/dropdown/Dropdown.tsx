@@ -1,7 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useMemo, useRef, useState } from "react";
 import styles from "./dropdown.module.css";
 import { LuChevronDown, LuChevronUp, LuX } from "react-icons/lu";
 import cssColors from "../../utils/cssColors";
+import DropdownController from "./dropdownController";
 
 export type DropdowItem = {
     id: number;
@@ -17,76 +19,38 @@ export type DropdownProps = {
 export default function Dropdown({ itens, setSelected, placeholder }: DropdownProps) {
     const [open, setOpen] = useState(false);
     const [search, setSearch] = useState("");
-
-    const itensCount = 100;
     const [display, setDisplay] = useState<DropdowItem[]>([]);
-
     const listRef = useRef<HTMLDivElement>(null);
-    const isOpen = (control: boolean) => setOpen(control);
 
-    function filterItens(end: number, str: string = search) {
-        if (str.length > 0) {
-            const filtered = itens.filter((item) =>
-                item.name.toLowerCase().includes(str.toLowerCase())
-            );
-            setDisplay(filtered.slice(0, end));
-            return;
-        }
-        setDisplay(itens.slice(0, end));
-    }
+    const controller = new DropdownController(
+        listRef,
+        itens,
+        display,
+        setDisplay,
+        search,
+        setSearch,
+        open,
+        setOpen,
+        setSelected
+    );
 
-    const onScroll = (e: React.UIEvent<HTMLUListElement, UIEvent>) => {
-        if (e.currentTarget.scrollHeight - e.currentTarget.scrollTop < 200) {
-            filterItens(display.length + itensCount);
-            console.log(display.length);
-        }
-    };
+    const filterItens = (end: number, str: string = search) => controller.filterItens(end, str);
 
-    const handleOpen = (control: boolean) => {
-        isOpen(control);
+    const onScroll = (e: React.UIEvent<HTMLUListElement, UIEvent>) => controller.onScroll(e);
 
-        listRef.current!.style.paddingTop = control ? "0.625rem" : "0";
-        listRef.current!.style.paddingBottom = control ? "0.625rem" : "0";
-        listRef.current!.style.borderColor = control ? cssColors.primary200 : cssColors.text600;
+    const handleOpen = (control: boolean) => controller.handleOpen(control);
 
-        const el = listRef.current?.querySelector<HTMLUListElement>("#list");
-        el!.style.display = control ? "block" : "none";
-    };
+    const onChange = (event: React.ChangeEvent<HTMLInputElement>) => controller.onChange(event);
 
-    const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        event.preventDefault();
+    const onSelect = (item: DropdowItem) => controller.onSelect(item);
 
-        const el = listRef.current?.querySelector<HTMLUListElement>("#list");
-        el!.scrollTop = 0;
+    const onBlur = () => controller.onBlur();
 
-        setSearch(event.target.value);
-        filterItens(itensCount, event.target.value);
+    const clear = () => controller.clear();
 
-        if (event.target.value === "") handleOpen(false);
-        else handleOpen(true);
-    };
-
-    const onSelect = (item: DropdowItem) => {
-        setSelected(item);
-        setSearch(item.name);
-        handleOpen(false);
-    };
-
-    const onBlur = () => {
-        if (search.length === 0) handleOpen(false);
-    };
-
-    const clear = () => {
-        setSearch("");
-        setSelected(null);
-        handleOpen(false);
-        const el = listRef.current?.querySelector<HTMLUListElement>("#list");
-        el!.scrollTop = 0;
-    };
-
-    useEffect(() => {
-        filterItens(itensCount);
-    }, [itens]);
+    useMemo(() => {
+        filterItens(controller.itensCount);
+    }, []);
 
     return (
         <div className={styles.dropBox} ref={listRef}>
