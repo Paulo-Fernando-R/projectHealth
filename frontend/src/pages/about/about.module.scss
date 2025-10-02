@@ -12,6 +12,10 @@
     .p {
         text-align: left;
         color: var(--text600);
+        a{
+            color: var(--primary200);
+            text-decoration: underline;
+        }
     }
 }
 

@@ -11,6 +11,10 @@
   text-align: left;
   color: var(--text600);
 }
+.container .p a {
+  color: var(--primary200);
+  text-decoration: underline;
+}
 
 @media (width > 1024px) {
   .container {
