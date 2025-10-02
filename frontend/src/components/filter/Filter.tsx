@@ -26,9 +26,9 @@ export default function Filter() {
         fetchData();
     }, []);
 
-    if (list.length === 0) {
-        return <div>Loading...</div>;
-    }
+    // if (list.length === 0) {
+    //     return <div>Loading...</div>;
+    // }
 
 
 
@@ -40,7 +40,7 @@ export default function Filter() {
             </div>
             <div className={styles.filters}>
                 <Dropdown itens={list} setSelected={setSelected} placeholder={"Cidade"} />
-                {/* <Dropdown itens={itens} setSelected={setSelected} placeholder={"Tipo"} /> */}
+                <Dropdown itens={itens} setSelected={setSelected} placeholder={"Tipo"} />
             </div>
         </div>
     );

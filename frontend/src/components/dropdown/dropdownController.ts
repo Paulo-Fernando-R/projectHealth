@@ -38,14 +38,21 @@ export default class DropdownController {
     private isOpen = (control: boolean) => this.setOpen(control);
 
     filterItens(end: number, str: string) {
+
         if (str.length > 0) {
+
             const filtered = this.itens.filter((item) =>
                 item.name.toLowerCase().includes(str.toLowerCase())
             );
-            this.setDisplay(filtered.slice(0, end));
+
+            if (filtered.length <= this.itensCount) this.setDisplay(filtered);
+            else this.setDisplay(filtered.slice(0, end));
+            
             return;
         }
-        this.setDisplay(this.itens.slice(0, end));
+
+        if (this.itens.length <= this.itensCount) this.setDisplay(this.itens);
+        else this.setDisplay(this.itens.slice(0, end));
     }
 
     onScroll(e: React.UIEvent<HTMLUListElement, UIEvent>) {
@@ -59,6 +66,7 @@ export default class DropdownController {
 
         this.listRef.current!.style.paddingTop = control ? "0.625rem" : "0";
         this.listRef.current!.style.paddingBottom = control ? "0.625rem" : "0";
+        
         this.listRef.current!.style.borderColor = control
             ? cssColors.primary200
             : cssColors.text600;

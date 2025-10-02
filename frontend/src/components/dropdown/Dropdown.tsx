@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import styles from "./dropdown.module.css";
 import { LuChevronDown, LuChevronUp, LuX } from "react-icons/lu";
 import cssColors from "../../utils/cssColors";
@@ -52,6 +52,19 @@ export default function Dropdown({ itens, setSelected, placeholder }: DropdownPr
         filterItens(controller.itensCount);
     }, []);
 
+    useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (listRef.current && !listRef.current.contains(event.target as Node)) {
+                onBlur();
+            }
+        }
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [handleOpen]);
+
     return (
         <div className={styles.dropBox} ref={listRef}>
             <div className={styles.inputBox}>
@@ -61,7 +74,6 @@ export default function Dropdown({ itens, setSelected, placeholder }: DropdownPr
                     className={"p1 " + styles.field}
                     type="text"
                     placeholder={placeholder}
-                    onBlur={onBlur}
                 />
 
                 {search && <LuX onClick={clear} size={24} color={cssColors.text600} />}
@@ -82,17 +94,21 @@ export default function Dropdown({ itens, setSelected, placeholder }: DropdownPr
             </div>
 
             <ul className={styles.list} id="list" onScroll={onScroll}>
-                {display.map((item, index) => {
-                    return (
-                        <li
-                            key={index}
-                            className={"p1 " + styles.listItem}
-                            onClick={() => onSelect(item)}
-                        >
-                            {item.name}
-                        </li>
-                    );
-                })}
+                {!display || display.length === 0 ? (
+                    <li className={"p2 " + styles.listItem}>Nenhum item encontrado</li>
+                ) : (
+                    display.map((item, index) => {
+                        return (
+                            <li
+                                key={index}
+                                className={"p1 " + styles.listItem}
+                                onClick={() => onSelect(item)}
+                            >
+                                {item.name}
+                            </li>
+                        );
+                    })
+                )}
             </ul>
         </div>
     );
