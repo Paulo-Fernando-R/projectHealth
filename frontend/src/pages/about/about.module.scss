@@ -1,0 +1,35 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 1.5rem;
+
+    padding: 0 var(--mobileHorizontalPading);
+    padding-bottom: var(--mobileTopPading);
+    // min-height: 100dvh;
+
+    .p {
+        text-align: left;
+        color: var(--text600);
+        a{
+            color: var(--primary200);
+            text-decoration: underline;
+        }
+    }
+}
+
+@media(width > 1024px) {
+  .container {
+    padding: 0 var(--desktopHorizontalPading);
+    gap: 2rem;
+    width: 75%;
+  }
+}
+
+@media (width > 1500px) {
+  .container {
+    padding: 0 10%;
+    gap: 2rem;
+  }
+}

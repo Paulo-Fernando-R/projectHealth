@@ -1,7 +1,9 @@
-import { useRef, useState } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useEffect, useMemo, useRef, useState } from "react";
 import styles from "./dropdown.module.css";
 import { LuChevronDown, LuChevronUp, LuX } from "react-icons/lu";
 import cssColors from "../../utils/cssColors";
+import DropdownController from "./dropdownController";
 
 export type DropdowItem = {
     id: number;
@@ -17,45 +19,54 @@ export type DropdownProps = {
 export default function Dropdown({ itens, setSelected, placeholder }: DropdownProps) {
     const [open, setOpen] = useState(false);
     const [search, setSearch] = useState("");
-
+    const [display, setDisplay] = useState<DropdowItem[]>([]);
     const listRef = useRef<HTMLDivElement>(null);
-    const isOpen = (control: boolean) => setOpen(control);
 
-    const handleOpen = (control: boolean) => {
-        isOpen(control);
+    const controller = new DropdownController(
+        listRef,
+        itens,
+        display,
+        setDisplay,
+        search,
+        setSearch,
+        open,
+        setOpen,
+        setSelected
+    );
 
-        listRef.current!.style.paddingTop = control ? "0.625rem" : "0";
-        listRef.current!.style.borderColor = control ? cssColors.primary200 : cssColors.text600;
+    const filterItens = (end: number, str: string = search) => controller.filterItens(end, str);
 
-        const el = listRef.current?.querySelector<HTMLUListElement>("#list");
-        el!.style.display = control ? "block" : "none";
-    };
+    const onScroll = (e: React.UIEvent<HTMLUListElement, UIEvent>) => controller.onScroll(e);
 
-    const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        event.preventDefault();
-        setSearch(event.target.value);
-        if (event.target.value === "") handleOpen(false);
-        else handleOpen(true);
-    };
+    const handleOpen = (control: boolean) => controller.handleOpen(control);
 
-    const onSelect = (item: DropdowItem) => {
-        setSelected(item);
-        setSearch(item.name);
-        handleOpen(false);
-    };
+    const onChange = (event: React.ChangeEvent<HTMLInputElement>) => controller.onChange(event);
 
-    const onBlur = () => {
-        if (search.length === 0) handleOpen(false);
-    };
+    const onSelect = (item: DropdowItem) => controller.onSelect(item);
 
-    const clear = () => {
-        setSearch("");
-        setSelected(null);
-        handleOpen(false);
-    };
+    const onBlur = () => controller.onBlur();
+
+    const clear = () => controller.clear();
+
+    useMemo(() => {
+        filterItens(controller.itensCount);
+    }, []);
+
+    useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (listRef.current && !listRef.current.contains(event.target as Node)) {
+                onBlur();
+            }
+        }
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [handleOpen]);
 
     return (
-        <div className={styles.dropBox} ref={listRef} >
+        <div className={styles.dropBox} ref={listRef}>
             <div className={styles.inputBox}>
                 <input
                     onChange={onChange}
@@ -63,7 +74,6 @@ export default function Dropdown({ itens, setSelected, placeholder }: DropdownPr
                     className={"p1 " + styles.field}
                     type="text"
                     placeholder={placeholder}
-                    onBlur={onBlur}
                 />
 
                 {search && <LuX onClick={clear} size={24} color={cssColors.text600} />}
@@ -83,9 +93,11 @@ export default function Dropdown({ itens, setSelected, placeholder }: DropdownPr
                 )}
             </div>
 
-            <ul className={styles.list} id="list">
-                {itens.map((item, index) => {
-                    if (item.name.toLowerCase().includes(search.toLowerCase()))
+            <ul className={styles.list} id="list" onScroll={onScroll}>
+                {!display || display.length === 0 ? (
+                    <li className={"p2 " + styles.listItem}>Nenhum item encontrado</li>
+                ) : (
+                    display.map((item, index) => {
                         return (
                             <li
                                 key={index}
@@ -95,8 +107,8 @@ export default function Dropdown({ itens, setSelected, placeholder }: DropdownPr
                                 {item.name}
                             </li>
                         );
-                })}
-
+                    })
+                )}
             </ul>
         </div>
     );

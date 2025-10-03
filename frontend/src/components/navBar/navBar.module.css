@@ -28,6 +28,11 @@
 
 @media (width > 1024px) {
   .header {
-    padding: 1.5rem var(--desktopHorizontalPading) 0 var(--desktopHorizontalPading);
+    padding: 1.5rem var(--desktopHorizontalPading) 1rem var(--desktopHorizontalPading);
+  }
+}
+@media (width > 1500px) {
+  .header {
+    padding: 1.5rem 10% 1.75rem 10%;
   }
 }
