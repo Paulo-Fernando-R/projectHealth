@@ -1,6 +1,7 @@
 import styles from "./feedItem.module.css";
 import img from "../../assets/images/rafiki.png";
 import { useRef } from "react";
+import { useNavigate } from "react-router";
 
 export type FeedItemProps = {
     color: string;
@@ -8,6 +9,11 @@ export type FeedItemProps = {
 
 export default function FeedItem({ color }: FeedItemProps) {
     const ref = useRef<HTMLDivElement>(null);
+    const navigate = useNavigate();
+
+    const handleClick = () => {
+        navigate("/details");
+    };
 
     const onLoad = () => {
         if (ref.current) {
@@ -16,7 +22,7 @@ export default function FeedItem({ color }: FeedItemProps) {
     };
 
     return (
-        <div className={styles.feedItem} ref={ref} onLoad={onLoad}>
+        <div className={styles.feedItem} ref={ref} onLoad={onLoad} onClick={handleClick}>
             <div className={styles.titleBox}>
                 <img src={img} alt="" />
                 <h3 className={"titleh3 " + styles.title}>Hospital Sambiquiras Health</h3>
