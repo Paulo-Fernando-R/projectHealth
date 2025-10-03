@@ -13,13 +13,13 @@ namespace API.Cases
             var units = unitTypeRepository.GetAll().Select(x => new GetAllTypesResponse
             {
                 Description = x.TypeDescription,
-                Id = x.TypeCode,
+                TypeCode = x.TypeCode,
                 Type = TypeEnum.Unit,
             });
             var stablishments = stablishmentTypeRepository.GetAll().Select(x => new GetAllTypesResponse
             {
                 Description = x.TypeDescription,
-                Id = x.TypeCode,
+                TypeCode = x.TypeCode,
                 Type = TypeEnum.Stablishment,
             });
 
@@ -29,7 +29,7 @@ namespace API.Cases
 
     public class GetAllTypesResponse
     {
-        public int Id { get; set; }
+        public int TypeCode { get; set; }
         public TypeEnum Type { get; set; }
         public string Description { get; set; } = string.Empty;
     }
