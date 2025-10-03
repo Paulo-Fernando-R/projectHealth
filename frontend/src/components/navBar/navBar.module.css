@@ -16,6 +16,10 @@
   color: var(--primary200);
 }
 
+.left :hover {
+  cursor: pointer;
+}
+
 .right {
   display: flex;
   align-items: center;

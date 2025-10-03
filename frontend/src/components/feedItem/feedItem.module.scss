@@ -6,6 +6,7 @@
     padding: 1.25rem;
     background-color: var(--accent100);
     border-radius: 1.25rem;
+
 }
 
 .titleBox {
@@ -35,6 +36,7 @@
 .feedItem:hover{
     transition: var(--longTransition);
     filter: var(--smallShadow);
+    cursor: pointer;
 }
 
 .feedItem:active {
