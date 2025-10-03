@@ -1,4 +1,5 @@
-﻿using API.Repositories.Interfaces;
+﻿using API.Enums;
+using API.Repositories.Interfaces;
 
 namespace API.Cases
 {
@@ -12,14 +13,14 @@ namespace API.Cases
             var units = unitTypeRepository.GetAll().Select(x => new GetAllTypesResponse
             {
                 Description = x.TypeDescription,
-                Id = x.TypeCode,
-                Type = 1,
+                TypeCode = x.TypeCode,
+                Type = TypeEnum.Unit,
             });
             var stablishments = stablishmentTypeRepository.GetAll().Select(x => new GetAllTypesResponse
             {
                 Description = x.TypeDescription,
-                Id = x.TypeCode,
-                Type = 2,
+                TypeCode = x.TypeCode,
+                Type = TypeEnum.Stablishment,
             });
 
             return units.Concat(stablishments);
@@ -28,8 +29,8 @@ namespace API.Cases
 
     public class GetAllTypesResponse
     {
-        public int Id { get; set; }
-        public int Type { get; set; }
+        public int TypeCode { get; set; }
+        public TypeEnum Type { get; set; }
         public string Description { get; set; } = string.Empty;
     }
 }
