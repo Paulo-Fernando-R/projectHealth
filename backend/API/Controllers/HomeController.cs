@@ -1,4 +1,5 @@
 ﻿using API.Cases;
+using API.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -19,6 +20,7 @@ namespace API.Controllers
 
         [HttpGet]
         [Route("Types")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<GetAllTypesResponse>))]
         public IActionResult GetTypes()
         {
             var response = getAllTypesCase.Execute();
@@ -27,6 +29,7 @@ namespace API.Controllers
 
         [HttpGet]
         [Route("Cities")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<GetCityDto>))]
         public IActionResult GetCities()
         {
             var cities = getAllCitiesCase.Execute();
