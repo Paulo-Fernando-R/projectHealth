@@ -2,6 +2,7 @@ import { Route, Routes, BrowserRouter } from "react-router";
 import NavBar from "./components/navBar/NavBar";
 import Home from "./pages/home/Home";
 import About from "./pages/about/About";
+import Details from "./pages/details/Details";
 
 export default function AppRoutes() {
     return (
@@ -11,7 +12,7 @@ export default function AppRoutes() {
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/about" element={<About />} />
-
+                <Route path="/details" element={<Details />} />
                 <Route path="/profile" element={<h1>Profile</h1>} />
             </Routes>
         </BrowserRouter>

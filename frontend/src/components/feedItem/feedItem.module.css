@@ -35,6 +35,7 @@
 .feedItem:hover {
   transition: var(--longTransition);
   filter: var(--smallShadow);
+  cursor: pointer;
 }
 
 .feedItem:active {

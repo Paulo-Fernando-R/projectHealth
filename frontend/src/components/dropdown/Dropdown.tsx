@@ -40,7 +40,8 @@ export default function Dropdown({ itens, setSelected, placeholder }: DropdownPr
 
     const handleOpen = (control: boolean) => controller.handleOpen(control);
 
-    const onChange = (event: React.ChangeEvent<HTMLInputElement>) => controller.onChange(event);
+    const onChange = async (event: React.ChangeEvent<HTMLInputElement>) =>
+        await controller.onChange(event);
 
     const onSelect = (item: DropdowItem) => controller.onSelect(item);
 
@@ -50,7 +51,7 @@ export default function Dropdown({ itens, setSelected, placeholder }: DropdownPr
 
     useMemo(() => {
         filterItens(controller.itensCount);
-    }, []);
+    }, [itens]);
 
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {

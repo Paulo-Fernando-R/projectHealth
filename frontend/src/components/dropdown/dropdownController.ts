@@ -3,6 +3,7 @@ import type { DropdowItem } from "./Dropdown";
 
 export default class DropdownController {
     readonly itensCount = 100;
+    private debounceTimeout: ReturnType<typeof setTimeout> | null = null;
     listRef: React.RefObject<HTMLDivElement | null>;
     itens: DropdowItem[];
     display: DropdowItem[];
@@ -38,16 +39,14 @@ export default class DropdownController {
     private isOpen = (control: boolean) => this.setOpen(control);
 
     filterItens(end: number, str: string) {
-
         if (str.length > 0) {
-
             const filtered = this.itens.filter((item) =>
                 item.name.toLowerCase().includes(str.toLowerCase())
             );
 
             if (filtered.length <= this.itensCount) this.setDisplay(filtered);
             else this.setDisplay(filtered.slice(0, end));
-            
+
             return;
         }
 
@@ -66,7 +65,7 @@ export default class DropdownController {
 
         this.listRef.current!.style.paddingTop = control ? "0.625rem" : "0";
         this.listRef.current!.style.paddingBottom = control ? "0.625rem" : "0";
-        
+
         this.listRef.current!.style.borderColor = control
             ? cssColors.primary200
             : cssColors.text600;
@@ -75,17 +74,22 @@ export default class DropdownController {
         el!.style.display = control ? "block" : "none";
     }
 
-    onChange(event: React.ChangeEvent<HTMLInputElement>) {
+    async onChange(event: React.ChangeEvent<HTMLInputElement>) {
         event.preventDefault();
 
         const el = this.listRef.current?.querySelector<HTMLUListElement>("#list");
         el!.scrollTop = 0;
 
         this.setSearch(event.target.value);
-        this.filterItens(this.itensCount, event.target.value);
 
-        if (event.target.value === "") this.handleOpen(false);
-        else this.handleOpen(true);
+        if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
+
+        this.debounceTimeout = setTimeout(() => {
+            this.filterItens(this.itensCount, event.target.value);
+
+            if (event.target.value === "") this.handleOpen(false);
+            else this.handleOpen(true);
+        }, 700);
     }
 
     onSelect(item: DropdowItem) {

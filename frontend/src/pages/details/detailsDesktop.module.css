@@ -1,35 +1,49 @@
 .container {
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  flex-direction: row;
+  align-items: flex-start;
   justify-content: center;
   gap: 1.5rem;
   background-color: var(--bg100);
-  padding: 0 var(--mobileHorizontalPading);
+  padding: 0 var(--desktopHorizontalPading);
   padding-bottom: var(--mobileTopPading);
 }
-.container .imgBox {
-  width: 100%;
+
+.imgBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1rem;
+  width: 50%;
   -o-object-fit: cover;
      object-fit: cover;
-  aspect-ratio: 1/1;
   overflow: hidden;
   border-radius: 1.25rem;
 }
-.container .imgBox img {
+.imgBox img {
   width: 100%;
-  height: 100%;
+  height: auto;
+  max-width: 550px;
   -o-object-fit: cover;
      object-fit: cover;
+  border-radius: 1.25rem;
+}
+.imgBox .map {
+  width: 100%;
+  height: 200px;
+  background-color: var(--primary100);
+  border-radius: 1.25rem;
+  max-width: 550px;
 }
 
 .info {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  justify-content: center;
-  gap: 1.5rem;
-  width: 100%;
+  justify-content: flex-start;
+  gap: 2rem;
+  width: 50%;
 }
 
 .section1 {
@@ -37,7 +51,7 @@
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
-  gap: 0.75rem;
+  gap: 1.25rem;
 }
 .section1 span {
   display: flex;
@@ -53,7 +67,7 @@
   flex-direction: row;
   align-items: flex-start;
   justify-content: flex-start;
-  gap: 0.5rem;
+  gap: 0.75rem;
   flex-wrap: wrap;
 }
 .section2 div {
@@ -75,7 +89,7 @@
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
   list-style: none;
 }
 .section3 li {
@@ -84,4 +98,11 @@
   align-items: center;
   justify-content: flex-start;
   gap: 0.5rem;
+}
+
+@media (width > 1500px) {
+  .container {
+    padding: 0 10%;
+    gap: 4rem;
+  }
 }

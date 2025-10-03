@@ -1,19 +1,15 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import styles from "./details.module.css";
+import styles from "./detailsDesktop.module.css";
 import img from "../../assets/images/temp.png";
 import { LuHospital, LuPhone, LuMail, LuTag, LuCross } from "react-icons/lu";
 import cssColors from "../../utils/cssColors";
-import useDeviceType from "../../hooks/useDeviceType";
-import DetailsDesktop from "./DetailsDesktop";
-export default function Details() {
-    const device = useDeviceType();
-    if (device === "desktop") {
-        return <DetailsDesktop />;
-    }
+export default function DetailsDesktop() {
     return (
         <div className={styles.container}>
             <div className={styles.imgBox}>
                 <img src={img} alt="" />
+
+                <div className={styles.map}>MAP IFRAME HERE</div>
             </div>
 
             <div className={styles.info}>
@@ -69,8 +65,6 @@ export default function Details() {
                         </li>
                     ))}
                 </ul>
-
-                <div>MAP IFRAME HERE</div>
             </div>
         </div>
     );
