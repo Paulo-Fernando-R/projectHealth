@@ -4,10 +4,26 @@ import Filter from "../../components/filter/Filter";
 import FeedItem from "../../components/feedItem/FeedItem";
 import useDeviceType from "../../hooks/useDeviceType";
 import HomeDesktop from "./HomeDesktop";
+import { useQuery } from "@tanstack/react-query";
+import CustomAxios from "../../services/customAxios";
 
 export default function Home() {
     const list = ["#C8E2FB", "#F7E4DF", "#DCD9F7"];
     const device = useDeviceType();
+    const axios = new CustomAxios();
+
+    const {data, isLoading} = useQuery({
+        queryKey: ["cities"],
+        queryFn : async () => {
+            const res = axios.instance.get("/Home/Cities");
+            return res;
+        }
+    })
+
+    if(isLoading) {
+        return <div>Loading...</div>
+    }
+    console.log(data);
 
     if (device === "desktop") {
         return <HomeDesktop />;

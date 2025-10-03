@@ -4,10 +4,11 @@ import type { IcustomAxios } from "./IcustomAxios";
 
 export default class CustomAxios implements IcustomAxios {
     instance: AxiosInstance;
+    private readonly baseURL: string = import.meta.env.VITE_PUBLIC_API_URL;
 
     constructor() {
         this.instance = axios.create({
-            baseURL: "https://api.example.com",
+            baseURL: this.baseURL,
             timeout: 10000, // 10 seconds timeout
             headers: {
                 "Content-Type": "application/json",
