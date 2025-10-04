@@ -4,43 +4,39 @@ import Dropdown, { type DropdowItem } from "../dropdown/Dropdown";
 import styles from "./filter.module.css";
 import { LuSearch } from "react-icons/lu";
 import cssColors from "../../utils/cssColors";
-export default function Filter() {
-    const [selected, setSelected] = React.useState<DropdowItem | null>(null);
-    const [itens] = React.useState<DropdowItem[]>([
-        { id: 1, name: "Banana" },
-        { id: 2, name: "Melancia" },
-        { id: 3, name: "Avião" },
-        { id: 4, name: "Whiskey" },
-        { id: 5, name: "Laranja" },
-    ]);
 
-    const [list, setList] = React.useState<DropdowItem[]>([]);
+export type FilterProps = {
+    cities: DropdowItem[];
+    types: DropdowItem[];
+    setCitySelected: React.Dispatch<React.SetStateAction<DropdowItem | null>>;
+    setTypeSelected: React.Dispatch<React.SetStateAction<DropdowItem | null>>;
+    search: string;
+    setSearch: React.Dispatch<React.SetStateAction<string>>;
+};
 
-    async function fetchData() {
-        const response = await fetch("../../../public/lista6000.json");
-        const data = await response.json();
-        setList(data);
-    }
-
-    React.useEffect(() => {
-        fetchData();
-    }, []);
-
-    // if (list.length === 0) {
-    //     return <div>Loading...</div>;
-    // }
-
-
-
+export default function Filter({
+    cities,
+    types,
+    setCitySelected,
+    setTypeSelected,
+    search,
+    setSearch,
+}: FilterProps) {
     return (
         <div className={styles.filterBox}>
             <div className={styles.inputBox}>
-                <input type="text" className={"p1 " + styles.field} placeholder="Nome" />
+                <input
+                    type="text"
+                    className={"p1 " + styles.field}
+                    placeholder="Nome"
+                    value={search}
+                    onChange={(e) => setSearch?.(e.target.value)}
+                />
                 <LuSearch size={24} color={cssColors.text600} />
             </div>
             <div className={styles.filters}>
-                <Dropdown itens={list} setSelected={setSelected} placeholder={"Cidade"} />
-                <Dropdown itens={itens} setSelected={setSelected} placeholder={"Tipo"} />
+                <Dropdown itens={cities} setSelected={setCitySelected} placeholder={"Cidade"} />
+                <Dropdown itens={types} setSelected={setTypeSelected} placeholder={"Tipo"} />
             </div>
         </div>
     );

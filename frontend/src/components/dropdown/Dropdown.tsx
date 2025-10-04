@@ -72,7 +72,7 @@ export default function Dropdown({ itens, setSelected, placeholder }: DropdownPr
                 <input
                     onChange={onChange}
                     value={search}
-                    className={"p1 " + styles.field}
+                    className={"p2 " + styles.field}
                     type="text"
                     placeholder={placeholder}
                 />

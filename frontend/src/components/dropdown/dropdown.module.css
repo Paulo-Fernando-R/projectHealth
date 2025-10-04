@@ -48,7 +48,8 @@
   -webkit-user-select: none;
      -moz-user-select: none;
           user-select: none;
-  height: 2rem;
+  min-height: 2rem;
+  padding: 0.5rem 0;
 }
 
 .dropBox:hover {

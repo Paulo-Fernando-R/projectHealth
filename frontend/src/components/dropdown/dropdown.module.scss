@@ -38,12 +38,14 @@
     max-height: 160px;
     overflow-y: scroll;
     list-style: none;
+  
 
     .listItem {
         cursor: pointer;
         color: var(--text600);
         user-select: none;
-        height: 2rem;
+        min-height: 2rem;
+        padding: .5rem 0;
     }
 }
 
