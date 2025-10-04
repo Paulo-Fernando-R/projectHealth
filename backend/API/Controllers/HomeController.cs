@@ -35,9 +35,8 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<GetCityDto>))]
         public IActionResult GetCities()
         {
-            var cities = getAllCitiesCase.Execute();
-
-            return Ok(cities);
+            var response = getAllCitiesCase.Execute();
+            return Ok(response);
         }
     }
 
