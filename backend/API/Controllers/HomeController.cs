@@ -14,6 +14,7 @@ namespace API.Controllers
 
         [HttpPut]
         [Route("Search")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<SearchResponse>))]
         public IActionResult Search(HomeSearchRequest request)
         {
             var response = searchCase.Execute(request.Name, request.Types, request.Cities);
