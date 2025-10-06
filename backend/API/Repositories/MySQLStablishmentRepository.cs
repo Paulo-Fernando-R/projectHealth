@@ -8,7 +8,7 @@ namespace API.Repositories
     {
         private readonly IDbConnection connection = connection;
 
-        public IEnumerable<dynamic> Search(string? name, IEnumerable<int>? unitCodes, IEnumerable<int>? stablishmentCodes, IEnumerable<string>? cityCodes)
+        public IEnumerable<SearchDto> Search(string? name, IEnumerable<int>? unitCodes, IEnumerable<int>? stablishmentCodes, IEnumerable<string>? cityCodes)
         {
             string? units = null;
             if (unitCodes != null)
@@ -23,12 +23,13 @@ namespace API.Repositories
                 cities = string.Join(", ", cityCodes);
 
             string sql = @$"
-SELECT * 
-FROM stablishment
+SELECT susId, fantasyName, addressNumber, address, addressDistrict, phone, c.cityName, c.state
+FROM stablishment AS s
+INNER JOIN city AS c ON c.cityCode = s.cityCode
 WHERE IF(@name IS NULL, TRUE, fantasyName LIKE '%{name}%')
     AND IF (@units IS NULL, TRUE, unitTypeCode IN ('{units}'))
     AND IF (@stablishments IS NULL, TRUE, stablishmentTypeCode IN ('{stablishments}'))
-    AND IF (@cities IS NULL, TRUE, cityCode IN ('{cities}'))
+    AND IF (@cities IS NULL, TRUE, s.cityCode IN ('{cities}'))
 LIMIT 100;
 ";
 
@@ -40,7 +41,7 @@ LIMIT 100;
                 cities
             };
 
-            return connection.Query(sql, data);
+            return connection.Query<SearchDto>(sql, data);
         }
     }
 }

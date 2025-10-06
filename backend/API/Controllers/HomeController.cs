@@ -14,6 +14,7 @@ namespace API.Controllers
 
         [HttpPut]
         [Route("Search")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<SearchResponse>))]
         public IActionResult Search(HomeSearchRequest request)
         {
             var response = searchCase.Execute(request.Name, request.Types, request.Cities);
@@ -34,9 +35,8 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<GetCityDto>))]
         public IActionResult GetCities()
         {
-            var cities = getAllCitiesCase.Execute();
-
-            return Ok(cities);
+            var response = getAllCitiesCase.Execute();
+            return Ok(response);
         }
     }
 
