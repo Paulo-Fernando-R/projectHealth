@@ -12,6 +12,7 @@ export type FilterProps = {
     setTypeSelected: React.Dispatch<React.SetStateAction<DropdowItem | null>>;
     search: string;
     setSearch: React.Dispatch<React.SetStateAction<string>>;
+    action: VoidFunction;
 };
 
 export default function Filter({
@@ -21,6 +22,7 @@ export default function Filter({
     setTypeSelected,
     search,
     setSearch,
+    action,
 }: FilterProps) {
     return (
         <div className={styles.filterBox}>
@@ -32,7 +34,7 @@ export default function Filter({
                     value={search}
                     onChange={(e) => setSearch?.(e.target.value)}
                 />
-                <LuSearch size={24} color={cssColors.text600} />
+                <LuSearch size={24} color={cssColors.text600} onClick={action} />
             </div>
             <div className={styles.filters}>
                 <Dropdown itens={cities} setSelected={setCitySelected} placeholder={"Cidade"} />

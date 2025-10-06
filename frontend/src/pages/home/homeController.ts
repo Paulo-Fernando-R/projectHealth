@@ -5,18 +5,25 @@ import type IMetadataRepository from "../../repositories/ImetadataRepository";
 import MetadataRepository from "../../repositories/metadataRepository";
 import CustomAxios from "../../services/customAxios";
 import type { IcustomAxios } from "../../services/IcustomAxios";
+import GetStablishmentsCase from "../../cases/getStablishmentsCase";
+import StablishmentRepository from "../../repositories/stablishmentRepository";
+import type IStablishmentRepository from "../../repositories/IstablishmentRepository";
 
 export default class HomeController {
     axios: IcustomAxios;
     repository: IMetadataRepository;
+    stablishmentRepository: IStablishmentRepository;
     getCitiesCase: GetCitiesCase;
     getTypesCase: GetTypesCase;
+    getStablishmentsCase: GetStablishmentsCase;
 
     constructor() {
         this.axios = new CustomAxios();
         this.repository = new MetadataRepository(this.axios);
+        this.stablishmentRepository = new StablishmentRepository(this.axios);
         this.getCitiesCase = new GetCitiesCase(this.repository);
         this.getTypesCase = new GetTypesCase(this.repository);
+        this.getStablishmentsCase = new GetStablishmentsCase(this.stablishmentRepository);
     }
 
     async getCities() {
@@ -32,13 +39,29 @@ export default class HomeController {
         const res2 = await this.getTypesCase.execute();
 
         const cities: DropdowItem[] = res1.map((city) => {
-            return { id: parseInt(city.code), name: `${city.name} (${city.state})` };
+            return { id: city.code, name: `${city.name} (${city.state})` };
         });
 
         const types: DropdowItem[] = res2.map((type) => {
-            return { id: parseInt(type.typeCode), name: type.description };
+            return { id: `${type.typeCode}-${type.type}`, name: type.description };
         });
 
         return { cities, types };
+    }
+    splitType(type: string) {
+        const parts = type.split("-");
+        return { typeCode: parts[0], type: parts[1] };
+    }
+
+    async getStablishments(city: DropdowItem | null, stabType: DropdowItem | null, search: string) {
+        const { typeCode, type } = stabType
+            ? this.splitType(stabType.id)
+            : { typeCode: "", type: "" };
+        return await this.getStablishmentsCase.execute(
+            city?.id ? city.id : "",
+            type,
+            typeCode,
+            search
+        );
     }
 }
