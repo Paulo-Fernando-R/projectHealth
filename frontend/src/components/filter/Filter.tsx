@@ -32,7 +32,7 @@ export default function Filter({
                     className={"p1 " + styles.field}
                     placeholder="Nome"
                     value={search}
-                    onChange={(e) => setSearch?.(e.target.value)}
+                    onChange={(e) => setSearch(e.target.value)}
                 />
                 <LuSearch size={24} color={cssColors.text600} onClick={action} />
             </div>

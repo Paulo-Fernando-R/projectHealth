@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import styles from "./home.module.css";
 import img from "../../assets/images/doctor.png";
 import Filter from "../../components/filter/Filter";
@@ -7,16 +6,17 @@ import FeedItem from "../../components/feedItem/FeedItem";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import HomeController from "./homeController";
 import type { DropdowItem } from "../../components/dropdown/Dropdown";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function HomeMobile() {
-    const list = ["#C8E2FB", "#F7E4DF", "#DCD9F7"];
-
     const controller = new HomeController();
     const [city, setCity] = useState<DropdowItem | null>(null);
     const [type, setType] = useState<DropdowItem | null>(null);
     const [search, setSearch] = useState("");
+    const [showImg, setShowImg] = useState(true);
     const firstRender = useRef(true);
+
+    const switchImg = (control: boolean) => setShowImg(control);
 
     const { data, isLoading } = useQuery({
         queryKey: ["cities"],
@@ -27,10 +27,18 @@ export default function HomeMobile() {
     const mutation = useMutation({
         mutationKey: ["stablishments", city, type, search],
         mutationFn: () => controller.getStablishments(city, type, search),
-        onSuccess: () => {},
+        onMutate: () => {
+            console.log("mutate");
+            switchImg(false);
+        },
+
+        onSuccess: (data) => {
+            if (data?.length === 0) switchImg(true);
+        },
     });
 
     const action = () => {
+        console.log("action");
         mutation.mutate();
     };
 
@@ -40,12 +48,11 @@ export default function HomeMobile() {
             return;
         }
         action();
-        
     }, [city, type]);
 
-    if (isLoading || !data) {
-        return <div>Loading...</div>;
-    }
+    //!TODO FIX SEARCH BUG
+
+    console.log(mutation.data);
 
     return (
         <div className={styles.container}>
@@ -58,27 +65,36 @@ export default function HomeMobile() {
                 </p>
             </div>
 
-            {list.length !== 0 && (
+            {showImg && (
                 <div className={styles.imgBox}>
                     <img src={img} alt="" className={styles.img} />
                 </div>
             )}
 
-            <Filter
-                cities={data.cities}
-                types={data.types}
-                setCitySelected={setCity}
-                setTypeSelected={setType}
-                search={search}
-                setSearch={setSearch}
-                action={action}
-            />
+            {isLoading || !data ? (
+                <div>Loading...</div>
+            ) : (
+                <Filter
+                    cities={data.cities}
+                    types={data.types}
+                    setCitySelected={setCity}
+                    setTypeSelected={setType}
+                    search={search}
+                    setSearch={setSearch}
+                    action={action}
+                />
+            )}
+            {!mutation.data && <h2 className="titleh2">Resultados</h2>}
 
-            <div className={styles.feed}>
-                {mutation.data?.map((item, index) => {
-                    return <FeedItem key={index} color={item.color} />;
-                })}
-            </div>
+            {mutation.isPending ? (
+                <div>Loading...</div>
+            ) : (
+                <div className={styles.feed}>
+                    {mutation.data?.map((item, index) => {
+                        return <FeedItem key={index} color={item.color} data={item.data} />;
+                    })}
+                </div>
+            )}
         </div>
     );
 }

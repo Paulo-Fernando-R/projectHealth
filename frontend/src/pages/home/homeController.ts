@@ -55,6 +55,8 @@ export default class HomeController {
     }
 
     async getStablishments(city: DropdowItem | null, stabType: DropdowItem | null, search: string) {
+       
+       console.log("controller")
         const { typeCode, type } = stabType
             ? this.splitType(stabType.id)
             : { typeCode: "", type: "" };
@@ -69,7 +71,7 @@ export default class HomeController {
         return res.map((e) => {
             const randomIndex = Math.floor(Math.random() * feedColors.length);
 
-            return { ...e, color: feedColors[randomIndex] };
+            return { data: e, color: feedColors[randomIndex] };
         });
     }
 }

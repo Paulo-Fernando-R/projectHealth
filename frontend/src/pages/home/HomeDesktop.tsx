@@ -2,9 +2,45 @@ import styles from "./homeDesktop.module.css";
 import img from "../../assets/images/doctor.png";
 import Filter from "../../components/filter/Filter";
 import FeedItem from "../../components/feedItem/FeedItem";
+import { useEffect, useRef, useState } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import HomeController from "./homeController";
+import type { DropdowItem } from "../../components/dropdown/Dropdown";
 
 export default function HomeDesktop() {
-    const list = ["#C8E2FB", "#F7E4DF", "#DCD9F7"];
+    const controller = new HomeController();
+    const [city, setCity] = useState<DropdowItem | null>(null);
+    const [type, setType] = useState<DropdowItem | null>(null);
+    const [search, setSearch] = useState("");
+    const firstRender = useRef(true);
+    
+
+    const { data, isLoading } = useQuery({
+        queryKey: ["cities"],
+        queryFn: () => controller.getMetadata(),
+        staleTime: 1000 * 60 * 60, // 60 minutes
+    });
+
+    const mutation = useMutation({
+        mutationKey: ["stablishments", city, type, search],
+        mutationFn: () => controller.getStablishments(city, type, search),
+    });
+
+    const action = () => {
+        mutation.mutate();
+    };
+
+    useEffect(() => {
+        if (firstRender.current) {
+            firstRender.current = false;
+            return;
+        }
+        action();
+    }, [city, type]);
+
+    if (isLoading || !data) {
+        return <div>Loading...</div>;
+    }
 
     return (
         <div className={styles.container}>
@@ -25,11 +61,19 @@ export default function HomeDesktop() {
             </div>
 
             <div className={styles.right}>
-                <Filter />
+                <Filter
+                    cities={data.cities}
+                    types={data.types}
+                    setCitySelected={setCity}
+                    setTypeSelected={setType}
+                    search={search}
+                    setSearch={setSearch}
+                    action={action}
+                />
 
                 <div className={styles.feed}>
-                    {list.map((item, index) => {
-                        return <FeedItem key={index} color={item} />;
+                    {mutation.data?.map((item, index) => {
+                        return <FeedItem key={index} color={item.color} data={item.data} />;
                     })}
                 </div>
             </div>
