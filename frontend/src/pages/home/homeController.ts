@@ -8,6 +8,7 @@ import type { IcustomAxios } from "../../services/IcustomAxios";
 import GetStablishmentsCase from "../../cases/getStablishmentsCase";
 import StablishmentRepository from "../../repositories/stablishmentRepository";
 import type IStablishmentRepository from "../../repositories/IstablishmentRepository";
+import { feedColors } from "../../utils/cssColors";
 
 export default class HomeController {
     axios: IcustomAxios;
@@ -57,11 +58,18 @@ export default class HomeController {
         const { typeCode, type } = stabType
             ? this.splitType(stabType.id)
             : { typeCode: "", type: "" };
-        return await this.getStablishmentsCase.execute(
+
+        const res = await this.getStablishmentsCase.execute(
             city?.id ? city.id : "",
             type,
             typeCode,
             search
         );
+
+        return res.map((e) => {
+            const randomIndex = Math.floor(Math.random() * feedColors.length);
+
+            return { ...e, color: feedColors[randomIndex] };
+        });
     }
 }

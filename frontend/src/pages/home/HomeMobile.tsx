@@ -7,7 +7,7 @@ import FeedItem from "../../components/feedItem/FeedItem";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import HomeController from "./homeController";
 import type { DropdowItem } from "../../components/dropdown/Dropdown";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 export default function HomeMobile() {
     const list = ["#C8E2FB", "#F7E4DF", "#DCD9F7"];
@@ -27,16 +27,20 @@ export default function HomeMobile() {
     const mutation = useMutation({
         mutationKey: ["stablishments", city, type, search],
         mutationFn: () => controller.getStablishments(city, type, search),
+        onSuccess: () => {},
     });
 
-    async function action() {
-        await mutation.mutateAsync();
-    }
+    const action = () => {
+        mutation.mutate();
+    };
 
     useEffect(() => {
-        if (!firstRender.current) {
-            action();
+        if (firstRender.current) {
+            firstRender.current = false;
+            return;
         }
+        action();
+        
     }, [city, type]);
 
     if (isLoading || !data) {
@@ -71,8 +75,8 @@ export default function HomeMobile() {
             />
 
             <div className={styles.feed}>
-                {list.map((item, index) => {
-                    return <FeedItem key={index} color={item} />;
+                {mutation.data?.map((item, index) => {
+                    return <FeedItem key={index} color={item.color} />;
                 })}
             </div>
         </div>

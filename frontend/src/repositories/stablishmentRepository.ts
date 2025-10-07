@@ -23,21 +23,15 @@ export default class StablishmentRepository implements IStablishmentRepository {
                 type && typeCode
                     ? [
                           {
-                              type: type,
-                              typeCode: typeCode,
+                              type: parseInt(type),
+                              typeCode: parseInt(typeCode),
                           },
                       ]
                     : [],
-            cities: cityCode
-                ? [
-                      {
-                          code: cityCode,
-                      },
-                  ]
-                : [],
+            cities: cityCode ? [cityCode] : [],
         };
-        try {
 
+        try {
             const res = await this.axios.instance.put<StablishmentModel[]>("/Home/Search", data);
 
             if (res.status === 400) {

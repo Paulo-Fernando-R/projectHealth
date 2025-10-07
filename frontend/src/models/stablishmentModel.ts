@@ -9,4 +9,5 @@ export default interface StablishmentModel {
         state: string;
     };
     phone: string;
+    color?: string;
 }
