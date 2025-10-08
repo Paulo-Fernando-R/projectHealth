@@ -6,7 +6,7 @@ import cssColors from "../../utils/cssColors";
 import DropdownController from "./dropdownController";
 
 export type DropdowItem = {
-    id: number;
+    id: string;
     name: string;
 };
 

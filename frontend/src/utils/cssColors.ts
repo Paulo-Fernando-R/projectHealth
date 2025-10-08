@@ -12,6 +12,8 @@ const cssColors = {
     accent300: getCssColor("--accent300"),
 };
 
+export const feedColors = [cssColors.accent100, cssColors.accent200, cssColors.accent300];
+
 function getCssColor(colorName: string): string {
     const root = getComputedStyle(document.documentElement);
     return root.getPropertyValue(colorName).trim();
