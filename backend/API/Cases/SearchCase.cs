@@ -13,23 +13,23 @@ namespace API.Cases
     {
         private readonly IStablishmentRepository stablishmentRepository = stablishmentRepository;
 
-        public IEnumerable<SearchResponse> Execute(string name, IEnumerable<SearchTypeRequest> types, IEnumerable<string> cities)
+        public IEnumerable<SearchResponse> Execute(string? name, IEnumerable<SearchTypeRequest>? types, IEnumerable<string>? cities, int skip, int limit)
         {
-            string? value = name;
-            if (string.IsNullOrEmpty(value))
-                value = null;
+            string? value = null;
+            if (!string.IsNullOrEmpty(name))
+                value = name;
 
             IEnumerable<int>? unitCodes = null;
-            if (types.Any(x => x.Type == TypeEnum.Unit))
+            if (types != null && types.Any(x => x.Type == TypeEnum.Unit))
                 unitCodes = types.Where(x => x.Type == TypeEnum.Unit).Select(x => x.TypeCode);
 
             IEnumerable<int>? stablishmentCodes = null;
-            if (types.Any(x => x.Type == TypeEnum.Stablishment))
+            if (types != null && types.Any(x => x.Type == TypeEnum.Stablishment))
                 stablishmentCodes = types.Where(x => x.Type == TypeEnum.Stablishment).Select(x => x.TypeCode);
 
-            var cityCodes = cities.Any() ? cities : null;
+            var cityCodes = cities != null && cities.Any() ? cities : null;
 
-            return stablishmentRepository.Search(value, unitCodes, stablishmentCodes, cityCodes).Select(x =>
+            var response = stablishmentRepository.Search(value, unitCodes, stablishmentCodes, cityCodes, skip, limit).Select(x =>
             {
                 var address = new SearchAddressResponse
                 {
@@ -50,6 +50,7 @@ namespace API.Cases
                     SusId = x.SusId,
                 };
             });
+            return response;
         }
     }
 

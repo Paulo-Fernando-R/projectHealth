@@ -2,7 +2,7 @@
 {
     public interface IStablishmentRepository
     {
-        IEnumerable<SearchDto> Search(string? name, IEnumerable<int>? unitCodes, IEnumerable<int>? stablishmentCodes, IEnumerable<string>? cityCodes);
+        IEnumerable<SearchDto> Search(string? name, IEnumerable<int>? unitCodes, IEnumerable<int>? stablishmentCodes, IEnumerable<string>? cityCodes, int skip, int limit);
     }
 
     public class SearchDto

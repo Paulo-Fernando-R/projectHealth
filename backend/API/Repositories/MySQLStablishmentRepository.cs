@@ -8,7 +8,7 @@ namespace API.Repositories
     {
         private readonly IDbConnection connection = connection;
 
-        public IEnumerable<SearchDto> Search(string? name, IEnumerable<int>? unitCodes, IEnumerable<int>? stablishmentCodes, IEnumerable<string>? cityCodes)
+        public IEnumerable<SearchDto> Search(string? name, IEnumerable<int>? unitCodes, IEnumerable<int>? stablishmentCodes, IEnumerable<string>? cityCodes, int skip, int limit)
         {
             string? units = null;
             if (unitCodes != null)
@@ -30,7 +30,8 @@ WHERE IF(@name IS NULL, TRUE, fantasyName LIKE '%{name}%')
     AND IF (@units IS NULL, TRUE, unitTypeCode IN ('{units}'))
     AND IF (@stablishments IS NULL, TRUE, stablishmentTypeCode IN ('{stablishments}'))
     AND IF (@cities IS NULL, TRUE, s.cityCode IN ('{cities}'))
-LIMIT 100;
+LIMIT @limit 
+OFFSET @skip;
 ";
 
             var data = new
@@ -38,7 +39,9 @@ LIMIT 100;
                 name,
                 units,
                 stablishments,
-                cities
+                cities,
+                limit,
+                skip
             };
 
             return connection.Query<SearchDto>(sql, data);
