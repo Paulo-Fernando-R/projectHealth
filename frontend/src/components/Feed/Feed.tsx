@@ -1,21 +1,14 @@
 import styles from "./feed.module.css";
 import FeedItem, { type FeedItemProps } from "../feedItem/FeedItem";
-import { useRef } from "react";
 
 export type FeedProps = {
     data: FeedItemProps[];
+    onDataEnd: VoidFunction;
 };
 
-export default function Feed({ data }: FeedProps) {
-    const ref = useRef<HTMLDivElement>(null);
-
-    function action() {
-        console.log("action");
-    }
-
+export default function Feed({ data, onDataEnd }: FeedProps) {
     function onScroll(e: React.UIEvent<HTMLDivElement, UIEvent>) {
         e.currentTarget.style.paddingTop = "40px";
-        // e.currentTarget.style.paddingBottom = "40px";
 
         const first = e.currentTarget.children[0] as HTMLDivElement;
         const last = e.currentTarget.children[
@@ -32,7 +25,7 @@ export default function Feed({ data }: FeedProps) {
                 e.currentTarget.clientHeight <
             150
         ) {
-            action();
+            onDataEnd();
         }
 
         if (
@@ -41,7 +34,7 @@ export default function Feed({ data }: FeedProps) {
                 e.currentTarget.clientHeight <
             1
         ) {
-            ref.current?.scrollIntoView({ behavior: "smooth" });
+            e.currentTarget.scrollIntoView({ behavior: "smooth" });
         } else {
             e.currentTarget.style.paddingBottom = "40px";
             if (last) {
@@ -66,7 +59,6 @@ export default function Feed({ data }: FeedProps) {
                 e.currentTarget.clientHeight <
             1
         ) {
-            console.log("scrollEnd");
             e.currentTarget.style.paddingBottom = "0px";
 
             const last = e.currentTarget.children[

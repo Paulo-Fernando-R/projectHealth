@@ -80,7 +80,11 @@ export default function HomeMobile() {
             )}
             {!mutation.data && <h2 className="titleh2">Resultados</h2>}
 
-            {mutation.isPending ? <div>Loading...</div> : <Feed data={mutation.data!} />}
+            {mutation.isPending ? (
+                <div>Loading...</div>
+            ) : (
+                <Feed data={mutation.data!} onDataEnd={action} />
+            )}
         </div>
     );
 }
