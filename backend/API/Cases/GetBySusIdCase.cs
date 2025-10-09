@@ -24,6 +24,16 @@ namespace API.Cases
                 State = stablishment.State,
             };
 
+            GetStablishmentGeopositionBySusIdResponse? geoposition = null;
+            if (!string.IsNullOrEmpty(stablishment.Latitude) && !string.IsNullOrEmpty(stablishment.Longitude))
+            {
+                geoposition = new GetStablishmentGeopositionBySusIdResponse
+                {
+                    Latitude = stablishment.Latitude,
+                    Longitude = stablishment.Longitude
+                };
+            }
+
             var response = new GetStablishmentBySusIdResponse
             {
                 SusId = susId,
@@ -32,6 +42,7 @@ namespace API.Cases
                 FantasyName = stablishment.FantasyName,
                 Phone = stablishment.Phone,
                 Services = services,
+                Geoposition = geoposition,
             };
 
             return response;
@@ -46,5 +57,12 @@ namespace API.Cases
         public string Email { get; set; } = string.Empty;
         public required AddressResponse Address {  get; set; }
         public IEnumerable<string> Services { get; set; } = [];
+        public GetStablishmentGeopositionBySusIdResponse? Geoposition { get; set; }
+    }
+
+    public class GetStablishmentGeopositionBySusIdResponse
+    {
+        public string Latitude { get; set; } = string.Empty;
+        public string Longitude { get; set; } = string.Empty;
     }
 }
