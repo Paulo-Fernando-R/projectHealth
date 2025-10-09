@@ -25,7 +25,7 @@ export default function HomeMobile() {
     });
 
     const mutation = useMutation({
-        mutationKey: ["stablishments", city, type, search],
+        mutationKey: ["stablishments"],
         mutationFn: () => controller.getStablishments(city, type, search),
         onMutate: () => {
             console.log("mutate");
@@ -49,10 +49,6 @@ export default function HomeMobile() {
         }
         action();
     }, [city, type]);
-
-    //!TODO FIX SEARCH BUG
-
-    console.log(mutation.data);
 
     return (
         <div className={styles.container}>
