@@ -5,6 +5,7 @@ export default interface IStablishmentRepository {
         cityCode?: string,
         typeCode?: string,
         type?: string,
-        name?: string
+        name?: string,
+        page?: number
     ): Promise<StablishmentModel[]>;
 }

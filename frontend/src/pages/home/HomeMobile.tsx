@@ -2,11 +2,11 @@
 import styles from "./home.module.css";
 import img from "../../assets/images/doctor.png";
 import Filter from "../../components/filter/Filter";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
 import HomeController from "./homeController";
 import type { DropdowItem } from "../../components/dropdown/Dropdown";
 import { useEffect, useRef, useState } from "react";
-import Feed from "../../components/Feed/Feed";
+import Feed, { FeedError, FeedPlaceholder } from "../../components/Feed/Feed";
 
 export default function HomeMobile() {
     const controller = new HomeController();
@@ -16,36 +16,35 @@ export default function HomeMobile() {
     const [showImg, setShowImg] = useState(true);
     const firstRender = useRef(true);
 
-    const switchImg = (control: boolean) => setShowImg(control);
-
     const { data, isLoading } = useQuery({
         queryKey: ["cities"],
         queryFn: () => controller.getMetadata(),
         staleTime: 1000 * 60 * 60, // 60 minutes
     });
 
-    const mutation = useMutation({
-        mutationKey: ["stablishments"],
-        mutationFn: () => controller.getStablishments(city, type, search),
-        onMutate: () => {
-            switchImg(false);
-        },
-
-        onSuccess: (data) => {
-            if (data?.length === 0) switchImg(true);
-        },
+    const infiniteQuery = useInfiniteQuery({
+        queryKey: ["stablishments"],
+        queryFn: ({ pageParam }) => controller.getStablishments(city, type, search, pageParam),
+        initialPageParam: 0,
+        getNextPageParam: controller.handleNextPage,
+        enabled: false,
     });
 
-    const action = () => {
-        mutation.mutate();
-    };
+    function refetch() {
+        infiniteQuery.refetch();
+        setShowImg(false);
+    }
+    function fetchNextPage() {
+        infiniteQuery.fetchNextPage();
+    }
 
     useEffect(() => {
         if (firstRender.current) {
             firstRender.current = false;
             return;
         }
-        action();
+
+        refetch();
     }, [city, type]);
 
     return (
@@ -75,15 +74,18 @@ export default function HomeMobile() {
                     setTypeSelected={setType}
                     search={search}
                     setSearch={setSearch}
-                    action={action}
+                    action={refetch}
                 />
             )}
-            {!mutation.data && <h2 className="titleh2">Resultados</h2>}
 
-            {mutation.isPending ? (
-                <div>Loading...</div>
+            {infiniteQuery.isRefetching ? (
+                <FeedPlaceholder />
+            ) : infiniteQuery.isError ? (
+                <FeedError />
+            ) : infiniteQuery.data?.pages[0].length == 0 ? (
+                <FeedError text="Nenhum estabelecimento encontrado" />
             ) : (
-                <Feed data={mutation.data!} onDataEnd={action} />
+                <Feed data={infiniteQuery.data?.pages.flat() || []} onDataEnd={fetchNextPage} />
             )}
         </div>
     );

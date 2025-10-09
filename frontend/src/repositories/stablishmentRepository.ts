@@ -16,7 +16,13 @@ export default class StablishmentRepository implements IStablishmentRepository {
         this.axios = axios;
     }
 
-    async getStablishments(cityCode: string, type: string, typeCode: string, search: string) {
+    async getStablishments(
+        cityCode: string,
+        type: string,
+        typeCode: string,
+        search: string,
+        page: number
+    ) {
         const data = {
             name: search,
             types:
@@ -30,7 +36,7 @@ export default class StablishmentRepository implements IStablishmentRepository {
                     : [],
             cities: cityCode ? [cityCode] : [],
             limit: 10,
-            skip:0
+            skip: page,
         };
 
         try {

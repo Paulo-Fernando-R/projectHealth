@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React from "react";
 import Dropdown, { type DropdowItem } from "../dropdown/Dropdown";
 import styles from "./filter.module.css";
@@ -24,8 +23,11 @@ export default function Filter({
     setSearch,
     action,
 }: FilterProps) {
+    function onFocus(e: React.FocusEvent<HTMLDivElement, Element>) {
+        e.currentTarget.scrollIntoView({ behavior: "smooth" });
+    }
     return (
-        <div className={styles.filterBox}>
+        <div className={styles.filterBox} onFocus={onFocus}>
             <div className={styles.inputBox}>
                 <input
                     type="text"

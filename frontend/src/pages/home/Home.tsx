@@ -1,6 +1,5 @@
 
 import useDeviceType from "../../hooks/useDeviceType";
-import HomeDesktop from "./HomeDesktop";
 import HomeMobile from "./HomeMobile";
 
 export default function Home() {
@@ -8,7 +7,7 @@ export default function Home() {
 
     return (
         <>
-            {device === "desktop" && <HomeDesktop />}
+            {device === "desktop" && <HomeMobile />}
             {device !== "desktop" && <HomeMobile />}
         </>
     );

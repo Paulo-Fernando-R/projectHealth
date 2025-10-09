@@ -23,7 +23,7 @@ export default function HomeDesktop() {
 
     const mutation = useMutation({
         mutationKey: ["stablishments", city, type, search],
-        mutationFn: () => controller.getStablishments(city, type, search),
+        mutationFn: () => controller.getStablishments(city, type, search, 0),
     });
 
     const action = () => {

@@ -6,7 +6,7 @@ export default class GetStablishmentsCase {
         this.repository = repository;
     }
 
-    async execute(cityCode: string, type: string, typeCode: string, search: string) {
-        return await this.repository.getStablishments(cityCode, type, typeCode, search);
+    async execute(cityCode: string, type: string, typeCode: string, search: string, page: number) {
+        return await this.repository.getStablishments(cityCode, type, typeCode, search, page);
     }
 }

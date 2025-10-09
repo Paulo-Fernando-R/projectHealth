@@ -9,6 +9,7 @@ import GetStablishmentsCase from "../../cases/getStablishmentsCase";
 import StablishmentRepository from "../../repositories/stablishmentRepository";
 import type IStablishmentRepository from "../../repositories/IstablishmentRepository";
 import { feedColors } from "../../utils/cssColors";
+import type { FeedItemProps } from "../../components/feedItem/FeedItem";
 
 export default class HomeController {
     axios: IcustomAxios;
@@ -54,8 +55,12 @@ export default class HomeController {
         return { typeCode: parts[0], type: parts[1] };
     }
 
-    async getStablishments(city: DropdowItem | null, stabType: DropdowItem | null, search: string) {
-       
+    async getStablishments(
+        city: DropdowItem | null,
+        stabType: DropdowItem | null,
+        search: string,
+        page: number
+    ) {
         const { typeCode, type } = stabType
             ? this.splitType(stabType.id)
             : { typeCode: "", type: "" };
@@ -64,7 +69,8 @@ export default class HomeController {
             city?.id ? city.id : "",
             type,
             typeCode,
-            search
+            search,
+            page
         );
 
         return res.map((e) => {
@@ -72,5 +78,12 @@ export default class HomeController {
 
             return { data: e, color: feedColors[randomIndex] };
         });
+    }
+
+    handleNextPage(lastPage: FeedItemProps[], _pages: FeedItemProps[][], lastPageParam: number) {
+        if (lastPage.length < 10) {
+            return;
+        }
+        return lastPageParam + 10;
     }
 }
