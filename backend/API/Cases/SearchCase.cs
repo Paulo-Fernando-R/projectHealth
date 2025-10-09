@@ -1,4 +1,5 @@
 ﻿using API.Enums;
+using API.GenericResponses;
 using API.Repositories.Interfaces;
 
 namespace API.Cases
@@ -31,7 +32,7 @@ namespace API.Cases
 
             var response = stablishmentRepository.Search(value, unitCodes, stablishmentCodes, cityCodes, skip, limit).Select(x =>
             {
-                var address = new SearchAddressResponse
+                var address = new AddressResponse
                 {
                     Address = x.Address,
                     District = x.AddressDistrict,
@@ -58,16 +59,7 @@ namespace API.Cases
     {
         public string SusId { get; set; } = string.Empty;
         public string FantasyName { get; set; } = string.Empty;
-        public required SearchAddressResponse Address { get; set; }
+        public required AddressResponse Address { get; set; }
         public string? Phone { get; set; } = string.Empty;
-    }
-
-    public class SearchAddressResponse
-    {
-        public string Number { get; set; } = string.Empty;
-        public string Address { get; set; } = string.Empty;
-        public string District { get; set; } = string.Empty;
-        public string City { get; set; } = string.Empty;
-        public string State { get; set; } = string.Empty;
     }
 }
