@@ -29,7 +29,7 @@ export default class StablishmentRepository implements IStablishmentRepository {
                       ]
                     : [],
             cities: cityCode ? [cityCode] : [],
-            limit: 100,
+            limit: 10,
             skip:0
         };
 

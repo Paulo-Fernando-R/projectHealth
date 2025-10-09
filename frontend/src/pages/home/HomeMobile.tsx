@@ -2,11 +2,11 @@
 import styles from "./home.module.css";
 import img from "../../assets/images/doctor.png";
 import Filter from "../../components/filter/Filter";
-import FeedItem from "../../components/feedItem/FeedItem";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import HomeController from "./homeController";
 import type { DropdowItem } from "../../components/dropdown/Dropdown";
 import { useEffect, useRef, useState } from "react";
+import Feed from "../../components/Feed/Feed";
 
 export default function HomeMobile() {
     const controller = new HomeController();
@@ -28,7 +28,6 @@ export default function HomeMobile() {
         mutationKey: ["stablishments"],
         mutationFn: () => controller.getStablishments(city, type, search),
         onMutate: () => {
-            console.log("mutate");
             switchImg(false);
         },
 
@@ -38,7 +37,6 @@ export default function HomeMobile() {
     });
 
     const action = () => {
-        console.log("action");
         mutation.mutate();
     };
 
@@ -82,15 +80,7 @@ export default function HomeMobile() {
             )}
             {!mutation.data && <h2 className="titleh2">Resultados</h2>}
 
-            {mutation.isPending ? (
-                <div>Loading...</div>
-            ) : (
-                <div className={styles.feed}>
-                    {mutation.data?.map((item, index) => {
-                        return <FeedItem key={index} color={item.color} data={item.data} />;
-                    })}
-                </div>
-            )}
+            {mutation.isPending ? <div>Loading...</div> : <Feed data={mutation.data!} />}
         </div>
     );
 }
