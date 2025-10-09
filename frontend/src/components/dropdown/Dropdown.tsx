@@ -14,9 +14,15 @@ export type DropdownProps = {
     itens: DropdowItem[];
     setSelected: React.Dispatch<React.SetStateAction<DropdowItem | null>>;
     placeholder?: string;
+    enabled?: boolean;
 };
 
-export default function Dropdown({ itens, setSelected, placeholder }: DropdownProps) {
+export default function Dropdown({
+    itens,
+    setSelected,
+    placeholder,
+    enabled = true,
+}: DropdownProps) {
     const [open, setOpen] = useState(false);
     const [search, setSearch] = useState("");
     const [display, setDisplay] = useState<DropdowItem[]>([]);
@@ -38,7 +44,10 @@ export default function Dropdown({ itens, setSelected, placeholder }: DropdownPr
 
     const onScroll = (e: React.UIEvent<HTMLUListElement, UIEvent>) => controller.onScroll(e);
 
-    const handleOpen = (control: boolean) => controller.handleOpen(control);
+    const handleOpen = (control: boolean) => {
+        if (!enabled) return;
+        controller.handleOpen(control);
+    };
 
     const onChange = async (event: React.ChangeEvent<HTMLInputElement>) =>
         await controller.onChange(event);
@@ -75,6 +84,7 @@ export default function Dropdown({ itens, setSelected, placeholder }: DropdownPr
                     className={"p2 " + styles.field}
                     type="text"
                     placeholder={placeholder}
+                    disabled={!enabled}
                 />
 
                 {search && <LuX onClick={clear} size={24} color={cssColors.text600} />}

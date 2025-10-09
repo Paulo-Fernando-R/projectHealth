@@ -1,11 +1,12 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import styles from "./homeDesktop.module.css";
 import img from "../../assets/images/doctor.png";
 import Filter from "../../components/filter/Filter";
-import FeedItem from "../../components/feedItem/FeedItem";
 import { useEffect, useRef, useState } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import HomeController from "./homeController";
 import type { DropdowItem } from "../../components/dropdown/Dropdown";
+import Feed, { FeedError, FeedPlaceholder } from "../../components/Feed/Feed";
 
 export default function HomeDesktop() {
     const controller = new HomeController();
@@ -13,7 +14,6 @@ export default function HomeDesktop() {
     const [type, setType] = useState<DropdowItem | null>(null);
     const [search, setSearch] = useState("");
     const firstRender = useRef(true);
-    
 
     const { data, isLoading } = useQuery({
         queryKey: ["cities"],
@@ -21,26 +21,29 @@ export default function HomeDesktop() {
         staleTime: 1000 * 60 * 60, // 60 minutes
     });
 
-    const mutation = useMutation({
-        mutationKey: ["stablishments", city, type, search],
-        mutationFn: () => controller.getStablishments(city, type, search, 0),
+    const infiniteQuery = useInfiniteQuery({
+        queryKey: ["stablishments"],
+        queryFn: ({ pageParam }) => controller.getStablishments(city, type, search, pageParam),
+        initialPageParam: 0,
+        getNextPageParam: controller.handleNextPage,
+        enabled: false,
     });
 
-    const action = () => {
-        mutation.mutate();
-    };
+    function refetch() {
+        infiniteQuery.refetch();
+    }
+    function fetchNextPage() {
+        infiniteQuery.fetchNextPage();
+    }
 
     useEffect(() => {
         if (firstRender.current) {
             firstRender.current = false;
             return;
         }
-        action();
-    }, [city, type]);
 
-    if (isLoading || !data) {
-        return <div>Loading...</div>;
-    }
+        refetch();
+    }, [city, type]);
 
     return (
         <div className={styles.container}>
@@ -62,20 +65,25 @@ export default function HomeDesktop() {
 
             <div className={styles.right}>
                 <Filter
-                    cities={data.cities}
-                    types={data.types}
+                    cities={data?.cities || []}
+                    types={data?.types || []}
                     setCitySelected={setCity}
                     setTypeSelected={setType}
                     search={search}
                     setSearch={setSearch}
-                    action={action}
+                    action={refetch}
+                    enabled={!isLoading}
                 />
 
-                <div className={styles.feed}>
-                    {mutation.data?.map((item, index) => {
-                        return <FeedItem key={index} color={item.color} data={item.data} />;
-                    })}
-                </div>
+                {infiniteQuery.isRefetching ? (
+                    <FeedPlaceholder />
+                ) : infiniteQuery.isError ? (
+                    <FeedError />
+                ) : infiniteQuery.data?.pages[0].length == 0 ? (
+                    <FeedError text="Nenhum estabelecimento encontrado" />
+                ) : (
+                    <Feed data={infiniteQuery.data?.pages.flat() || []} onDataEnd={fetchNextPage} />
+                )}
             </div>
         </div>
     );

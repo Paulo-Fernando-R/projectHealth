@@ -12,6 +12,7 @@ export type FilterProps = {
     search: string;
     setSearch: React.Dispatch<React.SetStateAction<string>>;
     action: VoidFunction;
+    enabled?: boolean ;
 };
 
 export default function Filter({
@@ -22,6 +23,7 @@ export default function Filter({
     search,
     setSearch,
     action,
+    enabled = true,
 }: FilterProps) {
     function onFocus(e: React.FocusEvent<HTMLDivElement, Element>) {
         e.currentTarget.scrollIntoView({ behavior: "smooth" });
@@ -35,6 +37,7 @@ export default function Filter({
                     placeholder="Nome"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
+                    disabled ={!enabled}
                 />
                 <LuSearch size={24} color={cssColors.text600} onClick={action} />
             </div>

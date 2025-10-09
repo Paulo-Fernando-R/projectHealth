@@ -64,19 +64,16 @@ export default function HomeMobile() {
                 </div>
             )}
 
-            {isLoading || !data ? (
-                <div>Loading...</div>
-            ) : (
-                <Filter
-                    cities={data.cities}
-                    types={data.types}
-                    setCitySelected={setCity}
-                    setTypeSelected={setType}
-                    search={search}
-                    setSearch={setSearch}
-                    action={refetch}
-                />
-            )}
+            <Filter
+                cities={data?.cities ||[]}
+                types={data?.types || []}
+                setCitySelected={setCity}
+                setTypeSelected={setType}
+                search={search}
+                setSearch={setSearch}
+                action={refetch}
+                enabled={!isLoading}
+            />
 
             {infiniteQuery.isRefetching ? (
                 <FeedPlaceholder />
