@@ -12,7 +12,7 @@ export type FilterProps = {
     search: string;
     setSearch: React.Dispatch<React.SetStateAction<string>>;
     action: VoidFunction;
-    enabled?: boolean ;
+    enabled?: boolean;
 };
 
 export default function Filter({
@@ -28,6 +28,11 @@ export default function Filter({
     function onFocus(e: React.FocusEvent<HTMLDivElement, Element>) {
         e.currentTarget.scrollIntoView({ behavior: "smooth" });
     }
+    function onPressEnter(e: React.KeyboardEvent<HTMLInputElement>) {
+        if (e.key === "Enter") {
+            action();
+        }
+    }
     return (
         <div className={styles.filterBox} onFocus={onFocus}>
             <div className={styles.inputBox}>
@@ -37,7 +42,8 @@ export default function Filter({
                     placeholder="Nome"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    disabled ={!enabled}
+                    disabled={!enabled}
+                    onKeyPress={onPressEnter}
                 />
                 <LuSearch size={24} color={cssColors.text600} onClick={action} />
             </div>
