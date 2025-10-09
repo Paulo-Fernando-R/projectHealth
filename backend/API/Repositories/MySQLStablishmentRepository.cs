@@ -8,7 +8,23 @@ namespace API.Repositories
     {
         private readonly IDbConnection connection = connection;
 
-        public IEnumerable<SearchDto> Search(string? name, IEnumerable<int>? unitCodes, IEnumerable<int>? stablishmentCodes, IEnumerable<string>? cityCodes, int skip, int limit)
+        public GetStablishmentInfoDto? GetBySusId(string susId)
+        {
+            string sql = @"
+SELECT susId, fantasyName, addressNumber, address, addressDistrict, phone, c.cityName, c.state  
+FROM stablishment AS s
+LEFT JOIN city AS c ON c.cityCode = s.cityCode 
+WHERE s.susId = @susId";
+            object data = new
+            {
+                susId,
+            };
+
+            var response = connection.QueryFirstOrDefault<GetStablishmentInfoDto>(sql, data);
+            return response;
+        }
+
+        public IEnumerable<SearchStablishmentDto> Search(string? name, IEnumerable<int>? unitCodes, IEnumerable<int>? stablishmentCodes, IEnumerable<string>? cityCodes, int skip, int limit)
         {
             string? units = null;
             if (unitCodes != null)
@@ -25,7 +41,7 @@ namespace API.Repositories
             string sql = @$"
 SELECT susId, fantasyName, addressNumber, address, addressDistrict, phone, c.cityName, c.state
 FROM stablishment AS s
-INNER JOIN city AS c ON c.cityCode = s.cityCode
+LEFT JOIN city AS c ON c.cityCode = s.cityCode
 WHERE IF(@name IS NULL, TRUE, fantasyName LIKE '%{name}%')
     AND IF (@units IS NULL, TRUE, unitTypeCode IN ('{units}'))
     AND IF (@stablishments IS NULL, TRUE, stablishmentTypeCode IN ('{stablishments}'))
@@ -44,7 +60,7 @@ OFFSET @skip;
                 skip
             };
 
-            return connection.Query<SearchDto>(sql, data);
+            return connection.Query<SearchStablishmentDto>(sql, data);
         }
     }
 }
