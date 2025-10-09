@@ -55,7 +55,12 @@ export default class DropdownController {
     }
 
     onScroll(e: React.UIEvent<HTMLUListElement, UIEvent>) {
-        if (e.currentTarget.scrollHeight - e.currentTarget.scrollTop < 200) {
+        if (
+            e.currentTarget.scrollHeight -
+                e.currentTarget.scrollTop -
+                e.currentTarget.clientHeight <
+            1
+        ) {
             this.filterItens(this.display.length + this.itensCount, this.search);
         }
     }
