@@ -17,7 +17,7 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<SearchResponse>))]
         public IActionResult Search(HomeSearchRequest request)
         {
-            var response = searchCase.Execute(request.Name, request.Types, request.Cities);
+            var response = searchCase.Execute(request.Name, request.Types, request.Cities, request.Skip, request.Limit);
             return Ok(response);
         }
 
@@ -42,8 +42,10 @@ namespace API.Controllers
 
     public class HomeSearchRequest
     {
-        public string Name { get; set; } = string.Empty;
-        public IEnumerable<SearchTypeRequest> Types { get; set; } = [];
-        public IEnumerable<string> Cities { get; set; } = [];
+        public string? Name { get; set; } = string.Empty;
+        public IEnumerable<SearchTypeRequest>? Types { get; set; } = null;
+        public IEnumerable<string>? Cities { get; set; } = null;
+        public required int Limit { get; set; }
+        public required int Skip { get; set; }
     }
 }

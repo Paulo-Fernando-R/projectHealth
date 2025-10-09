@@ -1,4 +1,5 @@
 ﻿using API.Enums;
+using API.GenericResponses;
 using API.Repositories.Interfaces;
 
 namespace API.Cases
@@ -13,25 +14,25 @@ namespace API.Cases
     {
         private readonly IStablishmentRepository stablishmentRepository = stablishmentRepository;
 
-        public IEnumerable<SearchResponse> Execute(string name, IEnumerable<SearchTypeRequest> types, IEnumerable<string> cities)
+        public IEnumerable<SearchResponse> Execute(string? name, IEnumerable<SearchTypeRequest>? types, IEnumerable<string>? cities, int skip, int limit)
         {
-            string? value = name;
-            if (string.IsNullOrEmpty(value))
-                value = null;
+            string? value = null;
+            if (!string.IsNullOrEmpty(name))
+                value = name;
 
             IEnumerable<int>? unitCodes = null;
-            if (types.Any(x => x.Type == TypeEnum.Unit))
+            if (types != null && types.Any(x => x.Type == TypeEnum.Unit))
                 unitCodes = types.Where(x => x.Type == TypeEnum.Unit).Select(x => x.TypeCode);
 
             IEnumerable<int>? stablishmentCodes = null;
-            if (types.Any(x => x.Type == TypeEnum.Stablishment))
+            if (types != null && types.Any(x => x.Type == TypeEnum.Stablishment))
                 stablishmentCodes = types.Where(x => x.Type == TypeEnum.Stablishment).Select(x => x.TypeCode);
 
-            var cityCodes = cities.Any() ? cities : null;
+            var cityCodes = cities != null && cities.Any() ? cities : null;
 
-            return stablishmentRepository.Search(value, unitCodes, stablishmentCodes, cityCodes).Select(x =>
+            var response = stablishmentRepository.Search(value, unitCodes, stablishmentCodes, cityCodes, skip, limit).Select(x =>
             {
-                var address = new SearchAddressResponse
+                var address = new AddressResponse
                 {
                     Address = x.Address,
                     District = x.AddressDistrict,
@@ -50,6 +51,7 @@ namespace API.Cases
                     SusId = x.SusId,
                 };
             });
+            return response;
         }
     }
 
@@ -57,16 +59,7 @@ namespace API.Cases
     {
         public string SusId { get; set; } = string.Empty;
         public string FantasyName { get; set; } = string.Empty;
-        public required SearchAddressResponse Address { get; set; }
+        public required AddressResponse Address { get; set; }
         public string? Phone { get; set; } = string.Empty;
-    }
-
-    public class SearchAddressResponse
-    {
-        public string Number { get; set; } = string.Empty;
-        public string Address { get; set; } = string.Empty;
-        public string District { get; set; } = string.Empty;
-        public string City { get; set; } = string.Empty;
-        public string State { get; set; } = string.Empty;
     }
 }

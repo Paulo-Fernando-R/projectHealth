@@ -16,10 +16,12 @@ builder.Services.AddTransient<ICityRepository, MySQLCityRepository>();
 builder.Services.AddTransient<IUnitTypeRepository, MySQLUnitTypeRepository>();
 builder.Services.AddTransient<IStablishmentTypeRepository, MySQLStablishmentTypeRepository>();
 builder.Services.AddTransient<IStablishmentRepository, MySQLStablishmentRepository>();
+builder.Services.AddTransient<IServiceRepository, MySQLServiceRepository>();
 
 builder.Services.AddTransient<GetAllCitiesCase>();
 builder.Services.AddTransient<GetAllTypesCase>();
 builder.Services.AddTransient<SearchCase>();
+builder.Services.AddTransient<GetBySusIdCase>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
