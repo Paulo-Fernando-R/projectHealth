@@ -7,6 +7,9 @@ import HomeController from "./homeController";
 import type { DropdowItem } from "../../components/dropdown/Dropdown";
 import { useEffect, useRef, useState } from "react";
 import Feed, { FeedError, FeedPlaceholder } from "../../components/Feed/Feed";
+import UserIp from "../../services/userIp";
+import StringSimilarity from "../../utils/stringSimilarity";
+import { Axios } from "axios";
 
 export default function HomeMobile() {
     const controller = new HomeController();
@@ -15,6 +18,20 @@ export default function HomeMobile() {
     const [search, setSearch] = useState("");
     const [showImg, setShowImg] = useState(true);
     const firstRender = useRef(true);
+
+    async function test() {
+        const ip = await new UserIp(new Axios()).getUserIp();
+        const location = await new UserIp(new Axios()).getUserLocation();
+        const strSm = new StringSimilarity();
+        if (data) {
+            const res = strSm.compare(data.cities, location);
+           // if (res) setCity(res);
+           // console.log(res);
+        }
+        // console.log(location);
+    }
+
+    test();
 
     const { data, isLoading } = useQuery({
         queryKey: ["cities"],
@@ -65,7 +82,7 @@ export default function HomeMobile() {
             )}
 
             <Filter
-                cities={data?.cities ||[]}
+                cities={data?.cities || []}
                 types={data?.types || []}
                 setCitySelected={setCity}
                 setTypeSelected={setType}
