@@ -3,10 +3,11 @@ using API.Repositories.Interfaces;
 
 namespace API.Cases
 {
-    public class GetBySusIdCase(IStablishmentRepository stablishmentRepository, IServiceRepository serviceRepository)
+    public class GetBySusIdCase(IStablishmentRepository stablishmentRepository, IServiceRepository serviceRepository, IUnitTypeRepository unitTypeRepository)
     {
         private readonly IStablishmentRepository stablishmentRepository = stablishmentRepository;
         private readonly IServiceRepository serviceRepository = serviceRepository;
+        private readonly IUnitTypeRepository unitTypeRepository = unitTypeRepository;
 
         public GetStablishmentBySusIdResponse? Execute(string susId)
         {
@@ -34,6 +35,8 @@ namespace API.Cases
                 };
             }
 
+            var unitType = unitTypeRepository.GetUniType(stablishment.UnitTypeCode);
+
             var response = new GetStablishmentBySusIdResponse
             {
                 SusId = susId,
@@ -43,6 +46,7 @@ namespace API.Cases
                 Phone = stablishment.Phone,
                 Services = services,
                 Geoposition = geoposition,
+                UnitType = unitType
             };
 
             return response;
@@ -55,6 +59,7 @@ namespace API.Cases
         public string FantasyName { get; set; } = string.Empty;
         public string Phone { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
+        public string UnitType {  get; set; } = string.Empty;
         public required AddressResponse Address {  get; set; }
         public IEnumerable<string> Services { get; set; } = [];
         public GetStablishmentGeopositionBySusIdResponse? Geoposition { get; set; }

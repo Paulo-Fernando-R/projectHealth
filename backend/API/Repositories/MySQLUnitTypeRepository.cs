@@ -15,5 +15,17 @@ namespace API.Repositories
             var dtos = connection.Query<GetUniTypeDto>(sql);
             return dtos;
         }
+
+        public string GetUniType(int code)
+        {
+            string sql = "SELECT typeDescription FROM unittype WHERE typeCode = @code";
+            object data = new
+            {
+                code,
+            };
+
+            var response = connection.QueryFirst<string>(sql, data);
+            return response;
+        }
     }
 }
