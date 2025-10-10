@@ -10,14 +10,39 @@
   padding-bottom: var(--mobileTopPading);
 }
 .container .imgBox {
+  transition: var(--longTransition);
   width: 100%;
   height: 25.9rem;
   overflow: hidden;
   border-radius: 1.25rem;
 }
 .container .imgBox img {
+  transition: var(--longTransition);
   width: 100%;
+  border-radius: 1.25rem;
   margin-top: -2.3rem;
+}
+.container .imgBoxColapse {
+  transition: var(--longTransition);
+  width: 100%;
+  height: 5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.container .imgBoxColapse img {
+  transition: var(--longTransition);
+  height: 100%;
+  aspect-ratio: 1/1.2;
+  -o-object-fit: cover;
+     object-fit: cover;
+  border-radius: 0.75rem;
+}
+.container .imgBoxColapse .imgTitle {
+  color: var(--primary200);
+}
+.container .imgBoxColapse span {
+  transition: var(--longTransition);
 }
 
 .head {

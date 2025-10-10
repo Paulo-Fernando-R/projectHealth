@@ -28,6 +28,7 @@ export default function HomeMobile() {
         initialPageParam: 0,
         getNextPageParam: controller.handleNextPage,
         enabled: false,
+        staleTime: 1000 * 60 * 60,
     });
 
     function refetch() {
@@ -53,16 +54,22 @@ export default function HomeMobile() {
                 <h1 className="titleh1">
                     Encontre os melhores lugares para <span>Cuidar</span> da Sua <span>Saúde</span>
                 </h1>
-                <p className={styles.subtitle + " p2"}>
-                    Procure por nomes, tipos, lugares ou categorias de estabelecimentos de saúde
-                </p>
+                {showImg && (
+                    <p className={styles.subtitle + " p2"}>
+                        Procure por nomes, tipos, lugares ou categorias de estabelecimentos de saúde
+                    </p>
+                )}
             </div>
-
-            {showImg && (
-                <div className={styles.imgBox}>
-                    <img src={img} alt="" className={styles.img} />
-                </div>
-            )}
+            {/* <button onClick={() => setShowImg(!showImg)}>aaaa</button> */}
+            <div className={showImg ? styles.imgBox : styles.imgBoxColapse}>
+                <img src={img} alt="" className={styles.img} />
+                <span>
+                    <h2 className={"titleh2 " + styles.imgTitle}>AndName</h2>
+                    <p className={styles.subtitle + " p2"}>
+                        Procure por nomes, tipos, lugares ou categorias de estabelecimentos de saúde
+                    </p>
+                </span>
+            </div>
 
             <Filter
                 cities={data?.cities || []}

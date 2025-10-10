@@ -11,14 +11,41 @@
     padding-bottom: var(--mobileTopPading);
 
     .imgBox {
+        transition: var(--longTransition);
         width: 100%;
         height: 25.9rem;
         overflow: hidden;
         border-radius: 1.25rem;
 
         img {
+            transition: var(--longTransition);
             width: 100%;
+            border-radius: 1.25rem;
             margin-top: -2.3rem;
+        }
+    }
+    .imgBoxColapse {
+        transition: var(--longTransition);
+        width: 100%;
+        height: 5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        img {
+            transition: var(--longTransition);
+            height: 100%;
+            aspect-ratio: 1/1.2;
+            object-fit: cover;
+
+            border-radius: 0.75rem;
+        }
+        .imgTitle {
+            color: var(--primary200);
+        }
+
+        span {
+            transition: var(--longTransition);
         }
     }
 }
@@ -39,5 +66,3 @@
         color: var(--text600);
     }
 }
-
-
