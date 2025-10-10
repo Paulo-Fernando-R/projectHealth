@@ -1,10 +1,12 @@
 import type { Axios } from "axios";
+import type { GeoIPModel } from "../models/geoIpModel";
+import type IUserIp from "./IuserIp";
 
-export default class UserIp {
+export default class UserIp implements IUserIp {
     axios: Axios;
-    locationUrl = import.meta.env.VITE_PUBLIC_LOCATION_URL;
-    ipUrl = import.meta.env.VITE_PUBLIC_IP_URL;
-    locationKey = import.meta.env.VITE_PUBLIC_LOCATION_KEY;
+    private locationUrl = import.meta.env.VITE_PUBLIC_LOCATION_URL;
+    private ipUrl = import.meta.env.VITE_PUBLIC_IP_URL;
+    private locationKey = import.meta.env.VITE_PUBLIC_LOCATION_KEY;
     constructor(axios: Axios) {
         this.axios = axios;
     }
@@ -24,8 +26,7 @@ export default class UserIp {
         const ip = await this.getUserIp();
 
         const res = await this.axios.get(`${this.locationUrl}${this.locationKey}&ip=${ip}`);
-
-        const data = JSON.parse(res.data);
+        const data = JSON.parse(res.data) as GeoIPModel;
 
         if (res.status !== 200) {
             throw new Error("Failed to get user location");
@@ -33,6 +34,6 @@ export default class UserIp {
         if (!data) {
             throw new Error("Failed to get user location");
         }
-        return data.location.city as string;
+        return data;
     }
 }

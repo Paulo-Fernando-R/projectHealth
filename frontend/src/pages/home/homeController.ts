@@ -10,22 +10,35 @@ import StablishmentRepository from "../../repositories/stablishmentRepository";
 import type IStablishmentRepository from "../../repositories/IstablishmentRepository";
 import { feedColors } from "../../utils/cssColors";
 import type { FeedItemProps } from "../../components/feedItem/FeedItem";
+import GetUserLocationCase from "../../cases/getUserLocationCase";
+import type IUserIp from "../../services/IuserIp";
+import UserIp from "../../services/userIp";
+import StringSimilarity from "../../utils/stringSimilarity";
+import { Axios } from "axios";
 
 export default class HomeController {
     axios: IcustomAxios;
     repository: IMetadataRepository;
     stablishmentRepository: IStablishmentRepository;
+    geoIp: IUserIp;
     getCitiesCase: GetCitiesCase;
     getTypesCase: GetTypesCase;
     getStablishmentsCase: GetStablishmentsCase;
+    getUserLocationCase: GetUserLocationCase;
+    stringSimilarity: StringSimilarity;
+    setCity: React.Dispatch<React.SetStateAction<DropdowItem | null>> = () => {};
 
-    constructor() {
+    constructor(setCity: React.Dispatch<React.SetStateAction<DropdowItem | null>>) {
         this.axios = new CustomAxios();
         this.repository = new MetadataRepository(this.axios);
         this.stablishmentRepository = new StablishmentRepository(this.axios);
+        this.geoIp = new UserIp(new Axios());
         this.getCitiesCase = new GetCitiesCase(this.repository);
         this.getTypesCase = new GetTypesCase(this.repository);
         this.getStablishmentsCase = new GetStablishmentsCase(this.stablishmentRepository);
+        this.getUserLocationCase = new GetUserLocationCase(this.geoIp);
+        this.stringSimilarity = new StringSimilarity();
+        this.setCity = setCity;
     }
 
     async getCities() {
@@ -34,6 +47,18 @@ export default class HomeController {
 
     async getTypes() {
         return await this.getTypesCase.execute();
+    }
+
+    async geGeoIp() {
+        return await this.getUserLocationCase.execute();
+    }
+
+    async getCityByGeoIp(cities: DropdowItem[]) {
+        const location = await this.geGeoIp();
+        if (!location) return;
+
+        const res = this.stringSimilarity.compare(cities, location.location.city);
+        if (res) this.setCity(() => res);
     }
 
     async getMetadata() {
@@ -47,6 +72,8 @@ export default class HomeController {
         const types: DropdowItem[] = res2.map((type) => {
             return { id: `${type.typeCode}-${type.type}`, name: type.description };
         });
+
+        this.getCityByGeoIp(cities);
 
         return { cities, types };
     }

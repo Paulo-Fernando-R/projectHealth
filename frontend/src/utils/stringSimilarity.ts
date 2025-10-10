@@ -1,7 +1,7 @@
 import type { DropdowItem } from "../components/dropdown/Dropdown";
 
 export default class StringSimilarity {
-    getFragments(text: string, n: number) {
+    private getFragments(text: string, n: number) {
         text = text.toLocaleLowerCase();
         const fragments = [];
 
@@ -12,7 +12,7 @@ export default class StringSimilarity {
         return fragments;
     }
 
-    similarity(search: string, compare: string, n: number) {
+    private similarity(search: string, compare: string, n: number) {
         const uniqueSearch = this.removeDuplicates(this.getFragments(search, n));
         const uniqueCompare = this.removeDuplicates(this.getFragments(compare, n));
 
@@ -30,7 +30,7 @@ export default class StringSimilarity {
         return similarity;
     }
 
-    removeDuplicates(arr: string[]) {
+    private removeDuplicates(arr: string[]) {
         const unique: string[] = [];
 
         for (const item of arr) {
@@ -49,10 +49,26 @@ export default class StringSimilarity {
                 score: this.similarity(search, e.name, 2),
             };
         });
-        console.log(res.sort((a, b) => (a.score < b.score ? 1 : -1)));
 
-        const max = res.sort((a, b) => (a.score < b.score ? 1 : -1))[0];
+        const max = this.getMaxScore(res);
 
         return list.find((e) => e.id === max.item.id);
+    }
+
+    private getMaxScore(
+        list: {
+            item: DropdowItem;
+            score: number;
+        }[]
+    ) {
+        let max = list[0];
+
+        for (let i = 0; i < list.length; i++) {
+            if (list[i].score > max.score) {
+                max = list[i];
+            }
+        }
+
+        return max;
     }
 }
