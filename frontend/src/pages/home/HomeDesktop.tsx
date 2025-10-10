@@ -9,11 +9,12 @@ import type { DropdowItem } from "../../components/dropdown/Dropdown";
 import Feed, { FeedError, FeedPlaceholder } from "../../components/Feed/Feed";
 
 export default function HomeDesktop() {
-    const controller = new HomeController();
+   
     const [city, setCity] = useState<DropdowItem | null>(null);
     const [type, setType] = useState<DropdowItem | null>(null);
     const [search, setSearch] = useState("");
     const firstRender = useRef(true);
+     const controller = new HomeController(setCity);
 
     const { data, isLoading } = useQuery({
         queryKey: ["cities"],
