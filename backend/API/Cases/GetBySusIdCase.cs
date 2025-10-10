@@ -3,11 +3,12 @@ using API.Repositories.Interfaces;
 
 namespace API.Cases
 {
-    public class GetBySusIdCase(IStablishmentRepository stablishmentRepository, IServiceRepository serviceRepository, IUnitTypeRepository unitTypeRepository)
+    public class GetBySusIdCase(IStablishmentRepository stablishmentRepository, IServiceRepository serviceRepository, IUnitTypeRepository unitTypeRepository, IStablishmentTypeRepository stablishmentTypeRepository)
     {
         private readonly IStablishmentRepository stablishmentRepository = stablishmentRepository;
         private readonly IServiceRepository serviceRepository = serviceRepository;
         private readonly IUnitTypeRepository unitTypeRepository = unitTypeRepository;
+        private readonly IStablishmentTypeRepository stablishmentTypeRepository = stablishmentTypeRepository;
 
         public GetStablishmentBySusIdResponse? Execute(string susId)
         {
@@ -36,6 +37,7 @@ namespace API.Cases
             }
 
             var unitType = unitTypeRepository.GetUniType(stablishment.UnitTypeCode);
+            var stablishmentType = stablishmentTypeRepository.GetStablishmentType(stablishment.StablishmentTypeCode);
 
             var response = new GetStablishmentBySusIdResponse
             {
@@ -46,7 +48,8 @@ namespace API.Cases
                 Phone = stablishment.Phone,
                 Services = services,
                 Geoposition = geoposition,
-                UnitType = unitType
+                UnitType = unitType,
+                StablishmentType = stablishmentType,
             };
 
             return response;
@@ -59,8 +62,9 @@ namespace API.Cases
         public string FantasyName { get; set; } = string.Empty;
         public string Phone { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
-        public string UnitType {  get; set; } = string.Empty;
-        public required AddressResponse Address {  get; set; }
+        public string UnitType { get; set; } = string.Empty;
+        public string StablishmentType { get; set; } = string.Empty;
+        public required AddressResponse Address { get; set; }
         public IEnumerable<string> Services { get; set; } = [];
         public GetStablishmentGeopositionBySusIdResponse? Geoposition { get; set; }
     }
