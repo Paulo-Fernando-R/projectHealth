@@ -36,6 +36,8 @@ namespace API.Cases
                 };
             }
 
+            bool contractWithSus = stablishment.ContractWithSus.Equals("S", StringComparison.CurrentCultureIgnoreCase);
+
             var unitType = unitTypeRepository.GetUniType(stablishment.UnitTypeCode);
             var stablishmentType = stablishmentTypeRepository.GetStablishmentType(stablishment.StablishmentTypeCode);
 
@@ -50,6 +52,7 @@ namespace API.Cases
                 Geoposition = geoposition,
                 UnitType = unitType,
                 StablishmentType = stablishmentType,
+                ContractWithSus = contractWithSus,
             };
 
             return response;
@@ -59,6 +62,7 @@ namespace API.Cases
     public class GetStablishmentBySusIdResponse
     {
         public string SusId { get; set; } = string.Empty;
+        public bool ContractWithSus { get; set; }
         public string FantasyName { get; set; } = string.Empty;
         public string Phone { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
