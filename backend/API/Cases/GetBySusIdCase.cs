@@ -53,6 +53,7 @@ namespace API.Cases
                 UnitType = unitType,
                 StablishmentType = stablishmentType,
                 ContractWithSus = contractWithSus,
+                NatureDescription = stablishment.NatureDescription,
             };
 
             return response;
@@ -68,6 +69,7 @@ namespace API.Cases
         public string Email { get; set; } = string.Empty;
         public string UnitType { get; set; } = string.Empty;
         public string StablishmentType { get; set; } = string.Empty;
+        public string NatureDescription { get; set; } = string.Empty;
         public required AddressResponse Address { get; set; }
         public IEnumerable<string> Services { get; set; } = [];
         public GetStablishmentGeopositionBySusIdResponse? Geoposition { get; set; }
