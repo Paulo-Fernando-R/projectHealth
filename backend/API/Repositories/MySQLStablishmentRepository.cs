@@ -47,6 +47,7 @@ WHERE IF(@name IS NULL, TRUE, fantasyName LIKE '%{name}%')
     AND IF (@units IS NULL, TRUE, unitTypeCode IN ('{units}'))
     AND IF (@stablishments IS NULL, TRUE, stablishmentTypeCode IN ('{stablishments}'))
     AND IF (@cities IS NULL, TRUE, s.cityCode IN ('{cities}'))
+    AND (deactivationCode IS NULL OR deactivationCode = '')
 LIMIT @limit 
 OFFSET @skip;
 ";
