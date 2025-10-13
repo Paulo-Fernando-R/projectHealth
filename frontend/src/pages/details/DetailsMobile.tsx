@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import styles from "./detailsDesktop.module.css";
+import styles from "./details.module.css";
 import img from "../../assets/images/temp.png";
 import { LuHospital, LuPhone, LuMail, LuTag, LuCross } from "react-icons/lu";
 import cssColors from "../../utils/cssColors";
@@ -7,7 +6,7 @@ import { useLocation } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import DetailsController from "./detailsController";
 
-export default function DetailsDesktop() {
+export default function DetailsMobile() {
     const location = useLocation();
     const { susId } = location.state;
     console.log(susId);
@@ -27,14 +26,12 @@ export default function DetailsDesktop() {
 
     console.log(query.data);
 
-    if (query.isLoading) return <DetailsDesktopPlaceholder />;
 
+    if (query.isLoading) return <DetailsMobilePlaceholder />;
     return (
         <div className={styles.container}>
             <div className={styles.imgBox}>
                 <img src={img} alt="" />
-
-                <div className={styles.map}>MAP IFRAME HERE</div>
             </div>
 
             <div className={styles.info}>
@@ -82,25 +79,24 @@ export default function DetailsDesktop() {
                         </li>
                     ))}
                 </ul>
+
+                <div>MAP IFRAME HERE</div>
             </div>
         </div>
     );
 }
 
-function DetailsDesktopPlaceholder() {
+function DetailsMobilePlaceholder() {
     return (
         <div className={styles.placeholder}>
-            <div className={styles.placeholderLeft}>
-                <div className={styles.placeholderImage}></div>
-                <div className={styles.placeholderImage}></div>
-            </div>
+            <div className={styles.placeholderImage}></div>
+            <div className={styles.placeholderTitle}></div>
+            <div className={styles.placeholderTitle}></div>
+            <div className={styles.placeholderList}></div>
+            <div className={styles.placeholderList}></div>
 
-            <div className={styles.placeholderRight}>
-                <div className={styles.placeholderTitle}></div>
-                <div className={styles.placeholderTitle}></div>
-                <div className={styles.placeholderList}></div>
-                <div className={styles.placeholderList}></div>
-            </div>
         </div>
     );
 }
+
+
