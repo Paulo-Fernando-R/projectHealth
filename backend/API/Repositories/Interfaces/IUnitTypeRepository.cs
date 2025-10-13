@@ -3,6 +3,7 @@
     public interface IUnitTypeRepository
     {
         IEnumerable<GetUniTypeDto> GetAll();
+        string GetUniType(int code);
     }
 
     public class GetUniTypeDto

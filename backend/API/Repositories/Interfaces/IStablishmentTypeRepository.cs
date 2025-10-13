@@ -3,6 +3,7 @@
     public interface IStablishmentTypeRepository
     {
         IEnumerable<GetStablishmentTypeDto> GetAll();
+        string GetStablishmentType(int code);
     }
 
     public class GetStablishmentTypeDto
