@@ -5,7 +5,22 @@ import { LuHospital, LuPhone, LuMail, LuTag, LuCross } from "react-icons/lu";
 import cssColors from "../../utils/cssColors";
 import useDeviceType from "../../hooks/useDeviceType";
 import DetailsDesktop from "./DetailsDesktop";
+import { data, useLocation } from "react-router";
+import { useQuery } from "@tanstack/react-query";
+import DetailsController from "./detailsController";
 export default function Details() {
+    const location = useLocation();
+    const { susId } = location.state;
+    console.log(susId);
+    const controller = new DetailsController();
+
+    const query = useQuery({
+        queryKey: ["stablishment", susId],
+        queryFn: () => controller.getStablishmentById(susId),
+    });
+
+    console.log(query.data);
+
     const device = useDeviceType();
     if (device === "desktop") {
         return <DetailsDesktop />;
@@ -20,49 +35,42 @@ export default function Details() {
                 <div className={styles.section1}>
                     <span>
                         <LuHospital size={32} color={cssColors.primary200} />
-                        <h2 className={"titleh2 " + styles.title}>Hospital Sambiquiras Health</h2>
+                        <h2 className={"titleh2 " + styles.title}>{query.data?.fantasyName}</h2>
                     </span>
                     <p>
-                        Endereço: Rua dos Crocodilos, n° 24, Bairro Dos Talaricos. São João
-                        Evangelista, MG.
+                        Endereço: {query.data?.address.address}, n° {query.data?.address.number},{" "}
+                        {query.data?.address.district}. {query.data?.address.city},{" "}
+                        {query.data?.address.state}.
                     </p>
 
                     <span>
                         <LuPhone size={24} color={cssColors.text700} />
-                        <p className="p1">(11) 9 7545-6574</p>
+                        <p className="p1">{query.data?.phone}</p>
                     </span>
 
                     <span>
                         <LuMail size={24} color={cssColors.text700} />
-                        <p className="p1">E-mail: hospital@sambiquiras.com</p>
+                        <p className="p1">{query.data?.email}</p>
                     </span>
                 </div>
 
                 <div className={styles.section2}>
-                    {["ATENTE SUS", "UNIDADE MISTA", "UNIDADE MISTA", "UNIDADE MISTA"].map(
-                        (item) => (
-                            <div>
-                                <LuTag color={cssColors.text100} size={20} />
-                                <p className={"p2 " + styles.text}>{item}</p>
-                            </div>
-                        )
-                    )}
+                    {[
+                        query.data?.unitType,
+                        query.data?.stablishmentType,
+                        query.data?.natureDescription,
+                        query.data?.contractWithSus ? "Contrato SUS" : "Sem contrato SUS",
+                    ].map((item) => (
+                        <div>
+                            <LuTag color={cssColors.text100} size={20} />
+                            <p className={"p2 " + styles.text}>{item}</p>
+                        </div>
+                    ))}
                 </div>
 
                 <ul className={styles.section3}>
                     <h3 className="titleh3">Serviços</h3>
-                    {[
-                        "Atendimento 24 horas",
-                        "Clínica Médica",
-                        "Pediatria",
-                        "Cardiologia",
-                        "Exames de Imagem",
-                        "Laboratório de Análises Clínicas",
-                        "Centro Cirúrgico",
-                        "Internação",
-                        "Pronto Atendimento",
-                        "Farmácia 24 horas",
-                    ].map((item, index) => (
+                    {query.data?.services.map((item, index) => (
                         <li key={index}>
                             <LuCross size={20} color={cssColors.text700} />
                             <p className="p2">{item}</p>
