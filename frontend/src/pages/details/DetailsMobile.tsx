@@ -2,20 +2,20 @@ import styles from "./details.module.css";
 import img from "../../assets/images/temp.png";
 import { LuHospital, LuPhone, LuMail, LuTag, LuCross } from "react-icons/lu";
 import cssColors from "../../utils/cssColors";
-import { useLocation } from "react-router";
+import { useSearchParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import DetailsController from "./detailsController";
 import PhoneFormatter from "../../utils/phoneFormatter";
 
 export default function DetailsMobile() {
-    const location = useLocation();
-    const { susId } = location.state;
-    console.log(susId);
+    const [searchParams] = useSearchParams();
+    const susId = searchParams.get("susId");
+
     const controller = new DetailsController();
 
     const query = useQuery({
         queryKey: ["stablishment", susId],
-        queryFn: () => controller.getStablishmentById(susId),
+        queryFn: () => controller.getStablishmentById(susId!),
     });
 
     const tags = [
@@ -24,8 +24,6 @@ export default function DetailsMobile() {
         query.data?.natureDescription,
         `ATENDE SUS: ${query.data?.contractWithSus ? "SIM" : "NAO"}`,
     ];
-
-    console.log(query.data);
 
     if (query.isLoading) return <DetailsMobilePlaceholder />;
     return (
@@ -62,8 +60,8 @@ export default function DetailsMobile() {
                 </div>
 
                 <div className={styles.section2}>
-                    {tags.map((item) => (
-                        <div>
+                    {tags.map((item, index) => (
+                        <div key={index}>
                             <LuTag color={cssColors.text100} size={20} />
                             <p className={"p2 " + styles.text}>{item}</p>
                         </div>

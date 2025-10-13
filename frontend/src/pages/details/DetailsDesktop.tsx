@@ -3,20 +3,20 @@ import styles from "./detailsDesktop.module.css";
 import img from "../../assets/images/temp.png";
 import { LuHospital, LuPhone, LuMail, LuTag, LuCross } from "react-icons/lu";
 import cssColors from "../../utils/cssColors";
-import { useLocation } from "react-router";
+import { useSearchParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import DetailsController from "./detailsController";
 import PhoneFormatter from "../../utils/phoneFormatter";
 
 export default function DetailsDesktop() {
-    const location = useLocation();
-    const { susId } = location.state;
+    const [searchParams] = useSearchParams();
+    const susId = searchParams.get("susId");
     console.log(susId);
     const controller = new DetailsController();
 
     const query = useQuery({
         queryKey: ["stablishment", susId],
-        queryFn: () => controller.getStablishmentById(susId),
+        queryFn: () => controller.getStablishmentById(susId!),
     });
 
     const tags = [
