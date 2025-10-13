@@ -5,6 +5,7 @@ import cssColors from "../../utils/cssColors";
 import { useLocation } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import DetailsController from "./detailsController";
+import PhoneFormatter from "../../utils/phoneFormatter";
 
 export default function DetailsMobile() {
     const location = useLocation();
@@ -25,7 +26,6 @@ export default function DetailsMobile() {
     ];
 
     console.log(query.data);
-
 
     if (query.isLoading) return <DetailsMobilePlaceholder />;
     return (
@@ -49,7 +49,7 @@ export default function DetailsMobile() {
                     {query.data?.phone && (
                         <span>
                             <LuPhone size={24} color={cssColors.text700} />
-                            <p className="p1">{query.data?.phone}</p>
+                            <p className="p1">{PhoneFormatter.format(query.data?.phone)}</p>
                         </span>
                     )}
 
@@ -94,9 +94,6 @@ function DetailsMobilePlaceholder() {
             <div className={styles.placeholderTitle}></div>
             <div className={styles.placeholderList}></div>
             <div className={styles.placeholderList}></div>
-
         </div>
     );
 }
-
-

@@ -6,6 +6,7 @@ import cssColors from "../../utils/cssColors";
 import { useLocation } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import DetailsController from "./detailsController";
+import PhoneFormatter from "../../utils/phoneFormatter";
 
 export default function DetailsDesktop() {
     const location = useLocation();
@@ -52,7 +53,7 @@ export default function DetailsDesktop() {
                     {query.data?.phone && (
                         <span>
                             <LuPhone size={24} color={cssColors.text700} />
-                            <p className="p1">{query.data?.phone}</p>
+                            <p className="p1">{PhoneFormatter.format(query.data?.phone)}</p>
                         </span>
                     )}
 

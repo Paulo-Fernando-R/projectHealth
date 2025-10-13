@@ -15,6 +15,7 @@ import type IUserIp from "../../services/IuserIp";
 import UserIp from "../../services/userIp";
 import StringSimilarity from "../../utils/stringSimilarity";
 import { Axios } from "axios";
+import PhoneFormatter from "../../utils/phoneFormatter";
 
 export default class HomeController {
     axios: IcustomAxios;
@@ -102,7 +103,7 @@ export default class HomeController {
 
         return res.map((e) => {
             const randomIndex = Math.floor(Math.random() * feedColors.length);
-
+            e.phone = e.phone ? PhoneFormatter.format(e.phone) : "";
             return { data: e, color: feedColors[randomIndex] };
         });
     }
