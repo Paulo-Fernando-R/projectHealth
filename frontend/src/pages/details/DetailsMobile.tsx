@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import styles from "./detailsDesktop.module.css";
+import styles from "./details.module.css";
 import img from "../../assets/images/temp.png";
 import { LuHospital, LuPhone, LuMail, LuTag, LuCross } from "react-icons/lu";
 import cssColors from "../../utils/cssColors";
@@ -8,10 +7,10 @@ import { useQuery } from "@tanstack/react-query";
 import DetailsController from "./detailsController";
 import PhoneFormatter from "../../utils/phoneFormatter";
 
-export default function DetailsDesktop() {
+export default function DetailsMobile() {
     const [searchParams] = useSearchParams();
     const susId = searchParams.get("susId");
-    console.log(susId);
+
     const controller = new DetailsController();
 
     const query = useQuery({
@@ -23,19 +22,14 @@ export default function DetailsDesktop() {
         query.data?.unitType,
         query.data?.stablishmentType,
         query.data?.natureDescription,
-        `ATENDE SUS: ${query.data?.contractWithSus ? "SIM" : "NÃO"}`,
+        `ATENDE SUS: ${query.data?.contractWithSus ? "SIM" : "NAO"}`,
     ];
 
-    console.log(query.data);
-
-    if (query.isLoading) return <DetailsDesktopPlaceholder />;
-
+    if (query.isLoading) return <DetailsMobilePlaceholder />;
     return (
         <div className={styles.container}>
             <div className={styles.imgBox}>
                 <img src={img} alt="" />
-
-                <div className={styles.map}>MAP IFRAME HERE</div>
             </div>
 
             <div className={styles.info}>
@@ -66,8 +60,8 @@ export default function DetailsDesktop() {
                 </div>
 
                 <div className={styles.section2}>
-                    {tags.map((item) => (
-                        <div>
+                    {tags.map((item, index) => (
+                        <div key={index}>
                             <LuTag color={cssColors.text100} size={20} />
                             <p className={"p2 " + styles.text}>{item}</p>
                         </div>
@@ -83,25 +77,21 @@ export default function DetailsDesktop() {
                         </li>
                     ))}
                 </ul>
+
+                <div>MAP IFRAME HERE</div>
             </div>
         </div>
     );
 }
 
-function DetailsDesktopPlaceholder() {
+function DetailsMobilePlaceholder() {
     return (
         <div className={styles.placeholder}>
-            <div className={styles.placeholderLeft}>
-                <div className={styles.placeholderImage}></div>
-                <div className={styles.placeholderImage}></div>
-            </div>
-
-            <div className={styles.placeholderRight}>
-                <div className={styles.placeholderTitle}></div>
-                <div className={styles.placeholderTitle}></div>
-                <div className={styles.placeholderList}></div>
-                <div className={styles.placeholderList}></div>
-            </div>
+            <div className={styles.placeholderImage}></div>
+            <div className={styles.placeholderTitle}></div>
+            <div className={styles.placeholderTitle}></div>
+            <div className={styles.placeholderList}></div>
+            <div className={styles.placeholderList}></div>
         </div>
     );
 }

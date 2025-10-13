@@ -14,7 +14,7 @@ export default function FeedItem({ color, data }: FeedItemProps) {
     const navigate = useNavigate();
 
     const handleClick = () => {
-        navigate("/details");
+        navigate("/details?susId=" + data.susId, { state: { susId: data.susId } });
     };
 
     const onLoad = () => {

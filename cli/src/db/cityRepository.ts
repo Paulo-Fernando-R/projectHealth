@@ -13,7 +13,7 @@ export class CityRepository implements ICityRepository {
         this.connection = connection;
     }
 
-    async insertBatch(rows: City[]) {
+    async insertBatch(rows: City[], truncate: boolean = false) {
         this.connection.connect();
 
         const pool = this.connection.createPool();
@@ -37,7 +37,7 @@ export class CityRepository implements ICityRepository {
 
         try {
             await this.switchConstraints(false, conn);
-            await conn.query("TRUNCATE TABLE city;");
+            if (truncate) await conn.query("TRUNCATE TABLE city;");
             await pool.query(sql, values);
         } catch (error) {
             throw error;

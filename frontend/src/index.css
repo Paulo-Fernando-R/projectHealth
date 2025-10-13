@@ -38,6 +38,13 @@
     --scaleUp: scale(1.05);
     --scaleDown: scale(0.99);
 
+    --shimmerGradient: linear-gradient(
+        90deg,
+        var(--accent100) 0%,
+        var(--accent200) 50%,
+        var(--accent300) 100%
+    );
+
     .titleh1 {
         font-weight: 400;
         font-size: 2.25rem;

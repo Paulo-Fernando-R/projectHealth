@@ -22,14 +22,15 @@ export class InsertCityCase {
             const stream = await this.csvParser.parse(this.filePath);
 
             const list: City[] = [];
+            let isFirstIteration = true;
 
             for await (const row of stream as AsyncIterable<CityCsv>) {
-                
                 const parser: City = new CityFromCsv(row).map();
                 list.push(parser);
 
                 if (list.length >= 1000) {
-                    await this.repository.insertBatch(list);
+                    await this.repository.insertBatch(list, isFirstIteration);
+                    isFirstIteration = false;
                     list.length = 0;
                 }
             }

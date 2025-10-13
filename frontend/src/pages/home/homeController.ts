@@ -15,6 +15,8 @@ import type IUserIp from "../../services/IuserIp";
 import UserIp from "../../services/userIp";
 import StringSimilarity from "../../utils/stringSimilarity";
 import { Axios } from "axios";
+import PhoneFormatter from "../../utils/phoneFormatter";
+import type { SetURLSearchParams } from "react-router";
 
 export default class HomeController {
     axios: IcustomAxios;
@@ -26,9 +28,26 @@ export default class HomeController {
     getStablishmentsCase: GetStablishmentsCase;
     getUserLocationCase: GetUserLocationCase;
     stringSimilarity: StringSimilarity;
-    setCity: React.Dispatch<React.SetStateAction<DropdowItem | null>> = () => {};
 
-    constructor(setCity: React.Dispatch<React.SetStateAction<DropdowItem | null>>) {
+    city: DropdowItem | null;
+    setCity: React.Dispatch<React.SetStateAction<DropdowItem | null>> = () => {};
+    type: DropdowItem | null;
+    setType: React.Dispatch<React.SetStateAction<DropdowItem | null>>;
+    search: string;
+    setSearch: React.Dispatch<React.SetStateAction<string>>;
+    searchParams: URLSearchParams;
+    setSearchParams: SetURLSearchParams;
+
+    constructor(
+        city: DropdowItem | null,
+        setCity: React.Dispatch<React.SetStateAction<DropdowItem | null>>,
+        type: DropdowItem | null,
+        setType: React.Dispatch<React.SetStateAction<DropdowItem | null>>,
+        search: string,
+        setSearch: React.Dispatch<React.SetStateAction<string>>,
+        searchParams: URLSearchParams,
+        setSearchParams: SetURLSearchParams
+    ) {
         this.axios = new CustomAxios();
         this.repository = new MetadataRepository(this.axios);
         this.stablishmentRepository = new StablishmentRepository(this.axios);
@@ -38,7 +57,47 @@ export default class HomeController {
         this.getStablishmentsCase = new GetStablishmentsCase(this.stablishmentRepository);
         this.getUserLocationCase = new GetUserLocationCase(this.geoIp);
         this.stringSimilarity = new StringSimilarity();
+
+        this.city = city;
         this.setCity = setCity;
+        this.type = type;
+        this.setType = setType;
+        this.search = search;
+        this.setSearch = setSearch;
+        this.searchParams = searchParams;
+        this.setSearchParams = setSearchParams;
+    }
+
+    addParams() {
+        if (this.city) this.searchParams.set("city", JSON.stringify(this.city));
+        else this.searchParams.delete("city");
+        if (this.type) this.searchParams.set("type", JSON.stringify(this.type));
+        else this.searchParams.delete("type");
+        if (this.search) this.searchParams.set("search", this.search);
+        else this.searchParams.delete("search");
+
+        this.setSearchParams(this.searchParams);
+    }
+
+    static getCityFromUrl(searchParams: URLSearchParams) {
+        if (searchParams.get("city")) {
+            return JSON.parse(searchParams.get("city")!);
+        }
+        return null;
+    }
+
+    static getTypeFromUrl(searchParams: URLSearchParams) {
+        if (searchParams.get("type")) {
+            return JSON.parse(searchParams.get("type")!);
+        }
+        return null;
+    }
+
+    static getSearchFromUrl(searchParams: URLSearchParams) {
+        if (searchParams.get("search")) {
+            return searchParams.get("search")!;
+        }
+        return "";
     }
 
     async getCities() {
@@ -58,7 +117,7 @@ export default class HomeController {
         if (!location) return;
 
         const res = this.stringSimilarity.compare(cities, location.location.city);
-        if (res) this.setCity(() => res);
+        if (res) this.setCity(res);
     }
 
     async getMetadata() {
@@ -73,7 +132,7 @@ export default class HomeController {
             return { id: `${type.typeCode}-${type.type}`, name: type.description };
         });
 
-        this.getCityByGeoIp(cities);
+        if (!this.city) await this.getCityByGeoIp(cities);
 
         return { cities, types };
     }
@@ -102,7 +161,7 @@ export default class HomeController {
 
         return res.map((e) => {
             const randomIndex = Math.floor(Math.random() * feedColors.length);
-
+            e.phone = e.phone ? PhoneFormatter.format(e.phone) : "";
             return { data: e, color: feedColors[randomIndex] };
         });
     }

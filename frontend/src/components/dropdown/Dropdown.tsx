@@ -13,6 +13,7 @@ export type DropdowItem = {
 export type DropdownProps = {
     itens: DropdowItem[];
     setSelected: React.Dispatch<React.SetStateAction<DropdowItem | null>>;
+    selected?: DropdowItem | null;
     placeholder?: string;
     enabled?: boolean;
 };
@@ -20,6 +21,7 @@ export type DropdownProps = {
 export default function Dropdown({
     itens,
     setSelected,
+    selected,
     placeholder,
     enabled = true,
 }: DropdownProps) {
@@ -74,6 +76,10 @@ export default function Dropdown({
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, [handleOpen]);
+
+    useEffect(() => {
+        if (selected) setSearch(selected.name);
+    }, [selected]);
 
     return (
         <div className={styles.dropBox} ref={listRef}>

@@ -7,7 +7,9 @@ import cssColors from "../../utils/cssColors";
 export type FilterProps = {
     cities: DropdowItem[];
     types: DropdowItem[];
+    citySelected: DropdowItem | null;
     setCitySelected: React.Dispatch<React.SetStateAction<DropdowItem | null>>;
+    typeSelected: DropdowItem | null;
     setTypeSelected: React.Dispatch<React.SetStateAction<DropdowItem | null>>;
     search: string;
     setSearch: React.Dispatch<React.SetStateAction<string>>;
@@ -18,7 +20,9 @@ export type FilterProps = {
 export default function Filter({
     cities,
     types,
+    citySelected,
     setCitySelected,
+    typeSelected,
     setTypeSelected,
     search,
     setSearch,
@@ -48,8 +52,18 @@ export default function Filter({
                 <LuSearch size={24} color={cssColors.text600} onClick={action} />
             </div>
             <div className={styles.filters}>
-                <Dropdown itens={cities} setSelected={setCitySelected} placeholder={"Cidade"} />
-                <Dropdown itens={types} setSelected={setTypeSelected} placeholder={"Tipo"} />
+                <Dropdown
+                    itens={cities}
+                    setSelected={setCitySelected}
+                    placeholder={"Cidade"}
+                    selected={citySelected}
+                />
+                <Dropdown
+                    itens={types}
+                    setSelected={setTypeSelected}
+                    placeholder={"Tipo"}
+                    selected={typeSelected}
+                />
             </div>
         </div>
     );

@@ -10,3 +10,18 @@ export default interface StablishmentModel {
     };
     phone: string;
 }
+
+export interface ExtendedStablishmentModel extends StablishmentModel {
+    services: string[];
+    geoLocation: {
+        latitude: string;
+        longitude: string;
+    };
+
+    contractWithSus: boolean;
+    fantasyName: string;
+    email: string;
+    unitType: string;
+    stablishmentType: string;
+    natureDescription: string;
+}
