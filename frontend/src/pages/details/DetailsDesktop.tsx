@@ -22,7 +22,7 @@ export default function DetailsDesktop() {
         query.data?.unitType,
         query.data?.stablishmentType,
         query.data?.natureDescription,
-        `ATENDE SUS: ${query.data?.contractWithSus ? "SIM" : "NAO"}`,
+        `ATENDE SUS: ${query.data?.contractWithSus ? "SIM" : "NÃO"}`,
     ];
 
     console.log(query.data);
