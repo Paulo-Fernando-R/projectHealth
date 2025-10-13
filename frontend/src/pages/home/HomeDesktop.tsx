@@ -85,7 +85,9 @@ export default function HomeDesktop() {
                 <Filter
                     cities={data?.cities || []}
                     types={data?.types || []}
+                    citySelected={city}
                     setCitySelected={setCity}
+                    typeSelected={type}
                     setTypeSelected={setType}
                     search={search}
                     setSearch={setSearch}
