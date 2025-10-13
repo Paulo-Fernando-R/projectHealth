@@ -7,14 +7,30 @@ import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import HomeController from "./homeController";
 import type { DropdowItem } from "../../components/dropdown/Dropdown";
 import Feed, { FeedError, FeedPlaceholder } from "../../components/Feed/Feed";
+import { useSearchParams } from "react-router";
 
 export default function HomeDesktop() {
-   
-    const [city, setCity] = useState<DropdowItem | null>(null);
-    const [type, setType] = useState<DropdowItem | null>(null);
-    const [search, setSearch] = useState("");
+    const [searchParams, setSearchParams] = useSearchParams();
+
+    const [city, setCity] = useState<DropdowItem | null>(
+        HomeController.getCityFromUrl(searchParams)
+    );
+    const [type, setType] = useState<DropdowItem | null>(
+        HomeController.getTypeFromUrl(searchParams)
+    );
+    const [search, setSearch] = useState(HomeController.getSearchFromUrl(searchParams));
     const firstRender = useRef(true);
-     const controller = new HomeController(setCity);
+
+    const controller = new HomeController(
+        city,
+        setCity,
+        type,
+        setType,
+        search,
+        setSearch,
+        searchParams,
+        setSearchParams
+    );
 
     const { data, isLoading } = useQuery({
         queryKey: ["cities"],
@@ -32,6 +48,7 @@ export default function HomeDesktop() {
 
     function refetch() {
         infiniteQuery.refetch();
+        controller.addParams();
     }
     function fetchNextPage() {
         infiniteQuery.fetchNextPage();
