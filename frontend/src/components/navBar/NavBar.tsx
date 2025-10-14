@@ -4,6 +4,8 @@ import { LuInfo } from "react-icons/lu";
 import cssColors from "../../utils/cssColors";
 import { useNavigate, useLocation } from "react-router";
 import { useEffect, useState } from "react";
+import logo from "../../../public/logo_alt1.png"
+
 export default function NavBar() {
 
     const navigate = useNavigate();
@@ -24,8 +26,8 @@ export default function NavBar() {
     return (
         <header className={styles.header}>
             <div className={styles.left} onClick={goToHome}>
-                <img src="" alt="Logo" />
-                <h2 className={styles.title + " titleh2"}>AndName</h2>
+                <img src={logo} alt="Logo" />
+                <h2 className={styles.title + " titleh2"}>Saúde Localiza</h2>
             </div>
 
             {!hideAbout && (

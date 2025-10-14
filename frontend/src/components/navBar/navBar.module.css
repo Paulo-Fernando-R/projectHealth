@@ -12,6 +12,10 @@
   align-items: center;
   gap: 0.5rem;
 }
+.left img {
+  width: 2.5rem;
+  height: 2.5rem;
+}
 .left .title {
   color: var(--primary200);
 }
