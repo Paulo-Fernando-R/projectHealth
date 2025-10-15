@@ -18,10 +18,19 @@ export interface ExtendedStablishmentModel extends StablishmentModel {
         longitude: string;
     };
 
+    isPublic: boolean;
     contractWithSus: boolean;
     fantasyName: string;
     email: string;
     unitType: string;
     stablishmentType: string;
     natureDescription: string;
+
+    openingHours: OpeningHoursModel[];
+}
+
+export interface OpeningHoursModel {
+    day: string;
+    startHour: string;
+    endHour: string;
 }

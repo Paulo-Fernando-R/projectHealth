@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import styles from "./detailsDesktop.module.css";
 import img from "../../assets/images/temp.png";
-import { LuHospital, LuPhone, LuMail, LuTag, LuCross } from "react-icons/lu";
+import { LuHospital, LuPhone, LuMail, LuTag, LuCross, LuCalendarClock } from "react-icons/lu";
 import cssColors from "../../utils/cssColors";
 import { useSearchParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
@@ -23,10 +23,8 @@ export default function DetailsDesktop() {
         query.data?.unitType,
         query.data?.stablishmentType,
         query.data?.natureDescription,
-        `ATENDE SUS: ${query.data?.contractWithSus ? "SIM" : "NÃO"}`,
+        `VÍNCULO COM O SUS: ${query.data?.contractWithSus || query.data?.isPublic ? "SIM" : "NÃO"}`,
     ];
-
-    console.log(query.data);
 
     if (query.isLoading) return <DetailsDesktopPlaceholder />;
 
@@ -66,8 +64,8 @@ export default function DetailsDesktop() {
                 </div>
 
                 <div className={styles.section2}>
-                    {tags.map((item) => (
-                        <div>
+                    {tags.map((item, index) => (
+                        <div key={index}>
                             <LuTag color={cssColors.text100} size={20} />
                             <p className={"p2 " + styles.text}>{item}</p>
                         </div>
@@ -80,6 +78,18 @@ export default function DetailsDesktop() {
                         <li key={index}>
                             <LuCross size={20} color={cssColors.text700} />
                             <p className="p2">{item}</p>
+                        </li>
+                    ))}
+                </ul>
+
+                <ul className={styles.section3}>
+                    <h3 className="titleh3">Horários de atendimento</h3>
+                    {query.data?.openingHours.map((item, index) => (
+                        <li key={index}>
+                            <LuCalendarClock size={20} color={cssColors.text700} />
+                            <p className="p2">
+                                {item.day}: {item.startHour} - {item.endHour}
+                            </p>
                         </li>
                     ))}
                 </ul>
