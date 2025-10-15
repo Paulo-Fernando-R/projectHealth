@@ -4,7 +4,7 @@ import { LuInfo } from "react-icons/lu";
 import cssColors from "../../utils/cssColors";
 import { useNavigate, useLocation } from "react-router";
 import { useEffect, useState } from "react";
-import logo from "../../../public/logo_alt1.png"
+import logo from "../../assets/images/logo_alt1.png"
 
 export default function NavBar() {
 
