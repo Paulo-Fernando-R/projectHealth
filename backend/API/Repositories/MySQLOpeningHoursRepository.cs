@@ -10,13 +10,9 @@ namespace API.Repositories
 
         public IEnumerable<GetOpeningHoursDto> GetAllByStablishment(string susId)
         {
-            string sql = "SELECT * FROM openinghours WHERE stablishmentSusId = @susId";
-            object data = new
-            {
-                susId,
-            };
+            string sql = $"SELECT CAST(dayCode AS UNSIGNED) AS Day, startHour, endHour FROM openinghours WHERE stablishmentSusId = '{susId}'";
 
-            var dtos = connection.Query<GetOpeningHoursDto>(sql, data);
+            var dtos = connection.Query<GetOpeningHoursDto>(sql);
             return dtos;
         }
     }

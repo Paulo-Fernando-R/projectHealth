@@ -44,7 +44,7 @@ namespace API.Cases
 
             var openingHours = openingHoursRepository.GetAllByStablishment(stablishment.SusId).Select(x => new GetStablishmentOpeningHourBySusIdResponse
             {
-                DayCode = x.DayCode,
+                DayCode = x.Day,
                 EndHour = x.EndHour,
                 StartHour = x.StartHour,
             });

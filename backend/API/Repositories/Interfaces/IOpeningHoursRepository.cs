@@ -1,4 +1,5 @@
-﻿namespace API.Repositories.Interfaces
+﻿
+namespace API.Repositories.Interfaces
 {
     public interface IOpeningHoursRepository
     {
@@ -7,7 +8,7 @@
 
     public class GetOpeningHoursDto
     {
-        public int DayCode { get; set; }
+        public short Day { get; set; }
         public string StartHour { get; set; } = string.Empty;
         public string EndHour { get; set; } = string.Empty;
     }
