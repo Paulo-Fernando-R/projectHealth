@@ -42,11 +42,40 @@ namespace API.Cases
             var unitType = unitTypeRepository.GetUniType(stablishment.UnitTypeCode);
             var stablishmentType = stablishmentTypeRepository.GetStablishmentType(stablishment.StablishmentTypeCode);
 
-            var openingHours = openingHoursRepository.GetAllByStablishment(stablishment.SusId).Select(x => new GetStablishmentOpeningHourBySusIdResponse
+            var openingHours = openingHoursRepository.GetAllByStablishment(stablishment.SusId).Select(x =>
             {
-                DayCode = x.DayCode,
-                EndHour = x.EndHour,
-                StartHour = x.StartHour,
+                string day = string.Empty;
+                switch (x.Day)
+                {
+                    case 1:
+                        day = "Domingo";
+                        break;
+                    case 2:
+                        day = "Segunda-feira";
+                        break;
+                    case 3:
+                        day = "Terça-feira";
+                        break;
+                    case 4:
+                        day = "Quarta-feira";
+                        break;
+                    case 5:
+                        day = "Quinta-feira";
+                        break;
+                    case 6:
+                        day = "Sexta-feira";
+                        break;
+                    case 7:
+                        day = "Sábado";
+                        break;
+                }
+
+                return new GetStablishmentOpeningHourBySusIdResponse
+                {
+                    Day = day,
+                    EndHour = x.EndHour,
+                    StartHour = x.StartHour,
+                };
             });
 
             var response = new GetStablishmentBySusIdResponse
@@ -93,7 +122,7 @@ namespace API.Cases
 
     public class GetStablishmentOpeningHourBySusIdResponse
     {
-        public int DayCode { get; set; }
+        public string Day { get; set; } = string.Empty;
         public string StartHour {  get; set; } = string.Empty;
         public string EndHour { get; set; } = string.Empty;
     }
