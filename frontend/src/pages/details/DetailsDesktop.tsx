@@ -23,10 +23,8 @@ export default function DetailsDesktop() {
         query.data?.unitType,
         query.data?.stablishmentType,
         query.data?.natureDescription,
-        `ATENDE SUS: ${query.data?.contractWithSus ? "SIM" : "NÃO"}`,
+        `VÍNCULO COM O SUS: ${query.data?.contractWithSus || query.data?.isPublic ? "SIM" : "NÃO"}`,
     ];
-
-    console.log(query.data);
 
     if (query.isLoading) return <DetailsDesktopPlaceholder />;
 
@@ -66,8 +64,8 @@ export default function DetailsDesktop() {
                 </div>
 
                 <div className={styles.section2}>
-                    {tags.map((item) => (
-                        <div>
+                    {tags.map((item, index) => (
+                        <div key={index}>
                             <LuTag color={cssColors.text100} size={20} />
                             <p className={"p2 " + styles.text}>{item}</p>
                         </div>

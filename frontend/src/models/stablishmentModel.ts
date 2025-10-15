@@ -18,6 +18,7 @@ export interface ExtendedStablishmentModel extends StablishmentModel {
         longitude: string;
     };
 
+    isPublic: boolean;
     contractWithSus: boolean;
     fantasyName: string;
     email: string;

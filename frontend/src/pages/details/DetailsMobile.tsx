@@ -22,7 +22,7 @@ export default function DetailsMobile() {
         query.data?.unitType,
         query.data?.stablishmentType,
         query.data?.natureDescription,
-        `ATENDE SUS: ${query.data?.contractWithSus ? "SIM" : "NAO"}`,
+        `VÍNCULO COM O SUS: ${query.data?.contractWithSus || query.data?.isPublic ? "SIM" : "NÃO"}`,
     ];
 
     if (query.isLoading) return <DetailsMobilePlaceholder />;
@@ -78,12 +78,14 @@ export default function DetailsMobile() {
                     ))}
                 </ul>
 
-                 <ul className={styles.section3}>
+                <ul className={styles.section3}>
                     <h3 className="titleh3">Horários de atendimento</h3>
                     {query.data?.openingHours.map((item, index) => (
                         <li key={index}>
                             <LuCalendarClock size={20} color={cssColors.text700} />
-                            <p className="p2">{item.day}: {item.startHour} - {item.endHour}</p>
+                            <p className="p2">
+                                {item.day}: {item.startHour} - {item.endHour}
+                            </p>
                         </li>
                     ))}
                 </ul>
