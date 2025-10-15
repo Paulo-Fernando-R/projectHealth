@@ -1,6 +1,6 @@
 import styles from "./details.module.css";
 import img from "../../assets/images/temp.png";
-import { LuHospital, LuPhone, LuMail, LuTag, LuCross } from "react-icons/lu";
+import { LuHospital, LuPhone, LuMail, LuTag, LuCross, LuCalendarClock } from "react-icons/lu";
 import cssColors from "../../utils/cssColors";
 import { useSearchParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
@@ -74,6 +74,16 @@ export default function DetailsMobile() {
                         <li key={index}>
                             <LuCross size={20} color={cssColors.text700} />
                             <p className="p2">{item}</p>
+                        </li>
+                    ))}
+                </ul>
+
+                 <ul className={styles.section3}>
+                    <h3 className="titleh3">Horários de atendimento</h3>
+                    {query.data?.openingHours.map((item, index) => (
+                        <li key={index}>
+                            <LuCalendarClock size={20} color={cssColors.text700} />
+                            <p className="p2">{item.day}: {item.startHour} - {item.endHour}</p>
                         </li>
                     ))}
                 </ul>

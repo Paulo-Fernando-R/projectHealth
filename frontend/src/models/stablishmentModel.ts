@@ -24,4 +24,12 @@ export interface ExtendedStablishmentModel extends StablishmentModel {
     unitType: string;
     stablishmentType: string;
     natureDescription: string;
+
+    openingHours: OpeningHoursModel[];
+}
+
+export interface OpeningHoursModel {
+    day: string;
+    startHour: string;
+    endHour: string;
 }
