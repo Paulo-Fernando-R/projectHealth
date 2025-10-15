@@ -11,7 +11,7 @@ namespace API.Cases
         private readonly IStablishmentTypeRepository stablishmentTypeRepository = stablishmentTypeRepository;
         private readonly IOpeningHoursRepository openingHoursRepository = openingHoursRepository;
 
-        private IEnumerable<int> PUBLIC_STABLISHMENTS_CODE = [1015, 1023, 1031, 1104, 1112, 1120, 1139, 1147, 1155, 1252, 1260, 1279, 2011, 2038, 1201, 1210, 1228, 1287, 1295, 1309, 1317, 1325, 1333];
+        private IEnumerable<int> PUBLIC_STABLISHMENTS_CODE = [1015, 1023, 1031, 1104, 1112, 1120, 1139, 1147, 1155, 1252, 1260, 1279, 2011, 2038, 1201, 1210, 1228, 1244, 1287, 1295, 1309, 1317, 1325, 1333];
 
         public GetStablishmentBySusIdResponse? Execute(string susId)
         {
