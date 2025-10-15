@@ -17,6 +17,7 @@ builder.Services.AddTransient<IUnitTypeRepository, MySQLUnitTypeRepository>();
 builder.Services.AddTransient<IStablishmentTypeRepository, MySQLStablishmentTypeRepository>();
 builder.Services.AddTransient<IStablishmentRepository, MySQLStablishmentRepository>();
 builder.Services.AddTransient<IServiceRepository, MySQLServiceRepository>();
+builder.Services.AddTransient<IOpeningHoursRepository, MySQLOpeningHoursRepository>();
 
 builder.Services.AddTransient<GetAllCitiesCase>();
 builder.Services.AddTransient<GetAllTypesCase>();

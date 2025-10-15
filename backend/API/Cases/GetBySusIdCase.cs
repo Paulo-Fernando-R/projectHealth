@@ -3,12 +3,13 @@ using API.Repositories.Interfaces;
 
 namespace API.Cases
 {
-    public class GetBySusIdCase(IStablishmentRepository stablishmentRepository, IServiceRepository serviceRepository, IUnitTypeRepository unitTypeRepository, IStablishmentTypeRepository stablishmentTypeRepository)
+    public class GetBySusIdCase(IStablishmentRepository stablishmentRepository, IServiceRepository serviceRepository, IUnitTypeRepository unitTypeRepository, IStablishmentTypeRepository stablishmentTypeRepository, IOpeningHoursRepository openingHoursRepository)
     {
         private readonly IStablishmentRepository stablishmentRepository = stablishmentRepository;
         private readonly IServiceRepository serviceRepository = serviceRepository;
         private readonly IUnitTypeRepository unitTypeRepository = unitTypeRepository;
         private readonly IStablishmentTypeRepository stablishmentTypeRepository = stablishmentTypeRepository;
+        private readonly IOpeningHoursRepository openingHoursRepository = openingHoursRepository;
 
         public GetStablishmentBySusIdResponse? Execute(string susId)
         {
@@ -41,6 +42,13 @@ namespace API.Cases
             var unitType = unitTypeRepository.GetUniType(stablishment.UnitTypeCode);
             var stablishmentType = stablishmentTypeRepository.GetStablishmentType(stablishment.StablishmentTypeCode);
 
+            var openingHours = openingHoursRepository.GetAllByStablishment(stablishment.SusId).Select(x => new GetStablishmentOpeningHourBySusIdResponse
+            {
+                DayCode = x.DayCode,
+                EndHour = x.EndHour,
+                StartHour = x.StartHour,
+            });
+
             var response = new GetStablishmentBySusIdResponse
             {
                 SusId = susId,
@@ -54,6 +62,7 @@ namespace API.Cases
                 StablishmentType = stablishmentType,
                 ContractWithSus = contractWithSus,
                 NatureDescription = stablishment.NatureDescription,
+                OpeningHours = openingHours,
             };
 
             return response;
@@ -72,6 +81,7 @@ namespace API.Cases
         public string NatureDescription { get; set; } = string.Empty;
         public required AddressResponse Address { get; set; }
         public IEnumerable<string> Services { get; set; } = [];
+        public IEnumerable<GetStablishmentOpeningHourBySusIdResponse> OpeningHours { get; set; } = [];
         public GetStablishmentGeopositionBySusIdResponse? Geoposition { get; set; }
     }
 
@@ -79,5 +89,12 @@ namespace API.Cases
     {
         public string Latitude { get; set; } = string.Empty;
         public string Longitude { get; set; } = string.Empty;
+    }
+
+    public class GetStablishmentOpeningHourBySusIdResponse
+    {
+        public int DayCode { get; set; }
+        public string StartHour {  get; set; } = string.Empty;
+        public string EndHour { get; set; } = string.Empty;
     }
 }
