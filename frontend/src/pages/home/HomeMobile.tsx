@@ -83,7 +83,7 @@ export default function HomeMobile() {
             <div className={showImg ? styles.imgBox : styles.imgBoxColapse}>
                 <img src={img} alt="" className={styles.img} />
                 <span>
-                    <h2 className={"titleh2 " + styles.imgTitle}>AndName</h2>
+                    <h2 className={"titleh2 " + styles.imgTitle}>Saúde Localiza</h2>
                     <p className={styles.subtitle + " p2"}>
                         Procure por nomes, tipos, lugares ou categorias de estabelecimentos de saúde
                     </p>
