@@ -11,6 +11,8 @@ namespace API.Cases
         private readonly IStablishmentTypeRepository stablishmentTypeRepository = stablishmentTypeRepository;
         private readonly IOpeningHoursRepository openingHoursRepository = openingHoursRepository;
 
+        private IEnumerable<int> PUBLIC_STABLISHMENTS_CODE = [1015, 1023, 1031, 1104, 1112, 1120, 1139, 1147, 1155, 1252, 1260, 1279, 2011, 2038, 1201, 1210, 1228, 1287, 1295, 1309, 1317, 1325, 1333];
+
         public GetStablishmentBySusIdResponse? Execute(string susId)
         {
             var stablishment = stablishmentRepository.GetBySusId(susId);
@@ -81,6 +83,7 @@ namespace API.Cases
             var response = new GetStablishmentBySusIdResponse
             {
                 SusId = susId,
+                IsPublic = PUBLIC_STABLISHMENTS_CODE.Contains(stablishment.LegalNatureCode),
                 Address = address,
                 Email = stablishment.Email,
                 FantasyName = stablishment.FantasyName,
@@ -102,6 +105,7 @@ namespace API.Cases
     {
         public string SusId { get; set; } = string.Empty;
         public bool ContractWithSus { get; set; }
+        public bool IsPublic { get; set; }
         public string FantasyName { get; set; } = string.Empty;
         public string Phone { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
