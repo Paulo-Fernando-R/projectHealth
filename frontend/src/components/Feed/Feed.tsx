@@ -47,3 +47,11 @@ export function FeedError({ text }: { text?: string }) {
         </div>
     );
 }
+
+export function FeedLoadingMore(){
+    return(
+        <div>
+            <p className="p2">Carregando mais itens</p>
+        </div>
+    )
+}

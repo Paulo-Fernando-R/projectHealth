@@ -6,7 +6,7 @@ import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
 import HomeController from "./homeController";
 import type { DropdowItem } from "../../components/dropdown/Dropdown";
 import { useEffect, useRef, useState } from "react";
-import Feed, { FeedError, FeedPlaceholder } from "../../components/Feed/Feed";
+import Feed, { FeedError, FeedLoadingMore, FeedPlaceholder } from "../../components/Feed/Feed";
 import { useSearchParams } from "react-router";
 
 export default function HomeMobile() {
@@ -126,6 +126,12 @@ export default function HomeMobile() {
             ) : (
                 <Feed data={infiniteQuery.data?.pages.flat() || []} onDataEnd={fetchNextPage} />
             )}
+
+            {
+                infiniteQuery.isFetchingNextPage &&(
+                    <FeedLoadingMore/>
+                )
+            }
         </div>
     );
 }

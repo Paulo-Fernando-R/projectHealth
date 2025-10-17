@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import HomeController from "./homeController";
 import type { DropdowItem } from "../../components/dropdown/Dropdown";
-import Feed, { FeedError, FeedPlaceholder } from "../../components/Feed/Feed";
+import Feed, { FeedError, FeedLoadingMore, FeedPlaceholder } from "../../components/Feed/Feed";
 import { useSearchParams } from "react-router";
 
 export default function HomeDesktop() {
@@ -108,6 +108,8 @@ export default function HomeDesktop() {
                 ) : (
                     <Feed data={infiniteQuery.data?.pages.flat() || []} onDataEnd={fetchNextPage} />
                 )}
+
+                {infiniteQuery.isFetchingNextPage && <FeedLoadingMore />}
             </div>
         </div>
     );
