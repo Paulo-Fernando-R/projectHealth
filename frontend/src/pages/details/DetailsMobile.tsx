@@ -6,10 +6,16 @@ import { useSearchParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import DetailsController from "./detailsController";
 import PhoneFormatter from "../../utils/phoneFormatter";
+import { useRef } from "react";
+import useElementAppear from "../../hooks/useElementAppear";
 
 export default function DetailsMobile() {
     const [searchParams] = useSearchParams();
     const susId = searchParams.get("susId");
+    
+    const tagsRef = useRef<HTMLUListElement>(null);
+    const servicesRef = useRef<HTMLUListElement>(null);
+    const hoursRef = useRef<HTMLUListElement>(null);
 
     const controller = new DetailsController();
 
@@ -24,6 +30,10 @@ export default function DetailsMobile() {
         query.data?.natureDescription,
         `VÍNCULO COM O SUS: ${query.data?.contractWithSus || query.data?.isPublic ? "SIM" : "NÃO"}`,
     ];
+
+    useElementAppear(tagsRef);
+    useElementAppear(servicesRef);
+    useElementAppear(hoursRef);
 
     if (query.isLoading) return <DetailsMobilePlaceholder />;
     return (
@@ -59,16 +69,16 @@ export default function DetailsMobile() {
                     )}
                 </div>
 
-                <div className={styles.section2}>
+                <ul className={styles.section2} ref={tagsRef}>
                     {tags.map((item, index) => (
-                        <div key={index}>
+                        <li key={index}>
                             <LuTag color={cssColors.text100} size={20} />
                             <p className={"p2 " + styles.text}>{item}</p>
-                        </div>
+                        </li>
                     ))}
-                </div>
+                </ul>
 
-                <ul className={styles.section3}>
+                <ul className={styles.section3} ref={servicesRef}>
                     <h3 className="titleh3">Serviços</h3>
                     {query.data?.services.map((item, index) => (
                         <li key={index}>
@@ -78,7 +88,7 @@ export default function DetailsMobile() {
                     ))}
                 </ul>
 
-                <ul className={styles.section3}>
+                <ul className={styles.section3} ref={hoursRef}>
                     <h3 className="titleh3">Horários de atendimento</h3>
                     {query.data?.openingHours.map((item, index) => (
                         <li key={index}>

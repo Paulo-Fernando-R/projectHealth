@@ -55,8 +55,10 @@
   justify-content: flex-start;
   gap: 0.5rem;
   flex-wrap: wrap;
+  list-style: none;
 }
-.section2 div {
+.section2 li {
+  transition: 0.5s ease-in;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -66,7 +68,7 @@
   border-radius: 1rem;
   padding: 0.4rem 0.625rem;
 }
-.section2 div .text {
+.section2 li .text {
   color: var(--text100);
 }
 
@@ -78,7 +80,11 @@
   gap: 0.5rem;
   list-style: none;
 }
+.section3 h3 {
+  transition: 0.5s ease-in;
+}
 .section3 li {
+  transition: 0.5s ease-in;
   display: flex;
   flex-direction: row;
   align-items: center;
