@@ -52,7 +52,7 @@ export default function HomeMobile() {
     function refetch() {
         infiniteQuery.refetch();
         controller.addParams();
-      //  setShowImg(false);
+        //  setShowImg(false);
     }
     function fetchNextPage() {
         infiniteQuery.fetchNextPage();
@@ -117,7 +117,7 @@ export default function HomeMobile() {
                 enabled={!isLoading}
             />
 
-            { infiniteQuery.isFetching && !infiniteQuery.isFetchingNextPage ? (
+            {infiniteQuery.isFetching && !infiniteQuery.isFetchingNextPage ? (
                 <FeedPlaceholder />
             ) : infiniteQuery.isError ? (
                 <FeedError />
@@ -127,11 +127,7 @@ export default function HomeMobile() {
                 <Feed data={infiniteQuery.data?.pages.flat() || []} onDataEnd={fetchNextPage} />
             )}
 
-            {
-                infiniteQuery.isFetchingNextPage &&(
-                    <FeedLoadingMore/>
-                )
-            }
+            {infiniteQuery.isFetchingNextPage && <FeedLoadingMore />}
         </div>
     );
 }
