@@ -2,12 +2,13 @@
 import styles from "./homeDesktop.module.css";
 import img from "../../assets/images/doctor.png";
 import Filter from "../../components/filter/Filter";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import HomeController from "./homeController";
 import type { DropdowItem } from "../../components/dropdown/Dropdown";
 import Feed, { FeedError, FeedLoadingMore, FeedPlaceholder } from "../../components/Feed/Feed";
 import { useSearchParams } from "react-router";
+import useUpdateParams from "../../hooks/useUpdateParams";
 
 export default function HomeDesktop() {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -54,17 +55,7 @@ export default function HomeDesktop() {
         infiniteQuery.fetchNextPage();
     }
 
-    useEffect(() => {
-        if (firstRender.current) {
-            if (city) {
-                refetch();
-            }
-            firstRender.current = false;
-            return;
-        }
-
-        refetch();
-    }, [city, type]);
+    useUpdateParams(refetch, city, type, firstRender);
 
     return (
         <div className={styles.container}>

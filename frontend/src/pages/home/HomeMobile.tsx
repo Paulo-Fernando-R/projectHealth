@@ -5,9 +5,11 @@ import Filter from "../../components/filter/Filter";
 import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
 import HomeController from "./homeController";
 import type { DropdowItem } from "../../components/dropdown/Dropdown";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import Feed, { FeedError, FeedLoadingMore, FeedPlaceholder } from "../../components/Feed/Feed";
 import { useSearchParams } from "react-router";
+import useShowImage from "../../hooks/useShowImage";
+import useUpdateParams from "../../hooks/useUpdateParams";
 
 export default function HomeMobile() {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -18,9 +20,8 @@ export default function HomeMobile() {
     const [type, setType] = useState<DropdowItem | null>(
         HomeController.getTypeFromUrl(searchParams)
     );
-    const [search, setSearch] = useState(HomeController.getSearchFromUrl(searchParams));
 
-    const [showImg, setShowImg] = useState(true);
+    const [search, setSearch] = useState(HomeController.getSearchFromUrl(searchParams));
     const firstRender = useRef(true);
 
     const controller = new HomeController(
@@ -48,37 +49,17 @@ export default function HomeMobile() {
         enabled: false,
         staleTime: 1000 * 60 * 60,
     });
+    
+    const showImg = useShowImage(search, city, type);
+    useUpdateParams(refetch, city, type, firstRender);
 
     function refetch() {
         infiniteQuery.refetch();
         controller.addParams();
-        //  setShowImg(false);
     }
     function fetchNextPage() {
         infiniteQuery.fetchNextPage();
     }
-
-    useEffect(() => {
-        if (firstRender.current) {
-            if (city) {
-                refetch();
-            }
-
-            firstRender.current = false;
-            return;
-        }
-
-        refetch();
-    }, [city, type]);
-
-    useEffect(() => {
-        if (search || city || type) {
-            setShowImg(false);
-            return;
-        }
-
-        setShowImg(true);
-    }, [search, city, type]);
 
     return (
         <div className={styles.container}>
