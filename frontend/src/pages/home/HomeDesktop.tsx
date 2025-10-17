@@ -55,11 +55,10 @@ export default function HomeDesktop() {
     }
 
     useEffect(() => {
-        if (city) {
-            refetch();
-            return;
-        }
         if (firstRender.current) {
+            if (city) {
+                refetch();
+            }
             firstRender.current = false;
             return;
         }

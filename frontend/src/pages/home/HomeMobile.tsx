@@ -59,12 +59,11 @@ export default function HomeMobile() {
     }
 
     useEffect(() => {
-        if (city) {
-            refetch();
-            return;
-        }
-
         if (firstRender.current) {
+            if (city) {
+                refetch();
+            }
+
             firstRender.current = false;
             return;
         }
