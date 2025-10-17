@@ -117,7 +117,7 @@ export default function HomeMobile() {
                 enabled={!isLoading}
             />
 
-            {infiniteQuery.isRefetching ? (
+            { infiniteQuery.isFetching && !infiniteQuery.isFetchingNextPage ? (
                 <FeedPlaceholder />
             ) : infiniteQuery.isError ? (
                 <FeedError />

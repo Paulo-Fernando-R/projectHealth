@@ -99,7 +99,7 @@ export default function HomeDesktop() {
                     enabled={!isLoading}
                 />
 
-                {infiniteQuery.isRefetching ? (
+                {infiniteQuery.isFetching && !infiniteQuery.isFetchingNextPage ? (
                     <FeedPlaceholder />
                 ) : infiniteQuery.isError ? (
                     <FeedError />
