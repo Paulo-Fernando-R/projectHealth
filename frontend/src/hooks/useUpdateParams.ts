@@ -10,10 +10,6 @@ const useUpdateParams = (
 ) => {
     useEffect(() => {
         if (firstRender.current) {
-            if (city) {
-                refetch();
-            }
-
             firstRender.current = false;
             return;
         }
