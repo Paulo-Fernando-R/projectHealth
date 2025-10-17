@@ -52,13 +52,18 @@ export default function HomeMobile() {
     function refetch() {
         infiniteQuery.refetch();
         controller.addParams();
-        setShowImg(false);
+      //  setShowImg(false);
     }
     function fetchNextPage() {
         infiniteQuery.fetchNextPage();
     }
 
     useEffect(() => {
+        if (city) {
+            refetch();
+            return;
+        }
+
         if (firstRender.current) {
             firstRender.current = false;
             return;
@@ -66,6 +71,15 @@ export default function HomeMobile() {
 
         refetch();
     }, [city, type]);
+
+    useEffect(() => {
+        if (search || city || type) {
+            setShowImg(false);
+            return;
+        }
+
+        setShowImg(true);
+    }, [search, city, type]);
 
     return (
         <div className={styles.container}>
