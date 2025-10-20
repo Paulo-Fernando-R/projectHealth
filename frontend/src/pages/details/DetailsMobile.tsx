@@ -36,12 +36,40 @@ export default function DetailsMobile() {
     useElementAppear(hoursRef);
 
     if (query.isLoading) return <DetailsMobilePlaceholder />;
+
+    //!TODO REFACTOR THIS QUICKLY
+    const lat = "-23.551";
+    const lon = "-46.635";
+    const src = `https://www.openstreetmap.org/export/embed.html?bbox=${
+        parseFloat(query.data?.geoposition?.longitude || lon) - 0.002
+    }%2C${parseFloat(query.data?.geoposition?.latitude || lat) - 0.002}%2C${
+        parseFloat(query.data?.geoposition?.longitude || lon) + 0.002
+    }%2C${
+        parseFloat(query.data?.geoposition?.latitude || lat) + 0.002
+    }&layer=mapnik&marker=${parseFloat(
+        query.data?.geoposition?.latitude || lat
+    )}%2C${parseFloat(query.data?.geoposition?.longitude || lon)}`;
+
+    console.log(query.data?.geoposition, query.data?.susId);
+
+    const link = /iPhone|iPad|Mac/i.test(navigator.userAgent)
+  ? `http://maps.apple.com/?ll=${lat},${lon}`
+  : `https://www.google.com/maps?q=${lat},${lon}`;
+
     return (
         <div className={styles.container}>
             <div className={styles.imgBox}>
-                <img src={img} alt="" />
+                {/* <img src={img} alt="" /> */}
+                <iframe
+                    width="425"
+                    height="350"
+                    scrolling="no"
+                    src={src}
+                    style={{ border: "none", filter:"saturate(300%)" }}
+                ></iframe>
+               
             </div>
-
+ <a href={link}>Abrir no Google Maps</a>
             <div className={styles.info}>
                 <div className={styles.section1}>
                     <span>
