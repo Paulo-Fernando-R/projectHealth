@@ -1,5 +1,4 @@
 import styles from "./details.module.css";
-import img from "../../assets/images/temp.png";
 import { LuHospital, LuPhone, LuMail, LuTag, LuCross, LuCalendarClock } from "react-icons/lu";
 import cssColors from "../../utils/cssColors";
 import { useSearchParams } from "react-router";
@@ -8,11 +7,13 @@ import DetailsController from "./detailsController";
 import PhoneFormatter from "../../utils/phoneFormatter";
 import { useRef } from "react";
 import useElementAppear from "../../hooks/useElementAppear";
+import useDeviceOS from "../../hooks/useDeviceOS";
+import MapLinkFormatter from "../../utils/mapLinkFormatter";
 
 export default function DetailsMobile() {
     const [searchParams] = useSearchParams();
     const susId = searchParams.get("susId");
-    
+
     const tagsRef = useRef<HTMLUListElement>(null);
     const servicesRef = useRef<HTMLUListElement>(null);
     const hoursRef = useRef<HTMLUListElement>(null);
@@ -34,27 +35,17 @@ export default function DetailsMobile() {
     useElementAppear(tagsRef);
     useElementAppear(servicesRef);
     useElementAppear(hoursRef);
-
+    const link = MapLinkFormatter.openAppLink(
+        useDeviceOS(),
+        query.data?.geoposition?.latitude || "",
+        query.data?.geoposition?.longitude || ""
+    );
     if (query.isLoading) return <DetailsMobilePlaceholder />;
 
-    //!TODO REFACTOR THIS QUICKLY
-    const lat = "-23.551";
-    const lon = "-46.635";
-    const src = `https://www.openstreetmap.org/export/embed.html?bbox=${
-        parseFloat(query.data?.geoposition?.longitude || lon) - 0.002
-    }%2C${parseFloat(query.data?.geoposition?.latitude || lat) - 0.002}%2C${
-        parseFloat(query.data?.geoposition?.longitude || lon) + 0.002
-    }%2C${
-        parseFloat(query.data?.geoposition?.latitude || lat) + 0.002
-    }&layer=mapnik&marker=${parseFloat(
-        query.data?.geoposition?.latitude || lat
-    )}%2C${parseFloat(query.data?.geoposition?.longitude || lon)}`;
-
-    console.log(query.data?.geoposition, query.data?.susId);
-
-    const link = /iPhone|iPad|Mac/i.test(navigator.userAgent)
-  ? `http://maps.apple.com/?ll=${lat},${lon}`
-  : `https://www.google.com/maps?q=${lat},${lon}`;
+    const src = MapLinkFormatter.embedMapLink(
+        query.data?.geoposition?.latitude || "",
+        query.data?.geoposition?.longitude || ""
+    );
 
     return (
         <div className={styles.container}>
@@ -65,11 +56,10 @@ export default function DetailsMobile() {
                     height="350"
                     scrolling="no"
                     src={src}
-                    style={{ border: "none", filter:"saturate(300%)" }}
+                    style={{ border: "none", filter: "saturate(300%)" }}
                 ></iframe>
-               
             </div>
- <a href={link}>Abrir no Google Maps</a>
+            <a href={link}>Abrir no Google Maps</a>
             <div className={styles.info}>
                 <div className={styles.section1}>
                     <span>
