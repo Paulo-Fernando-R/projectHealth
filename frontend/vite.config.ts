@@ -13,6 +13,10 @@ export default defineConfig({
                 description: "Encontre estabelecimentos de saúde próximos a você.",
                 start_url: "/",
                 display: "standalone",
+                icons: [
+                    { src: "logo_alt1.png", sizes: "192x192", type: "image/png" },
+                    { src: "logo_alt1.png", sizes: "512x512", type: "image/png" },
+                ],
             },
             workbox: {
                 cleanupOutdatedCaches: true,
