@@ -9,6 +9,7 @@ import { useRef } from "react";
 import useElementAppear from "../../hooks/useElementAppear";
 import useDeviceOS from "../../hooks/useDeviceOS";
 import MapLinkFormatter from "../../utils/mapLinkFormatter";
+import Map from "../../components/map/Map";
 
 export default function DetailsMobile() {
     const [searchParams] = useSearchParams();
@@ -42,22 +43,13 @@ export default function DetailsMobile() {
     );
     if (query.isLoading) return <DetailsMobilePlaceholder />;
 
-    const src = MapLinkFormatter.embedMapLink(
-        query.data?.geoposition?.latitude || "",
-        query.data?.geoposition?.longitude || ""
-    );
-
     return (
         <div className={styles.container}>
             <div className={styles.imgBox}>
-                {/* <img src={img} alt="" /> */}
-                <iframe
-                    width="425"
-                    height="350"
-                    scrolling="no"
-                    src={src}
-                    style={{ border: "none", filter: "saturate(300%)" }}
-                ></iframe>
+                <Map
+                    latitude={query.data?.geoposition?.latitude}
+                    longitude={query.data?.geoposition?.longitude}
+                />
             </div>
             <a href={link}>Abrir no Google Maps</a>
             <div className={styles.info}>
