@@ -16,7 +16,6 @@ import PhoneFormatter from "../../utils/phoneFormatter";
 import { useRef } from "react";
 import useElementAppear from "../../hooks/useElementAppear";
 import useDeviceOS from "../../hooks/useDeviceOS";
-import MapLinkFormatter from "../../utils/mapLinkFormatter";
 import Map from "../../components/map/Map";
 import ActionButton from "../../components/actionButton/ActionButton";
 
@@ -36,28 +35,14 @@ export default function DetailsMobile() {
         queryFn: () => controller.getStablishmentById(susId!),
     });
 
-    const tags = [
-        query.data?.unitType,
-        query.data?.stablishmentType,
-        query.data?.natureDescription,
-        `VÍNCULO COM O SUS: ${query.data?.contractWithSus || query.data?.isPublic ? "SIM" : "NÃO"}`,
-    ];
-
     useElementAppear(tagsRef);
     useElementAppear(servicesRef);
     useElementAppear(hoursRef);
 
-    const link = MapLinkFormatter.openAppLink(
-        os,
-        query.data?.geoposition.latitude,
-        query.data?.geoposition.longitude
-    );
+    const tags = controller.formatTags(query.data);
+    const link = controller.formatAppLink(query.data, os);
 
     if (query.isLoading) return <DetailsMobilePlaceholder />;
-
-    function openMaps() {
-        window.open(link, "_blank");
-    }
 
     return (
         <div className={styles.container}>
@@ -69,7 +54,7 @@ export default function DetailsMobile() {
             </div>
 
             <ActionButton
-                onClick={openMaps}
+                onClick={() => controller.openMaps(link)}
                 text={`Abrir Localização no ${os === "Apple" ? "Apple" : "Google"} Maps`}
                 icon={<LuMap color={cssColors.text100} size={24} />}
             />
