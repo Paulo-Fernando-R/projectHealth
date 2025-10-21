@@ -23,6 +23,14 @@
      object-fit: cover;
 }
 
+.buttonBox {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
 .info {
   display: flex;
   flex-direction: column;

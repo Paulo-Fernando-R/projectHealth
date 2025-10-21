@@ -1,5 +1,5 @@
 export default class MapLinkFormatter {
-    static openAppLink(device: string, lat: string, lon: string) {
+    static openAppLink(device: string, lat: string | undefined, lon: string | undefined) {
         if (device === "Apple") {
             return `http://maps.apple.com/?ll=${lat},${lon}`;
         }

@@ -1,0 +1,33 @@
+.actionButton {
+    transition: var(--longTransition);
+    background-color: var(--primary200);
+    border: none;
+    outline: none;
+    stroke: none;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    width: 100%;
+    height: 3.125rem;
+    border-radius: 1.25rem;
+
+    .text {
+        color: var(--text100);
+        letter-spacing: -1px;
+    }
+}
+
+.actionButton:hover {
+    transition: var(--longTransition);
+    cursor: pointer;
+    background-color: var(--primary100);
+    filter: var(--defaultShadow);
+}
+.actionButton:active {
+    transition: var(--longTransition);
+    cursor: pointer;
+    background-color: var(--primary100);
+    filter: var(--defaultShadow);
+}

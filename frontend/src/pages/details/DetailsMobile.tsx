@@ -1,5 +1,13 @@
 import styles from "./details.module.css";
-import { LuHospital, LuPhone, LuMail, LuTag, LuCross, LuCalendarClock } from "react-icons/lu";
+import {
+    LuHospital,
+    LuPhone,
+    LuMail,
+    LuTag,
+    LuCross,
+    LuCalendarClock,
+    LuMap,
+} from "react-icons/lu";
 import cssColors from "../../utils/cssColors";
 import { useSearchParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
@@ -10,6 +18,7 @@ import useElementAppear from "../../hooks/useElementAppear";
 import useDeviceOS from "../../hooks/useDeviceOS";
 import MapLinkFormatter from "../../utils/mapLinkFormatter";
 import Map from "../../components/map/Map";
+import ActionButton from "../../components/actionButton/ActionButton";
 
 export default function DetailsMobile() {
     const [searchParams] = useSearchParams();
@@ -18,6 +27,7 @@ export default function DetailsMobile() {
     const tagsRef = useRef<HTMLUListElement>(null);
     const servicesRef = useRef<HTMLUListElement>(null);
     const hoursRef = useRef<HTMLUListElement>(null);
+    const os = useDeviceOS();
 
     const controller = new DetailsController();
 
@@ -36,11 +46,13 @@ export default function DetailsMobile() {
     useElementAppear(tagsRef);
     useElementAppear(servicesRef);
     useElementAppear(hoursRef);
+
     const link = MapLinkFormatter.openAppLink(
-        useDeviceOS(),
-        query.data?.geoposition?.latitude || "",
-        query.data?.geoposition?.longitude || ""
+        os,
+        query.data?.geoposition.latitude,
+        query.data?.geoposition.longitude
     );
+
     if (query.isLoading) return <DetailsMobilePlaceholder />;
 
     return (
@@ -51,7 +63,20 @@ export default function DetailsMobile() {
                     longitude={query.data?.geoposition?.longitude}
                 />
             </div>
-            <a href={link}>Abrir no Google Maps</a>
+            {/* <div className={styles.buttonBox}>
+                <ActionButton
+                    onClick={() => {}}
+                    text="Abrir Localização no MAPS"
+                    icon={<LuMap />}
+                />
+                <a href={link}>Abrir no Google Maps</a>
+            </div> */}
+            <ActionButton
+                onClick={() => {}}
+                text="Abrir Localização no MAPS"
+                icon={<LuMap color={cssColors.text100} size={24} />}
+            />
+
             <div className={styles.info}>
                 <div className={styles.section1}>
                     <span>
