@@ -55,6 +55,19 @@ export default class StringSimilarity {
         return list.find((e) => e.id === max.item.id);
     }
 
+    compareList(list: DropdowItem[], search: string) {
+        const res = list.map((e) => {
+            return {
+                item: e,
+                score: this.similarity(search, e.name, 2),
+            };
+        });
+
+        const filtered = res.filter((e) => e.score > 30).sort((a, b) => b.score - a.score);
+
+        return filtered.map((e) => e.item);
+    }
+
     private getMaxScore(
         list: {
             item: DropdowItem;
