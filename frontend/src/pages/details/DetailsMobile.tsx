@@ -55,6 +55,10 @@ export default function DetailsMobile() {
 
     if (query.isLoading) return <DetailsMobilePlaceholder />;
 
+    function openMaps() {
+        window.open(link, "_blank");
+    }
+
     return (
         <div className={styles.container}>
             <div className={styles.imgBox}>
@@ -63,17 +67,10 @@ export default function DetailsMobile() {
                     longitude={query.data?.geoposition?.longitude}
                 />
             </div>
-            {/* <div className={styles.buttonBox}>
-                <ActionButton
-                    onClick={() => {}}
-                    text="Abrir Localização no MAPS"
-                    icon={<LuMap />}
-                />
-                <a href={link}>Abrir no Google Maps</a>
-            </div> */}
+
             <ActionButton
-                onClick={() => {}}
-                text="Abrir Localização no MAPS"
+                onClick={openMaps}
+                text={`Abrir Localização no ${os === "Apple" ? "Apple" : "Google"} Maps`}
                 icon={<LuMap color={cssColors.text100} size={24} />}
             />
 
