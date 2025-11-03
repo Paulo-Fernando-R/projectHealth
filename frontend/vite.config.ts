@@ -8,14 +8,33 @@ export default defineConfig({
         react(),
         VitePWA({
             manifest: {
+                id: "/",
                 name: "Saúde Localiza",
                 short_name: "Saúde Localiza",
                 description: "Encontre estabelecimentos de saúde próximos a você.",
                 start_url: "/",
                 display: "standalone",
+                theme_color: "#1E90FB",
+                background_color: "#F5F5F5",
+
+                screenshots: [
+                    {
+                        src: "screen_mobile.png",
+                        sizes: "412x917",
+                        type: "image/png",
+                        form_factor: "wide",
+                    },
+                    {
+                        src: "screen_desktop.png",
+                        sizes: "1728x1117",
+                        type: "image/png",
+                        form_factor: "narrow",
+                    },
+                ],
                 icons: [
-                    { src: "logo_alt1.png", sizes: "192x192", type: "image/png" },
-                    { src: "logo_alt1.png", sizes: "512x512", type: "image/png" },
+                    { src: "logo192.png", sizes: "192x192", type: "image/png" },
+                    { src: "logo512.png", sizes: "512x512", type: "image/png" },
+                    { src: "logo1024.png", sizes: "1024x1024", type: "image/png" },
                 ],
             },
             workbox: {

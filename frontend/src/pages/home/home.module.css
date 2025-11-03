@@ -8,6 +8,7 @@
   overflow-x: visible;
   padding: 0 var(--mobileHorizontalPading);
   padding-bottom: var(--mobileTopPading);
+  min-height: 100dvh;
 }
 .container .imgBox {
   transition: var(--longTransition);

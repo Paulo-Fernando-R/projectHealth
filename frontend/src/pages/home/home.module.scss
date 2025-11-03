@@ -9,6 +9,7 @@
 
     padding: 0 var(--mobileHorizontalPading);
     padding-bottom: var(--mobileTopPading);
+    min-height: 100dvh;
 
     .imgBox {
         transition: var(--longTransition);
