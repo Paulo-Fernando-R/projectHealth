@@ -10,6 +10,7 @@ import Feed, { FeedError, FeedLoadingMore, FeedPlaceholder } from "../../compone
 import { useSearchParams } from "react-router";
 import useShowImage from "../../hooks/useShowImage";
 import useUpdateParams from "../../hooks/useUpdateParams";
+import { MemoizedImage } from "./Home";
 
 export default function HomeMobile() {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -49,7 +50,7 @@ export default function HomeMobile() {
         enabled: false,
         staleTime: 1000 * 60 * 60,
     });
-    
+
     const showImg = useShowImage(search, city, type);
     useUpdateParams(refetch, city, type, firstRender);
 
@@ -75,7 +76,8 @@ export default function HomeMobile() {
             </div>
             {/* <button onClick={() => setShowImg(!showImg)}>aaaa</button> */}
             <div className={showImg ? styles.imgBox : styles.imgBoxColapse}>
-                <img src={img} alt="" className={styles.img} />
+                <MemoizedImage url={img} />
+
                 <span>
                     <h2 className={"titleh2 " + styles.imgTitle}>Saúde Localiza</h2>
                     <p className={styles.subtitle + " p2"}>

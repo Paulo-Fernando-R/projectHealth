@@ -9,6 +9,7 @@ import type { DropdowItem } from "../../components/dropdown/Dropdown";
 import Feed, { FeedError, FeedLoadingMore, FeedPlaceholder } from "../../components/Feed/Feed";
 import { useSearchParams } from "react-router";
 import useUpdateParams from "../../hooks/useUpdateParams";
+import { MemoizedImage } from "./Home";
 
 export default function HomeDesktop() {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -71,7 +72,7 @@ export default function HomeDesktop() {
                 </div>
 
                 <div className={styles.imgBox}>
-                    <img src={img} alt="" className={styles.img} />
+                    <MemoizedImage url={img} />
                 </div>
             </div>
 
