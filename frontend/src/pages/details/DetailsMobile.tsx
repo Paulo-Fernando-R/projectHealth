@@ -96,7 +96,10 @@ export default function DetailsMobile() {
                 </ul>
 
                 <ul className={styles.section3} ref={servicesRef}>
-                    <h3 className="titleh3">Serviços</h3>
+                    {query.data?.services.length === 0 ? null : (
+                        <h3 className="titleh3">Serviços</h3>
+                    )}
+
                     {query.data?.services.map((item, index) => (
                         <li key={index}>
                             <LuCross size={20} color={cssColors.text700} />
@@ -106,7 +109,10 @@ export default function DetailsMobile() {
                 </ul>
 
                 <ul className={styles.section3} ref={hoursRef}>
-                    <h3 className="titleh3">Horários de atendimento</h3>
+                    {query.data?.openingHours.length === 0 ? null : (
+                        <h3 className="titleh3">Horários de atendimento</h3>
+                    )}
+
                     {query.data?.openingHours.map((item, index) => (
                         <li key={index}>
                             <LuCalendarClock size={20} color={cssColors.text700} />
@@ -116,7 +122,6 @@ export default function DetailsMobile() {
                         </li>
                     ))}
                 </ul>
-
             </div>
         </div>
     );
