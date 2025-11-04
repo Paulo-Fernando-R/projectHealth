@@ -1,4 +1,5 @@
 import cssColors from "../../utils/cssColors";
+import StringSimilarity from "../../utils/stringSimilarity";
 import type { DropdowItem } from "./Dropdown";
 
 export default class DropdownController {
@@ -13,6 +14,8 @@ export default class DropdownController {
     open: boolean;
     setOpen: React.Dispatch<React.SetStateAction<boolean>>;
     setSelected: React.Dispatch<React.SetStateAction<DropdowItem | null>>;
+
+    stringSimilarity: StringSimilarity;
 
     constructor(
         listRef: React.RefObject<HTMLDivElement | null>,
@@ -34,15 +37,14 @@ export default class DropdownController {
         this.open = open;
         this.setOpen = setOpen;
         this.setSelected = setSelected;
+        this.stringSimilarity = new StringSimilarity();
     }
 
     private isOpen = (control: boolean) => this.setOpen(control);
 
     filterItens(end: number, str: string) {
         if (str.length > 0) {
-            const filtered = this.itens.filter((item) =>
-                item.name.toLowerCase().includes(str.toLowerCase())
-            );
+            const filtered = this.stringSimilarity.compareList(this.itens, str);
 
             if (filtered.length <= this.itensCount) this.setDisplay(filtered);
             else this.setDisplay(filtered.slice(0, end));

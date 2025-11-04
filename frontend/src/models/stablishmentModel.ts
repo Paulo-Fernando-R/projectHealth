@@ -13,7 +13,7 @@ export default interface StablishmentModel {
 
 export interface ExtendedStablishmentModel extends StablishmentModel {
     services: string[];
-    geoLocation: {
+    geoposition: {
         latitude: string;
         longitude: string;
     };

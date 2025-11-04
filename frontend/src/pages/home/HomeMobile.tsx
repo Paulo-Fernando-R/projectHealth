@@ -1,13 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import styles from "./home.module.css";
-import img from "../../assets/images/doctor.png";
+import img from "../../assets/images/doctor_low.png";
 import Filter from "../../components/filter/Filter";
 import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
 import HomeController from "./homeController";
 import type { DropdowItem } from "../../components/dropdown/Dropdown";
-import { useEffect, useRef, useState } from "react";
-import Feed, { FeedError, FeedPlaceholder } from "../../components/Feed/Feed";
+import { useRef, useState } from "react";
+import Feed, { FeedError, FeedLoadingMore, FeedPlaceholder } from "../../components/Feed/Feed";
 import { useSearchParams } from "react-router";
+import useShowImage from "../../hooks/useShowImage";
+import useUpdateParams from "../../hooks/useUpdateParams";
+import { MemoizedImage } from "./Home";
 
 export default function HomeMobile() {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -18,9 +21,8 @@ export default function HomeMobile() {
     const [type, setType] = useState<DropdowItem | null>(
         HomeController.getTypeFromUrl(searchParams)
     );
-    const [search, setSearch] = useState(HomeController.getSearchFromUrl(searchParams));
 
-    const [showImg, setShowImg] = useState(true);
+    const [search, setSearch] = useState(HomeController.getSearchFromUrl(searchParams));
     const firstRender = useRef(true);
 
     const controller = new HomeController(
@@ -49,23 +51,16 @@ export default function HomeMobile() {
         staleTime: 1000 * 60 * 60,
     });
 
+    const showImg = useShowImage(search, city, type);
+    useUpdateParams(refetch, city, type, firstRender);
+
     function refetch() {
         infiniteQuery.refetch();
         controller.addParams();
-        setShowImg(false);
     }
     function fetchNextPage() {
         infiniteQuery.fetchNextPage();
     }
-
-    useEffect(() => {
-        if (firstRender.current) {
-            firstRender.current = false;
-            return;
-        }
-
-        refetch();
-    }, [city, type]);
 
     return (
         <div className={styles.container}>
@@ -81,7 +76,8 @@ export default function HomeMobile() {
             </div>
             {/* <button onClick={() => setShowImg(!showImg)}>aaaa</button> */}
             <div className={showImg ? styles.imgBox : styles.imgBoxColapse}>
-                <img src={img} alt="" className={styles.img} />
+                <MemoizedImage url={img} />
+
                 <span>
                     <h2 className={"titleh2 " + styles.imgTitle}>Saúde Localiza</h2>
                     <p className={styles.subtitle + " p2"}>
@@ -103,7 +99,7 @@ export default function HomeMobile() {
                 enabled={!isLoading}
             />
 
-            {infiniteQuery.isRefetching ? (
+            {infiniteQuery.isFetching && !infiniteQuery.isFetchingNextPage ? (
                 <FeedPlaceholder />
             ) : infiniteQuery.isError ? (
                 <FeedError />
@@ -112,6 +108,8 @@ export default function HomeMobile() {
             ) : (
                 <Feed data={infiniteQuery.data?.pages.flat() || []} onDataEnd={fetchNextPage} />
             )}
+
+            {infiniteQuery.isFetchingNextPage && <FeedLoadingMore />}
         </div>
     );
 }

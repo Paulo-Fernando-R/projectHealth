@@ -3,6 +3,7 @@ import FeedItem, { type FeedItemProps } from "../feedItem/FeedItem";
 import FeedController from "./feedController";
 import { BiMessageSquareError } from "react-icons/bi";
 import cssColors from "../../utils/cssColors";
+import Spinner from "../spinner/Spinner";
 
 export type FeedProps = {
     data: FeedItemProps[];
@@ -44,6 +45,16 @@ export function FeedError({ text }: { text?: string }) {
         <div className={styles.error}>
             <BiMessageSquareError size={48} color={cssColors.text600} />
             <h3 className={"titleh3 " + styles.errorText}>{text}</h3>
+        </div>
+    );
+}
+
+export function FeedLoadingMore() {
+    return (
+        <div className={styles.LoadingMore}>
+            <p className="p2">Carregando mais itens</p>
+
+            <Spinner />
         </div>
     );
 }

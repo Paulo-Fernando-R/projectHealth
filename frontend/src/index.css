@@ -27,7 +27,7 @@
     --mobileHorizontalPading: 20px;
     --desktopHorizontalPading: 40px;
 
-    --mobileTopPading: 48px;
+    --mobileTopPading: 16px;
 
     --defaultShadow: drop-shadow(0 0 0.8rem rgba(0, 0, 0, 0.15));
     --smallShadow: drop-shadow(0 0 0.07rem rgba(0, 0, 0, 0.3));
@@ -89,4 +89,5 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
 }

@@ -1,13 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import styles from "./homeDesktop.module.css";
-import img from "../../assets/images/doctor.png";
+import img from "../../assets/images/doctor_low.png";
 import Filter from "../../components/filter/Filter";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import HomeController from "./homeController";
 import type { DropdowItem } from "../../components/dropdown/Dropdown";
-import Feed, { FeedError, FeedPlaceholder } from "../../components/Feed/Feed";
+import Feed, { FeedError, FeedLoadingMore, FeedPlaceholder } from "../../components/Feed/Feed";
 import { useSearchParams } from "react-router";
+import useUpdateParams from "../../hooks/useUpdateParams";
+import { MemoizedImage } from "./Home";
 
 export default function HomeDesktop() {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -54,14 +56,7 @@ export default function HomeDesktop() {
         infiniteQuery.fetchNextPage();
     }
 
-    useEffect(() => {
-        if (firstRender.current) {
-            firstRender.current = false;
-            return;
-        }
-
-        refetch();
-    }, [city, type]);
+    useUpdateParams(refetch, city, type, firstRender);
 
     return (
         <div className={styles.container}>
@@ -77,7 +72,7 @@ export default function HomeDesktop() {
                 </div>
 
                 <div className={styles.imgBox}>
-                    <img src={img} alt="" className={styles.img} />
+                    <MemoizedImage url={img} />
                 </div>
             </div>
 
@@ -95,7 +90,7 @@ export default function HomeDesktop() {
                     enabled={!isLoading}
                 />
 
-                {infiniteQuery.isRefetching ? (
+                {infiniteQuery.isFetching && !infiniteQuery.isFetchingNextPage ? (
                     <FeedPlaceholder />
                 ) : infiniteQuery.isError ? (
                     <FeedError />
@@ -104,6 +99,8 @@ export default function HomeDesktop() {
                 ) : (
                     <Feed data={infiniteQuery.data?.pages.flat() || []} onDataEnd={fetchNextPage} />
                 )}
+
+                {infiniteQuery.isFetchingNextPage && <FeedLoadingMore />}
             </div>
         </div>
     );

@@ -2,13 +2,14 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 1.5rem;
     background-color: var(--bg100);
     overflow-x: visible;
 
     padding: 0 var(--mobileHorizontalPading);
     padding-bottom: var(--mobileTopPading);
+    min-height: 100dvh;
 
     .imgBox {
         transition: var(--longTransition);

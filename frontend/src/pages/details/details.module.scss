@@ -12,7 +12,7 @@
     .imgBox {
         width: 100%;
         object-fit: cover;
-        aspect-ratio: 1/1;
+        //aspect-ratio: 1/1;
         overflow: hidden;
         border-radius: 1.25rem;
 
@@ -21,7 +21,17 @@
             height: 100%;
             object-fit: cover;
         }
+
+
     }
+}
+
+.buttonBox{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
 }
 
 .info {
@@ -58,8 +68,10 @@
     justify-content: flex-start;
     gap: 0.5rem;
     flex-wrap: wrap;
+    list-style: none;
 
-    div {
+    li {
+        transition: 0.5s ease-in;
         display: flex;
         flex-direction: row;
         align-items: center;
@@ -83,7 +95,12 @@
     gap: 0.5rem;
     list-style: none;
 
+    h3 {
+        transition: 0.5s ease-in;
+    }
+
     li {
+        transition: 0.5s ease-in;
         display: flex;
         flex-direction: row;
         align-items: center;
@@ -129,7 +146,6 @@
     background-size: 200% 100%;
     animation: shimmer 1.5s ease-in-out infinite;
 }
-
 
 @keyframes shimmer {
     0% {

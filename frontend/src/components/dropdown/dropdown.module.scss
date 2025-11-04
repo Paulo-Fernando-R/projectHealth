@@ -26,6 +26,10 @@
         outline: none;
         color: var(--primary100);
         background-color: var(--bg100);
+
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
     .field::placeholder {
         color: var(--text600);

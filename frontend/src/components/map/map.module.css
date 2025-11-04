@@ -1,0 +1,7 @@
+.mapBox {
+  border: none;
+  width: 100%;
+  aspect-ratio: 1/1;
+  max-height: 600px;
+  filter: var(--defaultShadow) saturate(300%);
+}

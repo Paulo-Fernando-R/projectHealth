@@ -1,17 +1,27 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import styles from "./detailsDesktop.module.css";
-import img from "../../assets/images/temp.png";
-import { LuHospital, LuPhone, LuMail, LuTag, LuCross, LuCalendarClock } from "react-icons/lu";
+import { LuTag, LuCross, LuCalendarClock, LuMap } from "react-icons/lu";
 import cssColors from "../../utils/cssColors";
 import { useSearchParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import DetailsController from "./detailsController";
-import PhoneFormatter from "../../utils/phoneFormatter";
+
+import { useRef } from "react";
+import useDeviceOS from "../../hooks/useDeviceOS";
+import useElementAppear from "../../hooks/useElementAppear";
+import Map from "../../components/map/Map";
+import ActionButton from "../../components/actionButton/ActionButton";
+import DetailsInfo from "../../components/detailsInfo/DetailsInfo";
 
 export default function DetailsDesktop() {
     const [searchParams] = useSearchParams();
     const susId = searchParams.get("susId");
-    console.log(susId);
+
+    const tagsRef = useRef<HTMLUListElement>(null);
+    const servicesRef = useRef<HTMLUListElement>(null);
+    const hoursRef = useRef<HTMLUListElement>(null);
+    const os = useDeviceOS();
+
     const controller = new DetailsController();
 
     const query = useQuery({
@@ -19,49 +29,26 @@ export default function DetailsDesktop() {
         queryFn: () => controller.getStablishmentById(susId!),
     });
 
-    const tags = [
-        query.data?.unitType,
-        query.data?.stablishmentType,
-        query.data?.natureDescription,
-        `VÍNCULO COM O SUS: ${query.data?.contractWithSus || query.data?.isPublic ? "SIM" : "NÃO"}`,
-    ];
+    useElementAppear(tagsRef);
+    useElementAppear(servicesRef);
+    useElementAppear(hoursRef);
+
+    const tags = controller.formatTags(query.data);
+    const link = controller.formatAppLink(query.data, os);
 
     if (query.isLoading) return <DetailsDesktopPlaceholder />;
 
     return (
         <div className={styles.container}>
             <div className={styles.imgBox}>
-                <img src={img} alt="" />
-
-                <div className={styles.map}>MAP IFRAME HERE</div>
+                <Map
+                    latitude={query.data?.geoposition?.latitude}
+                    longitude={query.data?.geoposition?.longitude}
+                />
             </div>
 
             <div className={styles.info}>
-                <div className={styles.section1}>
-                    <span>
-                        <LuHospital size={32} color={cssColors.primary200} />
-                        <h2 className={"titleh2 " + styles.title}>{query.data?.fantasyName}</h2>
-                    </span>
-                    <p>
-                        Endereço: {query.data?.address.address}, n° {query.data?.address.number},{" "}
-                        {query.data?.address.district}. {query.data?.address.city},{" "}
-                        {query.data?.address.state}.
-                    </p>
-
-                    {query.data?.phone && (
-                        <span>
-                            <LuPhone size={24} color={cssColors.text700} />
-                            <p className="p1">{PhoneFormatter.format(query.data?.phone)}</p>
-                        </span>
-                    )}
-
-                    {query.data?.email && (
-                        <span>
-                            <LuMail size={24} color={cssColors.text700} />
-                            <p className="p1">{query.data?.email}</p>
-                        </span>
-                    )}
-                </div>
+                <DetailsInfo data={query.data} />
 
                 <div className={styles.section2}>
                     {tags.map((item, index) => (
@@ -93,6 +80,12 @@ export default function DetailsDesktop() {
                         </li>
                     ))}
                 </ul>
+
+                <ActionButton
+                    onClick={() => controller.openMaps(link)}
+                    text={`Abrir Localização no ${os === "Apple" ? "Apple" : "Google"} Maps`}
+                    icon={<LuMap color={cssColors.text100} size={24} />}
+                />
             </div>
         </div>
     );

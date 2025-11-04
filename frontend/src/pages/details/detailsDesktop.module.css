@@ -162,4 +162,8 @@
   .placeholder {
     padding: 0 10%;
   }
+  .container {
+    height: 80dvh;
+    align-items: center;
+  }
 }

@@ -52,3 +52,13 @@
 .error .errorText {
   color: var(--text600);
 }
+
+.LoadingMore {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: -10px;
+}
+.LoadingMore p {
+  line-height: 24px;
+}
