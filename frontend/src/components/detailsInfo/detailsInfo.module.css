@@ -1,0 +1,40 @@
+.section1 {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0.75rem;
+}
+.section1 span {
+  transition: var(--longTransition);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.section1 span .title {
+  color: var(--primary200);
+}
+.section1 span:active {
+  transition: var(--shortTransition);
+  transform: var(--scaleDown);
+  opacity: 0.8;
+}
+
+@media (width >= 1024px) {
+  .section1 {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 1.25rem;
+  }
+  .section1 span {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section1 span .title {
+    color: var(--primary200);
+  }
+}

@@ -1,23 +1,16 @@
 import styles from "./details.module.css";
-import {
-    LuHospital,
-    LuPhone,
-    LuMail,
-    LuTag,
-    LuCross,
-    LuCalendarClock,
-    LuMap,
-} from "react-icons/lu";
+import { LuTag, LuCross, LuCalendarClock, LuMap } from "react-icons/lu";
 import cssColors from "../../utils/cssColors";
 import { useSearchParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import DetailsController from "./detailsController";
-import PhoneFormatter from "../../utils/phoneFormatter";
+
 import { useRef } from "react";
 import useElementAppear from "../../hooks/useElementAppear";
 import useDeviceOS from "../../hooks/useDeviceOS";
 import Map from "../../components/map/Map";
 import ActionButton from "../../components/actionButton/ActionButton";
+import DetailsInfo from "../../components/detailsInfo/DetailsInfo";
 
 export default function DetailsMobile() {
     const [searchParams] = useSearchParams();
@@ -60,31 +53,7 @@ export default function DetailsMobile() {
             />
 
             <div className={styles.info}>
-                <div className={styles.section1}>
-                    <span>
-                        <LuHospital size={32} color={cssColors.primary200} />
-                        <h2 className={"titleh2 " + styles.title}>{query.data?.fantasyName}</h2>
-                    </span>
-                    <p>
-                        Endereço: {query.data?.address.address}, n° {query.data?.address.number},{" "}
-                        {query.data?.address.district}. {query.data?.address.city},{" "}
-                        {query.data?.address.state}.
-                    </p>
-
-                    {query.data?.phone && (
-                        <span>
-                            <LuPhone size={24} color={cssColors.text700} />
-                            <p className="p1">{PhoneFormatter.format(query.data?.phone)}</p>
-                        </span>
-                    )}
-
-                    {query.data?.email && (
-                        <span>
-                            <LuMail size={24} color={cssColors.text700} />
-                            <p className="p1">{query.data?.email}</p>
-                        </span>
-                    )}
-                </div>
+                <DetailsInfo data={query.data} />
 
                 <ul className={styles.section2} ref={tagsRef}>
                     {tags.map((item, index) => (
