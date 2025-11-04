@@ -3,6 +3,7 @@ import Dropdown, { type DropdowItem } from "../dropdown/Dropdown";
 import styles from "./filter.module.css";
 import { LuSearch } from "react-icons/lu";
 import cssColors from "../../utils/cssColors";
+import Spinner from "../spinner/Spinner";
 
 export type FilterProps = {
     cities: DropdowItem[];
@@ -43,13 +44,17 @@ export default function Filter({
                 <input
                     type="text"
                     className={"p1 " + styles.field}
-                    placeholder="Nome"
+                    placeholder={enabled ? "Pesquisar nome..." : "Carregando..."}
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                     disabled={!enabled}
                     onKeyPress={onPressEnter}
                 />
-                <LuSearch size={24} color={cssColors.text600} onClick={action} />
+                {enabled ? (
+                    <LuSearch size={24} color={cssColors.text600} onClick={action} />
+                ) : (
+                    <Spinner />
+                )}
             </div>
             <div className={styles.filters}>
                 <Dropdown

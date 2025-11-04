@@ -3,7 +3,7 @@ import FeedItem, { type FeedItemProps } from "../feedItem/FeedItem";
 import FeedController from "./feedController";
 import { BiMessageSquareError } from "react-icons/bi";
 import cssColors from "../../utils/cssColors";
-import { FaSpinner } from "react-icons/fa6";
+import Spinner from "../spinner/Spinner";
 
 export type FeedProps = {
     data: FeedItemProps[];
@@ -53,9 +53,8 @@ export function FeedLoadingMore() {
     return (
         <div className={styles.LoadingMore}>
             <p className="p2">Carregando mais itens</p>
-            <span className={styles.spinner}>
-                <FaSpinner size={24} color={cssColors.primary200} />
-            </span>
+
+            <Spinner />
         </div>
     );
 }
