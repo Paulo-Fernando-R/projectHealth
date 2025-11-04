@@ -117,7 +117,6 @@ export default function DetailsMobile() {
                     ))}
                 </ul>
 
-                <div>MAP IFRAME HERE</div>
             </div>
         </div>
     );
