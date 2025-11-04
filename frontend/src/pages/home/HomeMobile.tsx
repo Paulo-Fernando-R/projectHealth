@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import styles from "./home.module.css";
-import img from "../../assets/images/doctor.png";
+import img from "../../assets/images/doctor_low.png";
 import Filter from "../../components/filter/Filter";
 import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
 import HomeController from "./homeController";
