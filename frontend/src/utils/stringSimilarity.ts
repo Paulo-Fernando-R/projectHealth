@@ -63,7 +63,7 @@ export default class StringSimilarity {
             };
         });
 
-        const filtered = res.filter((e) => e.score > 30).sort((a, b) => b.score - a.score);
+        const filtered = res.filter((e) => e.score > 10).sort((a, b) => b.score - a.score);
 
         return filtered.map((e) => e.item);
     }
