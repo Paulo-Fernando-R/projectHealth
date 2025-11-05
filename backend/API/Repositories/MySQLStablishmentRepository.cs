@@ -11,7 +11,7 @@ namespace API.Repositories
         public GetStablishmentInfoDto? GetBySusId(string susId)
         {
             string sql = @"
-SELECT susId, fantasyName, addressNumber, address, addressDistrict, phone, c.cityName, c.state, s.latitude, s.longitude, unitTypeCode, stablishmentTypeCode, contractWithSus, ln.natureDescription, s.legalNatureCode   
+SELECT susId, fantasyName, addressNumber, address, addressDistrict, phone, c.cityName, c.state, s.latitude, s.longitude, unitTypeCode, stablishmentTypeCode, contractWithSus, ln.natureDescription, s.legalNatureCode, s.email    
 FROM stablishment AS s
 LEFT JOIN city AS c ON c.cityCode = s.cityCode 
 LEFT JOIN legalnature AS ln ON ln.natureCode = s.legalNatureCode
