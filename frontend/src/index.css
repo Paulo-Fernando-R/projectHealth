@@ -83,6 +83,9 @@
         letter-spacing: -1px;
         color: var(--text700);
     }
+
+    min-height: 100vh;
+    background-color: var(--bg100);
 }
 
 * {
