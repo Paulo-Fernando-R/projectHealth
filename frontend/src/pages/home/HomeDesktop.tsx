@@ -99,8 +99,7 @@ export default function HomeDesktop() {
                 ) : (
                     <Feed data={infiniteQuery.data?.pages.flat() || []} onDataEnd={fetchNextPage} />
                 )}
-
-                {infiniteQuery.isFetchingNextPage && <FeedLoadingMore />}
+                <div className={styles.center}>{infiniteQuery.isFetchingNextPage && <FeedLoadingMore />}</div>
             </div>
         </div>
     );

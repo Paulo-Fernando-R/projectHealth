@@ -3,7 +3,7 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    min-height: calc(100dvh - 3.8rem);
+    min-height: calc(100dvh - 6rem);
     gap: 2rem;
     background-color: var(--bg100);
 
@@ -60,6 +60,12 @@
     gap: 2rem;
     width: 50%;
     height: 80dvh;
+
+    .center{
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
 
    
 }
