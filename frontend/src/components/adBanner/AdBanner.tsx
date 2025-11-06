@@ -6,14 +6,13 @@ export default function AdBanner() {
     const adRef = useRef<HTMLDivElement>(null);
 
     const url = import.meta.env.VITE_PUBLIC_ADS_BANNER_URL;
-    const key = import.meta.env.VITE_PUBLIC_ADS_BANNER_URL;
 
     useEffect(() => {
         const configScript = document.createElement("script");
         configScript.type = "text/javascript";
         configScript.innerHTML = `
       atOptions = {
-        'key' : '${key}',
+        'key' : '02f8d520588079db19f63614d04e6c58',
         'format' : 'iframe',
         'height' : 50,
         'width' : 320,
