@@ -11,6 +11,7 @@ import useDeviceOS from "../../hooks/useDeviceOS";
 import Map from "../../components/map/Map";
 import ActionButton from "../../components/actionButton/ActionButton";
 import DetailsInfo from "../../components/detailsInfo/DetailsInfo";
+import AdBanner from "../../components/adBanner/AdBanner";
 
 export default function DetailsMobile() {
     const [searchParams] = useSearchParams();
@@ -51,6 +52,8 @@ export default function DetailsMobile() {
                 text={`Abrir Localização no ${os === "Apple" ? "Apple" : "Google"} Maps`}
                 icon={<LuMap color={cssColors.text100} size={24} />}
             />
+
+            <AdBanner />
 
             <div className={styles.info}>
                 <DetailsInfo data={query.data} />

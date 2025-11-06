@@ -12,6 +12,7 @@ import useElementAppear from "../../hooks/useElementAppear";
 import Map from "../../components/map/Map";
 import ActionButton from "../../components/actionButton/ActionButton";
 import DetailsInfo from "../../components/detailsInfo/DetailsInfo";
+import AdBanner from "../../components/adBanner/AdBanner";
 
 export default function DetailsDesktop() {
     const [searchParams] = useSearchParams();
@@ -45,6 +46,7 @@ export default function DetailsDesktop() {
                     latitude={query.data?.geoposition?.latitude}
                     longitude={query.data?.geoposition?.longitude}
                 />
+                <AdBanner/>
             </div>
 
             <div className={styles.info}>
