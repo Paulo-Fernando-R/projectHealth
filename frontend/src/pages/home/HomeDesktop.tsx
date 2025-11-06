@@ -70,6 +70,9 @@ export default function HomeDesktop() {
                         Procure por nomes, tipos, lugares ou categorias de estabelecimentos de saúde
                     </p>
                 </div>
+                <div>
+                    <AdBanner />
+                </div>
 
                 <div className={styles.imgBox}>
                     <MemoizedImage url={img} />
@@ -89,8 +92,6 @@ export default function HomeDesktop() {
                     action={refetch}
                     enabled={!isLoading}
                 />
-
-                <AdBanner/>
 
                 {infiniteQuery.isFetching && !infiniteQuery.isFetchingNextPage ? (
                     <FeedPlaceholder />
