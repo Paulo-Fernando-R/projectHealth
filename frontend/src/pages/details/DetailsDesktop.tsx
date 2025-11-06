@@ -60,7 +60,9 @@ export default function DetailsDesktop() {
                 </div>
 
                 <ul className={styles.section3}>
-                    <h3 className="titleh3">Serviços</h3>
+                    {query.data?.services.length === 0 ? null : (
+                        <h3 className="titleh3">Serviços</h3>
+                    )}
                     {query.data?.services.map((item, index) => (
                         <li key={index}>
                             <LuCross size={20} color={cssColors.text700} />
@@ -70,7 +72,9 @@ export default function DetailsDesktop() {
                 </ul>
 
                 <ul className={styles.section3}>
-                    <h3 className="titleh3">Horários de atendimento</h3>
+                    {query.data?.openingHours.length === 0 ? null : (
+                        <h3 className="titleh3">Horários de atendimento</h3>
+                    )}
                     {query.data?.openingHours.map((item, index) => (
                         <li key={index}>
                             <LuCalendarClock size={20} color={cssColors.text700} />
