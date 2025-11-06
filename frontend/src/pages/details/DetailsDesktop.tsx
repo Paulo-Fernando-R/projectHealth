@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import styles from "./detailsDesktop.module.css";
 import { LuTag, LuCross, LuCalendarClock, LuMap } from "react-icons/lu";
 import cssColors from "../../utils/cssColors";
