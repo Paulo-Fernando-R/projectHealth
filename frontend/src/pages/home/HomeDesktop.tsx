@@ -73,7 +73,6 @@ export default function HomeDesktop() {
 
                 <div className={styles.imgBox}>
                     <MemoizedImage url={img} />
-                    <AdBanner />
                 </div>
             </div>
 
