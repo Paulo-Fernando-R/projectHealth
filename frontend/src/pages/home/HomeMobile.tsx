@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import styles from "./home.module.css";
 import img from "../../assets/images/doctor_low.png";
 import Filter from "../../components/filter/Filter";
@@ -11,6 +10,7 @@ import { useSearchParams } from "react-router";
 import useShowImage from "../../hooks/useShowImage";
 import useUpdateParams from "../../hooks/useUpdateParams";
 import { MemoizedImage } from "./Home";
+import AdBanner from "../../components/adBanner/AdBanner";
 
 export default function HomeMobile() {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -99,6 +99,8 @@ export default function HomeMobile() {
                 enabled={!isLoading}
             />
 
+            <AdBanner/>
+
             {infiniteQuery.isFetching && !infiniteQuery.isFetchingNextPage ? (
                 <FeedPlaceholder />
             ) : infiniteQuery.isError ? (
@@ -110,6 +112,8 @@ export default function HomeMobile() {
             )}
 
             {infiniteQuery.isFetchingNextPage && <FeedLoadingMore />}
+
+           
         </div>
     );
 }

@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import styles from "./homeDesktop.module.css";
 import img from "../../assets/images/doctor_low.png";
 import Filter from "../../components/filter/Filter";
@@ -10,6 +9,7 @@ import Feed, { FeedError, FeedLoadingMore, FeedPlaceholder } from "../../compone
 import { useSearchParams } from "react-router";
 import useUpdateParams from "../../hooks/useUpdateParams";
 import { MemoizedImage } from "./Home";
+import AdBanner from "../../components/adBanner/AdBanner";
 
 export default function HomeDesktop() {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -73,6 +73,7 @@ export default function HomeDesktop() {
 
                 <div className={styles.imgBox}>
                     <MemoizedImage url={img} />
+                    <AdBanner />
                 </div>
             </div>
 
@@ -90,6 +91,8 @@ export default function HomeDesktop() {
                     enabled={!isLoading}
                 />
 
+                <AdBanner/>
+
                 {infiniteQuery.isFetching && !infiniteQuery.isFetchingNextPage ? (
                     <FeedPlaceholder />
                 ) : infiniteQuery.isError ? (
@@ -99,7 +102,9 @@ export default function HomeDesktop() {
                 ) : (
                     <Feed data={infiniteQuery.data?.pages.flat() || []} onDataEnd={fetchNextPage} />
                 )}
-                <div className={styles.center}>{infiniteQuery.isFetchingNextPage && <FeedLoadingMore />}</div>
+                <div className={styles.center}>
+                    {infiniteQuery.isFetchingNextPage && <FeedLoadingMore />}
+                </div>
             </div>
         </div>
     );
