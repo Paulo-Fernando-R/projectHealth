@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://saudelocaliza.com.br/sitemap.xml
