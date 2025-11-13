@@ -1,5 +1,5 @@
 import styles from "./homeDesktop.module.css";
-import img from "../../assets/images/doctor_low.png";
+import img from "../../assets/images/doctor.webp";
 import Filter from "../../components/filter/Filter";
 import { useRef, useState } from "react";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
