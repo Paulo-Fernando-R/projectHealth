@@ -69,11 +69,11 @@ export default class HomeController {
     }
 
     addParams() {
-        if (this.city) this.searchParams.set("city", JSON.stringify(this.city));
+        if (this.city) this.searchParams.set("city", encodeURIComponent(JSON.stringify(this.city)));
         else this.searchParams.delete("city");
-        if (this.type) this.searchParams.set("type", JSON.stringify(this.type));
+        if (this.type) this.searchParams.set("type", encodeURIComponent(JSON.stringify(this.type)));
         else this.searchParams.delete("type");
-        if (this.search) this.searchParams.set("search", this.search);
+        if (this.search) this.searchParams.set("search", encodeURIComponent(this.search));
         else this.searchParams.delete("search");
 
         this.setSearchParams(this.searchParams);
@@ -81,21 +81,21 @@ export default class HomeController {
 
     static getCityFromUrl(searchParams: URLSearchParams) {
         if (searchParams.get("city")) {
-            return JSON.parse(searchParams.get("city")!);
+            return JSON.parse(decodeURIComponent(searchParams.get("city")!));
         }
         return null;
     }
 
     static getTypeFromUrl(searchParams: URLSearchParams) {
         if (searchParams.get("type")) {
-            return JSON.parse(searchParams.get("type")!);
+            return JSON.parse(decodeURIComponent(searchParams.get("type")!));
         }
         return null;
     }
 
     static getSearchFromUrl(searchParams: URLSearchParams) {
         if (searchParams.get("search")) {
-            return searchParams.get("search")!;
+            return decodeURIComponent(searchParams.get("search")!);
         }
         return "";
     }
