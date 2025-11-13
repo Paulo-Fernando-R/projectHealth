@@ -13,7 +13,7 @@ export default function AppRoutes() {
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/about" element={<About />} />
-                <Route path="/details" element={<Details />} />
+                <Route path="/details/:name" element={<Details />} />
                 <Route path="/profile" element={<h1>Profile</h1>} />
             </Routes>
             <Footer />
