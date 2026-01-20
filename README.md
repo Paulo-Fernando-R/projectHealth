@@ -1,99 +1,101 @@
 # Project Health
 
-## Visão Geral
+> 🇧🇷 [Leia isto em Português](README.pt-BR.md)
 
-**Project Health** é uma solução completa para extração, processamento e visualização de dados de estabelecimentos de saúde (CNES - Cadastro Nacional de Estabelecimentos de Saúde). O projeto é composto por uma arquitetura robusta que vai desde a coleta automatizada de dados públicos até a apresentação amigável ao usuário final.
+## Overview
 
-O sistema monitora fontes de dados oficiais, baixa bases de dados atualizadas (arquivos ZIP contendo CSVs), processa essas informações inserindo-as em um banco de dados relacional e disponibiliza tudo através de uma API de alta performance e um Frontend moderno.
+**Project Health** is a complete solution for extracting, processing, and visualizing health establishment data (CNES - National Register of Health Establishments). The project features a robust architecture ranging from automated public data collection to a user-friendly presentation for the end user.
 
-## Arquitetura do Sistema
+The system monitors official data sources, downloads updated databases (ZIP files containing CSVs), processes this information by inserting it into a relational database, and makes it all available through a high-performance API and a modern Frontend.
 
-O projeto é dividido em 4 componentes principais que trabalham em conjunto:
+## System Architecture
 
-1.  **CLI (Ingestão de Dados)**: Responsável pelo ETL (Extract, Transform, Load).
-2.  **Proxy**: Serviço intermediário para contornar restrições de rede durante o scraping.
-3.  **Backend (API)**: Interface RESTful para consumo dos dados processados.
-4.  **Frontend (Web App)**: Interface gráfica para usuários pesquisarem e visualizarem estabelecimentos.
+The project is divided into 4 main components working together:
 
-### Fluxo de Dados
+1.  **CLI (Data Ingestion)**: Responsible for ETL (Extract, Transform, Load).
+2.  **Proxy**: Intermediate service to bypass network restrictions during scraping.
+3.  **Backend (API)**: RESTful interface for consuming processed data.
+4.  **Frontend (Web App)**: Graphical interface for users to search and view establishments.
+
+### Data Flow
 
 ```mermaid
 graph TD
-    Source[Fonte de Dados CNES] -->|Scraping & Download| Proxy
+    Source[CNES Data Source] -->|Scraping & Download| Proxy
     Proxy -->|Zip File| CLI[CLI - Data Ingestion]
-    CLI -->|Extração & Parsing| CSVs[Arquivos CSV]
+    CLI -->|Extraction & Parsing| CSVs[CSV Files]
     CSVs -->|Bulk Insert| DB[(MySQL Database)]
-    DB <-->|Queries| API[Backend .NET API]
-    API <-->|JSON| Web[Cliente Frontend React]
+    DB <-->|Queries| API[.NET Backend API]
+    API <-->|JSON| Web[React Frontend Client]
 ```
 
 ---
 
-## Componentes Detalhados
+## Detailed Components
 
 ### 1. CLI (Data Ingestion)
 
-Localizado na pasta `/cli`.
-Uma aplicação **TypeScript** focada em automação.
+Located in `/cli`.
+A **TypeScript** application focused on automation.
 
-- **Funcionalidade**:
-  - Acessa o portal de estatísticas do CNES via `Puppeteer`.
-  - Identifica o arquivo de dados mais recente (geralmente `BASE_DE_DADOS_CNES_YYYYMM.ZIP`).
-  - Realiza o download e descompactação do arquivo.
-  - Processa arquivos CSV gigantescos usando streams.
-  - Insere os dados normalizados no banco de dados MySQL.
+- **Functionality**:
+  - Accesses the CNES statistics portal via `Puppeteer`.
+  - Identifies the latest data file (usually `BASE_DE_DADOS_CNES_YYYYMM.ZIP`).
+  - Downloads and unzips the file.
+  - Processes massive CSV files using streams.
+  - Inserts normalized data into the MySQL database.
 - **Stack**: Node.js, TypeScript, Puppeteer, MySQL2, Node-cron.
 
 ### 2. Proxy
 
-Localizado na pasta `/proxy`.
-Um servidor **Node.js/Express** simples.
+Located in `/proxy`.
+A simple **Node.js/Express** server.
 
-- **Funcionalidade**: Atua como um facilitador para o CLI ou Frontend acessarem recursos externos que podem ter bloqueios de CORS ou problemas de certificado SSL. Utiliza a biblioteca `unblocker`.
-- **Porta**: 3000
+- **Functionality**: Acts as a facilitator for the CLI or Frontend to access external resources that may have CORS blocks or SSL certificate issues. Uses the `unblocker` library.
+- **Port**: 3000
 
 ### 3. Backend (API)
 
-Localizado na pasta `/backend`.
-Uma Web API construída em **.NET 6+**.
+Located in `/backend`.
+A Web API built in **.NET 6+**.
 
-- **Funcionalidade**: Expõe endpoints para consulta de dados.
-- **Endpoints Principais**:
-  - `PUT /Home/Search`: Busca complexa com filtros por nome, tipo de estabelecimento e cidade.
-  - `GET /Stablishment/{susId}`: Detalhes completos de um estabelecimento específico.
-  - `GET /Home/Types`: Lista tipos de unidades.
-  - `GET /Home/Cities`: Lista cidades disponíveis.
-- **Arquitetura**: Clean Architecture simplificada (Controllers -> UseCases -> Repositories).
+- **Functionality**: Exposes endpoints for data querying.
+- **Main Endpoints**:
+  - `PUT /Home/Search`: Complex search with filters by name, establishment type, and city.
+  - `GET /Stablishment/{susId}`: Complete details of a specific establishment.
+  - `GET /Home/Types`: Lists unit types.
+  - `GET /Home/Cities`: Lists available cities.
+- **Architecture**: Simplified Clean Architecture (Controllers -> UseCases -> Repositories).
 - **Stack**: C#, ASP.NET Core, MySql.Data.
 
 ### 4. Frontend (Web App)
 
-Localizado na pasta `/frontend`.
-Uma aplicação SPA construída com **React**.
+Located in `/frontend`.
+An SPA application built with **React**.
 
-- **Funcionalidade**: Permite aos usuários buscar estabelecimentos de saúde, filtrar por localização e tipo, e visualizar detalhes como horário de funcionamento e serviços disponíveis.
-- **Stack**: React, Vite, TypeScript, TailwindCSS (provável), React Router, React Query.
+- **Functionality**: Allows users to search for health establishments, filter by location and type, and view details such as opening hours and available services.
+- **Stack**: React, Vite, TypeScript, TailwindCSS (likely), React Router, React Query.
 
 ---
 
-## Pré-requisitos
+## Prerequisites
 
-- **Node.js** (v18 ou superior)
-- **Dotnet SDK** (.NET 6.0 ou superior)
-- **MySQL Server** (com um banco de dados criado)
+- **Node.js** (v18 or higher)
+- **Dotnet SDK** (.NET 6.0 or higher)
+- **MySQL Server** (with a created database)
 
-## Instalação e Execução
+## Installation and Execution
 
-Para rodar o projeto completo localmente, você precisará iniciar os serviços em terminais separados.
+To run the full project locally, you will need to start services in separate terminals.
 
-### Passo 0: Configuração do Banco de Dados
+### Step 0: Database Configuration
 
-Certifique-se de ter uma instância MySQL rodando. Configure as strings de conexão nos arquivos:
+Ensure you have a MySQL instance running. Configure connection strings in the files:
 
 - `backend/API/appsettings.Development.json`
-- `cli/src/app.config.ts` (ou variáveis de ambiente correspondentes)
+- `cli/src/app.config.ts` (or corresponding environment variables)
 
-### Passo 1: Iniciar o Proxy
+### Step 1: Start the Proxy
 
 ```bash
 cd proxy
@@ -101,11 +103,11 @@ npm install
 node index.js
 ```
 
-_O proxy rodará na porta 3000._
+_The proxy will run on port 3000._
 
-### Passo 2: Popular o Banco de Dados (CLI)
+### Step 2: Populate the Database (CLI)
 
-Este passo pode demorar, pois envolve baixar e processar arquivos grandes.
+This step may take a while as it involves downloading and processing large files.
 
 ```bash
 cd cli
@@ -113,9 +115,9 @@ npm install
 npm run dev
 ```
 
-_O script irá iniciar o processo de scraping, download e inserção no banco._
+_The script will start the scraping, download, and database insertion process._
 
-### Passo 3: Iniciar o Backend
+### Step 3: Start the Backend
 
 ```bash
 cd backend/API
@@ -123,9 +125,9 @@ dotnet restore
 dotnet run
 ```
 
-_A API estará disponível (provavelmente em `https://localhost:7198` ou similar, verifique o log)._
+_The API will be available (likely at `https://localhost:7198` or similar, check the log)._
 
-### Passo 4: Iniciar o Frontend
+### Step 4: Start the Frontend
 
 ```bash
 cd frontend
@@ -133,27 +135,27 @@ npm install
 npm run dev
 ```
 
-_Acesse a aplicação no navegador através do link fornecido pelo Vite (ex: `http://localhost:5173`)._
+_Access the application in the browser through the link provided by Vite (e.g., `http://localhost:5173`)._
 
 ---
 
-## Decisões de Design
+## Design Decisions
 
-- **Separação de Responsabilidades**: O processo de ingestão de dados (pesado e demorado) foi desacoplado da API de leitura. Isso garante que a API permaneça rápida mesmo durante a atualização da base de dados.
-- **Uso de Streams**: O CLI utiliza leitura de arquivos por stream (CSV Parser) para manipular grandes volumes de dados sem estourar a memória RAM.
-- **Clean Architecture no Backend**: Facilita a manutenção e testes, separando a lógica de negócios (Cases) do acesso a dados (Repositories).
-- **Proxy para Resilience**: O uso de um proxy intermediário ajuda a evitar falhas de conexão com fontes governamentais instáveis ou com configurações de segurança legadas.
+- **Separation of Concerns**: The data ingestion process (heavy and time-consuming) was decoupled from the read API. This ensures the API remains fast even during database updates.
+- **Use of Streams**: The CLI uses stream file reading (CSV Parser) to handle large data volumes without exhausting RAM.
+- **Clean Architecture in Backend**: Facilitates maintenance and testing by separating business logic (Cases) from data access (Repositories).
+- **Proxy for Resilience**: Using an intermediate proxy helps avoid connection failures with unstable government sources or legacy security configurations.
 
-## Estrutura de Pastas
+## Folder Structure
 
 ```
 projectHealth2/
-├── backend/          # Solução .NET
-│   └── API/          # Projeto Web API
-├── cli/              # Ferramenta de importação de dados
-│   └── src/          # Código fonte TypeScript
-├── frontend/         # Aplicação React
-│   └── src/          # Componentes, Páginas e Hooks
-├── proxy/            # Servidor Proxy Node.js
-└── README.md         # Documentação do projeto
+├── backend/          # .NET Solution
+│   └── API/          # Web API Project
+├── cli/              # Data import tool
+│   └── src/          # TypeScript source code
+├── frontend/         # React Application
+│   └── src/          # Components, Pages, and Hooks
+├── proxy/            # Node.js Proxy Server
+└── README.md         # Project documentation (English)
 ```
